@@ -12,7 +12,7 @@ dependencies:
 - pip:
   - atari-py
   - pyprind
-  - tensorflow-gpu>=1.13
+  - tensorflow>=1.13
   - absl-py
   - atari-py
   - gin-config
