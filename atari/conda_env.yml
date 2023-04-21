@@ -1,22 +1,21 @@
-name: decision-transformer-atari
+name: dta
 channels:
 - pytorch
 dependencies:
 - python=3.7.9
 - pytorch=1.2
-- cudatoolkit=10.
-- numpy
-- psutil
+- cudatoolkit=10.0
+- numpy==1.16.5
+- psutil #5.9.0
 - opencv
 - pip
 - pip:
-  - atari-py
-  - pyprind
-  - tensorflow>=1.13
-  - absl-py
-  - atari-py
-  - gin-config
-  - gym
-  - tqdm
-  - blosc
-  - git+https://github.com/google/dopamine.git
+  - atari-py==0.2.9
+  - pyprind==2.11.3
+  - tensorflow-gpu==1.13.2
+  - absl-py==1.4.0
+  - gin-config==0.5.0
+  - gym==0.10.11
+  - tqdm==4.65.0
+  - blosc==1.10.6
+  - git+https://github.com/google/dopamine.git@v2
