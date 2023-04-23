@@ -15,7 +15,7 @@ from collections import deque
 import random
 import torch
 import pickle
-# import blosc
+import blosc
 import argparse
 from fixed_replay_buffer import FixedReplayBuffer
 
@@ -64,8 +64,8 @@ def create_dataset(num_buffers, num_steps, game, data_dir_prefix, trajectories_p
                         trajectories_to_load -= 1
                 returns[-1] += ret[0]
                 i += 1
-                # if i >= 100000:
-                if i>=10:
+                if i >= 100000:
+                # if i>=10:
                     obss = obss[:curr_num_transitions]
                     actions = actions[:curr_num_transitions]
                     stepwise_returns = stepwise_returns[:curr_num_transitions]
