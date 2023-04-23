@@ -65,9 +65,12 @@ class Trainer:
         # take over whatever gpus are on the system
         self.device = 'cpu'
         if torch.cuda.is_available():
+            print("GPU available.")
             self.device = torch.cuda.current_device()
+            print(f"device={self.device}")
             self.model = torch.nn.DataParallel(self.model).to(self.device)
-
+        # print("Finish Trainer __init__")
+            
     def save_checkpoint(self):
         # DataParallel wrappers keep raw model object in .module attribute
         raw_model = self.model.module if hasattr(self.model, "module") else self.model
@@ -86,23 +89,30 @@ class Trainer:
             loader = DataLoader(data, shuffle=True, pin_memory=True,
                                 batch_size=config.batch_size,
                                 num_workers=config.num_workers)
+            # print("Dataloader ends.")
 
             losses = []
+            # print(f"tqdm begins")
             pbar = tqdm(enumerate(loader), total=len(loader)) if is_train else enumerate(loader)
+            # print(f"tqdm ends")
             for it, (x, y, r, t) in pbar:
+                # print(f"iteration {it}")
 
                 # place data on the correct device
                 x = x.to(self.device)
+                # print("Finish loading data x.")
                 y = y.to(self.device)
                 r = r.to(self.device)
                 t = t.to(self.device)
-
+                # print("Finish loading data to devices.")
+                
                 # forward the model
                 with torch.set_grad_enabled(is_train):
                     # logits, loss = model(x, y, r)
                     logits, loss = model(x, y, y, r, t)
                     loss = loss.mean() # collapse all losses if they are scattered on multiple gpus
                     losses.append(loss.item())
+                    print("Finish loss computation.")
 
                 if is_train:
 
