@@ -2,24 +2,22 @@ name: dta
 channels:
 - pytorch
 dependencies:
-- python=3.7.9
-- pytorch=1.2
-- cudatoolkit=10.0
-- numpy==1.16.5
+- python
+- pytorch==1.13.0
+- pytorch-cuda==11.7
+- numpy
 - psutil #5.9.0
 - opencv
 - pip
 - pip:
-  - atari-py==0.2.9
-  - pyprind==2.11.3
-  - protobuf==3.19.6
-  - tensorflow==1.13.2
-  - tensorflow-gpu==1.13.2
-  - absl-py==1.4.0
-  - gin-config==0.5.0
-  - gym==0.10.11
-  - tqdm==4.65.0
-  - blosc==1.10.6
-  - opencv-python==3.4.18.65
-  - pillow==9.5.0
-  - git+https://github.com/google/dopamine.git@v2
+  - atari-py
+  - pyprind
+  - protobuf
+  - tensorflow
+  - absl-py
+  - gin-config
+  - gym
+  - tqdm
+  - opencv-python
+  - pillow
+  - git+https://github.com/google/dopamine.git
