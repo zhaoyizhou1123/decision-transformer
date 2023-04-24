@@ -112,7 +112,7 @@ class Trainer:
                     logits, loss = model(x, y, y, r, t)
                     loss = loss.mean() # collapse all losses if they are scattered on multiple gpus
                     losses.append(loss.item())
-                    print("Finish loss computation.")
+                    # print("Finish loss computation.")
 
                 if is_train:
 
@@ -227,7 +227,8 @@ class Trainer:
                     timesteps=(min(j, self.config.max_timestep) * torch.ones((1, 1, 1), dtype=torch.int64).to(self.device)))
         env.close()
         eval_return = sum(T_rewards)/10.
-        print("target return: %d, eval return: %d" % (ret, eval_return))
+        # print("target return: %d, eval return: %d" % (ret, eval_return))
+        logger.info("target return: %d, eval return: %d", ret, eval_return)
         self.model.train(True)
         return eval_return
 
