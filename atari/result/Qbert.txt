@@ -1,0 +1,33 @@
+python run_dt_atari.py --seed 123 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Qbert --batch_size 128
+Namespace(batch_size=128, context_length=30, data_dir_prefix='./dqn_replay/', epochs=5, game='Qbert', log_level='WARNING', model_type='reward_conditioned', num_buffers=50, num_steps=500000, seed=123, trajectories_per_buffer=10)
+max rtg is 600
+max timestep is 3901
+GPU available.
+device=0
+target return: 14000, eval return: 4232
+target return: 14000, eval return: 3977
+target return: 14000, eval return: 2817
+target return: 14000, eval return: 2685
+target return: 14000, eval return: 1230
+python run_dt_atari.py --seed 231 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Qbert --batch_size 128
+Namespace(batch_size=128, context_length=30, data_dir_prefix='./dqn_replay/', epochs=5, game='Qbert', log_level='WARNING', model_type='reward_conditioned', num_buffers=50, num_steps=500000, seed=231, trajectories_per_buffer=10)
+max rtg is 460
+max timestep is 3411
+GPU available.
+device=0
+target return: 14000, eval return: 4207
+target return: 14000, eval return: 2377
+target return: 14000, eval return: 1752
+target return: 14000, eval return: 2695
+target return: 14000, eval return: 1265
+python run_dt_atari.py --seed 312 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Qbert --batch_size 128
+Namespace(batch_size=128, context_length=30, data_dir_prefix='./dqn_replay/', epochs=5, game='Qbert', log_level='WARNING', model_type='reward_conditioned', num_buffers=50, num_steps=500000, seed=312, trajectories_per_buffer=10)
+max rtg is 505
+max timestep is 3411
+GPU available.
+device=0
+target return: 14000, eval return: 2090
+target return: 14000, eval return: 3532
+target return: 14000, eval return: 4512
+target return: 14000, eval return: 562
+target return: 14000, eval return: 385

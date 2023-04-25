@@ -31,7 +31,9 @@ parser.add_argument('--batch_size', type=int, default=128)
 # 
 parser.add_argument('--trajectories_per_buffer', type=int, default=10, help='Number of trajectories to sample from each of the buffers.')
 parser.add_argument('--data_dir_prefix', type=str, default='./dqn_replay/')
+parser.add_argument('--log_level', type=str, default='WARNING')
 args = parser.parse_args()
+print(args)
 
 set_seed(args.seed)
 
@@ -69,12 +71,25 @@ obss, actions, returns, done_idxs, rtgs, timesteps = create_dataset(args.num_buf
 
 # print("Finish dataset creation.")
 
+# Get logging level
+if args.log_level == 'DEBUG':
+    logging_level = logging.DEBUG
+elif args.log_level == 'INFO':
+    logging_level = logging.INFO
+elif args.log_level == 'WARNING':
+    logging_level = logging.WARNING
+elif args.log_level == 'ERROR':
+    logging_level = logging.ERROR
+elif args.log_level == 'CRITICAL':
+    logging_level = logging.CRITICAL
+else:
+    raise Exception("Unkown logging level")
 
 # set up logging
 logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
         datefmt="%m/%d/%Y %H:%M:%S",
-        level=logging.INFO,
+        level=logging_level,
 )
 
 # print("Begin generating train_dataset")

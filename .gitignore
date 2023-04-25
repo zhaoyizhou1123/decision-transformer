@@ -1,3 +1,4 @@
 dqn_replay
 __pycache__
 slurm-*
+*.sif
