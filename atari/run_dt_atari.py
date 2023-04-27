@@ -38,18 +38,19 @@ print(args)
 set_seed(args.seed)
 
 class StateActionReturnDataset(Dataset):
+    '''Son of the pytorch Dataset class'''
 
     def __init__(self, data, block_size, actions, done_idxs, rtgs, timesteps):        
-        self.block_size = block_size
+        self.block_size = block_size # args.context_length*3
         self.vocab_size = max(actions) + 1
-        self.data = data
+        self.data = data #obss
         self.actions = actions
         self.done_idxs = done_idxs
         self.rtgs = rtgs
         self.timesteps = timesteps
     
     def __len__(self):
-        return len(self.data) - self.block_size
+        return len(self.data) - self.block_size # I think should be self.block_size // 3
 
     def __getitem__(self, idx):
         block_size = self.block_size // 3

@@ -2,3 +2,7 @@ dqn_replay
 __pycache__
 slurm-*
 *.sif
+toy/result
+toy/model
+# !toy/backup/model/*.pth
+# !toy/backup/result/*.txt

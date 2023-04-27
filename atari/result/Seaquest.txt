@@ -1,0 +1,33 @@
+echo python run_dt_atari.py --seed 123 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Seaquest --batch_size 512
+Namespace(batch_size=128, context_length=30, data_dir_prefix='./dqn_replay/', epochs=5, game='Seaquest', log_level='WARNING', model_type='reward_conditioned', num_buffers=50, num_steps=500000, seed=123, trajectories_per_buffer=10)
+max rtg is 290
+max timestep is 2719
+GPU available.
+device=0
+target return: 1150, eval return: 958
+target return: 1150, eval return: 1064
+target return: 1150, eval return: 1036
+target return: 1150, eval return: 936
+target return: 1150, eval return: 1112
+echo python run_dt_atari.py --seed 231 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Seaquest --batch_size 512
+Namespace(batch_size=128, context_length=30, data_dir_prefix='./dqn_replay/', epochs=5, game='Seaquest', log_level='WARNING', model_type='reward_conditioned', num_buffers=50, num_steps=500000, seed=231, trajectories_per_buffer=10)
+max rtg is 298
+max timestep is 3171
+GPU available.
+device=0
+target return: 1150, eval return: 670
+target return: 1150, eval return: 658
+target return: 1150, eval return: 864
+target return: 1150, eval return: 708
+target return: 1150, eval return: 944
+echo python run_dt_atari.py --seed 312 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Seaquest --batch_size 512
+Namespace(batch_size=128, context_length=30, data_dir_prefix='./dqn_replay/', epochs=5, game='Seaquest', log_level='WARNING', model_type='reward_conditioned', num_buffers=50, num_steps=500000, seed=312, trajectories_per_buffer=10)
+max rtg is 290
+max timestep is 2805
+GPU available.
+device=0
+target return: 1150, eval return: 528
+target return: 1150, eval return: 766
+target return: 1150, eval return: 930
+target return: 1150, eval return: 1304
+target return: 1150, eval return: 936

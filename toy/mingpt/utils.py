@@ -35,7 +35,7 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
     of block_size, unlike an RNN that has an infinite context window.
     """
     '''
-    x: state sequence, shape (1,num_states,1,4,84,84)
+    actions: None during testing
     '''
     block_size = model.get_block_size()
     model.eval()
@@ -53,6 +53,8 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
             logits = top_k_logits(logits, top_k)
         # apply softmax to convert to probabilities
         probs = F.softmax(logits, dim=-1)
+        # if int(timesteps[0,0,0]) == 0:
+        #     print(f"Utils.py: t={timesteps}, probs={probs}")
         # sample from the distribution or take the most likely
         if sample:
             ix = torch.multinomial(probs, num_samples=1)

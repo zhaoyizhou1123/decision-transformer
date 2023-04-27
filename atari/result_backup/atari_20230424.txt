@@ -1,0 +1,2092 @@
+python run_dt_atari.py --seed 123 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Qbert --batch_size 128
+loading from buffer 45 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=45
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11616 loaded transitions and there are now 11616 transitions total divided into 10 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9014 loaded transitions and there are now 20630 transitions total divided into 20 trajectories
+loading from buffer 28 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11616 loaded transitions and there are now 32246 transitions total divided into 30 trajectories
+loading from buffer 34 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12095 loaded transitions and there are now 44341 transitions total divided into 40 trajectories
+loading from buffer 38 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=38
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 16262 loaded transitions and there are now 60603 transitions total divided into 50 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10083 loaded transitions and there are now 70686 transitions total divided into 60 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13787 loaded transitions and there are now 84473 transitions total divided into 70 trajectories
+loading from buffer 42 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=42
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13553 loaded transitions and there are now 98026 transitions total divided into 80 trajectories
+loading from buffer 22 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=22
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12811 loaded transitions and there are now 110837 transitions total divided into 90 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13732 loaded transitions and there are now 124569 transitions total divided into 100 trajectories
+loading from buffer 32 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11304 loaded transitions and there are now 135873 transitions total divided into 110 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13003 loaded transitions and there are now 148876 transitions total divided into 120 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11305 loaded transitions and there are now 160181 transitions total divided into 130 trajectories
+loading from buffer 9 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=9
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 14263 loaded transitions and there are now 174444 transitions total divided into 140 trajectories
+loading from buffer 32 which has 11304 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 26670 loaded transitions and there are now 189810 transitions total divided into 150 trajectories
+loading from buffer 46 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=46
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 16014 loaded transitions and there are now 205824 transitions total divided into 160 trajectories
+loading from buffer 32 which has 26670 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 40128 loaded transitions and there are now 219282 transitions total divided into 170 trajectories
+loading from buffer 47 which has 11305 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 22143 loaded transitions and there are now 230120 transitions total divided into 180 trajectories
+loading from buffer 25 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=25
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11753 loaded transitions and there are now 241873 transitions total divided into 190 trajectories
+loading from buffer 19 which has 13787 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 27244 loaded transitions and there are now 255330 transitions total divided into 200 trajectories
+loading from buffer 14 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=14
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11662 loaded transitions and there are now 266992 transitions total divided into 210 trajectories
+loading from buffer 36 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=36
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12215 loaded transitions and there are now 279207 transitions total divided into 220 trajectories
+loading from buffer 32 which has 40128 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 56379 loaded transitions and there are now 295458 transitions total divided into 230 trajectories
+loading from buffer 16 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=16
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12219 loaded transitions and there are now 307677 transitions total divided into 240 trajectories
+loading from buffer 4 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=4
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12494 loaded transitions and there are now 320171 transitions total divided into 250 trajectories
+loading from buffer 49 which has 13003 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23128 loaded transitions and there are now 330296 transitions total divided into 260 trajectories
+loading from buffer 3 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=3
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 6340 loaded transitions and there are now 336636 transitions total divided into 270 trajectories
+loading from buffer 2 which has 9014 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 17520 loaded transitions and there are now 345142 transitions total divided into 280 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13023 loaded transitions and there are now 358165 transitions total divided into 290 trajectories
+loading from buffer 39 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=39
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11575 loaded transitions and there are now 369740 transitions total divided into 300 trajectories
+loading from buffer 2 which has 17520 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 27077 loaded transitions and there are now 379297 transitions total divided into 310 trajectories
+loading from buffer 20 which has 13023 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23548 loaded transitions and there are now 389822 transitions total divided into 320 trajectories
+loading from buffer 47 which has 22143 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 36478 loaded transitions and there are now 404157 transitions total divided into 330 trajectories
+loading from buffer 48 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=48
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 15310 loaded transitions and there are now 419467 transitions total divided into 340 trajectories
+loading from buffer 7 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=7
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 8997 loaded transitions and there are now 428464 transitions total divided into 350 trajectories
+loading from buffer 41 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=41
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 8464 loaded transitions and there are now 436928 transitions total divided into 360 trajectories
+loading from buffer 35 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13872 loaded transitions and there are now 450800 transitions total divided into 370 trajectories
+loading from buffer 28 which has 11616 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23880 loaded transitions and there are now 463064 transitions total divided into 380 trajectories
+loading from buffer 38 which has 16262 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=38
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 31621 loaded transitions and there are now 478423 transitions total divided into 390 trajectories
+loading from buffer 33 which has 13732 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 24968 loaded transitions and there are now 489659 transitions total divided into 400 trajectories
+loading from buffer 21 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=21
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10974 loaded transitions and there are now 500633 transitions total divided into 410 trajectories
+max rtg is 600
+max timestep is 3901
+GPU available.
+device=0
+python run_dt_atari.py --seed 231 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Qbert --batch_size 128
+loading from buffer 23 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=23
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11179 loaded transitions and there are now 11179 transitions total divided into 10 trajectories
+loading from buffer 48 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=48
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 15310 loaded transitions and there are now 26489 transitions total divided into 20 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13023 loaded transitions and there are now 39512 transitions total divided into 30 trajectories
+loading from buffer 9 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=9
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 14263 loaded transitions and there are now 53775 transitions total divided into 40 trajectories
+loading from buffer 11 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=11
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12899 loaded transitions and there are now 66674 transitions total divided into 50 trajectories
+loading from buffer 6 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9546 loaded transitions and there are now 76220 transitions total divided into 60 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9014 loaded transitions and there are now 85234 transitions total divided into 70 trajectories
+loading from buffer 30 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=30
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10163 loaded transitions and there are now 95397 transitions total divided into 80 trajectories
+loading from buffer 20 which has 13023 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23548 loaded transitions and there are now 105922 transitions total divided into 90 trajectories
+loading from buffer 42 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=42
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13553 loaded transitions and there are now 119475 transitions total divided into 100 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13003 loaded transitions and there are now 132478 transitions total divided into 110 trajectories
+loading from buffer 18 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=18
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9861 loaded transitions and there are now 142339 transitions total divided into 120 trajectories
+loading from buffer 34 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12095 loaded transitions and there are now 154434 transitions total divided into 130 trajectories
+loading from buffer 34 which has 12095 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 26841 loaded transitions and there are now 169180 transitions total divided into 140 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13732 loaded transitions and there are now 182912 transitions total divided into 150 trajectories
+loading from buffer 35 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13872 loaded transitions and there are now 196784 transitions total divided into 160 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10083 loaded transitions and there are now 206867 transitions total divided into 170 trajectories
+loading from buffer 44 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=44
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10928 loaded transitions and there are now 217795 transitions total divided into 180 trajectories
+loading from buffer 27 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=27
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10952 loaded transitions and there are now 228747 transitions total divided into 190 trajectories
+loading from buffer 1 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=1
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 8423 loaded transitions and there are now 237170 transitions total divided into 200 trajectories
+loading from buffer 33 which has 13732 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 24968 loaded transitions and there are now 248406 transitions total divided into 210 trajectories
+loading from buffer 25 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=25
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11753 loaded transitions and there are now 260159 transitions total divided into 220 trajectories
+loading from buffer 28 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11616 loaded transitions and there are now 271775 transitions total divided into 230 trajectories
+loading from buffer 34 which has 26841 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 37877 loaded transitions and there are now 282811 transitions total divided into 240 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11305 loaded transitions and there are now 294116 transitions total divided into 250 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13787 loaded transitions and there are now 307903 transitions total divided into 260 trajectories
+loading from buffer 12 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=12
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 14249 loaded transitions and there are now 322152 transitions total divided into 270 trajectories
+loading from buffer 28 which has 11616 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23880 loaded transitions and there are now 334416 transitions total divided into 280 trajectories
+loading from buffer 6 which has 9546 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 21047 loaded transitions and there are now 345917 transitions total divided into 290 trajectories
+loading from buffer 3 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=3
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 6340 loaded transitions and there are now 352257 transitions total divided into 300 trajectories
+loading from buffer 0 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=0
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 3779 loaded transitions and there are now 356036 transitions total divided into 310 trajectories
+loading from buffer 10 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=10
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10581 loaded transitions and there are now 366617 transitions total divided into 320 trajectories
+loading from buffer 7 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=7
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 8997 loaded transitions and there are now 375614 transitions total divided into 330 trajectories
+loading from buffer 49 which has 13003 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23128 loaded transitions and there are now 385739 transitions total divided into 340 trajectories
+loading from buffer 49 which has 23128 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 36515 loaded transitions and there are now 399126 transitions total divided into 350 trajectories
+loading from buffer 20 which has 23548 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 36346 loaded transitions and there are now 411924 transitions total divided into 360 trajectories
+loading from buffer 45 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=45
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11616 loaded transitions and there are now 423540 transitions total divided into 370 trajectories
+loading from buffer 6 which has 21047 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 32030 loaded transitions and there are now 434523 transitions total divided into 380 trajectories
+loading from buffer 32 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11304 loaded transitions and there are now 445827 transitions total divided into 390 trajectories
+loading from buffer 39 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=39
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11575 loaded transitions and there are now 457402 transitions total divided into 400 trajectories
+loading from buffer 13 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=13
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9707 loaded transitions and there are now 467109 transitions total divided into 410 trajectories
+loading from buffer 30 which has 10163 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=30
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 22553 loaded transitions and there are now 479499 transitions total divided into 420 trajectories
+loading from buffer 6 which has 32030 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 42944 loaded transitions and there are now 490413 transitions total divided into 430 trajectories
+loading from buffer 49 which has 36515 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 48737 loaded transitions and there are now 502635 transitions total divided into 440 trajectories
+max rtg is 460
+max timestep is 3411
+GPU available.
+device=0
+python run_dt_atari.py --seed 312 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Qbert --batch_size 128
+loading from buffer 32 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11304 loaded transitions and there are now 11304 transitions total divided into 10 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13023 loaded transitions and there are now 24327 transitions total divided into 20 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13787 loaded transitions and there are now 38114 transitions total divided into 30 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9014 loaded transitions and there are now 47128 transitions total divided into 40 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13732 loaded transitions and there are now 60860 transitions total divided into 50 trajectories
+loading from buffer 19 which has 13787 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 27244 loaded transitions and there are now 74317 transitions total divided into 60 trajectories
+loading from buffer 0 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=0
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 3779 loaded transitions and there are now 78096 transitions total divided into 70 trajectories
+loading from buffer 2 which has 9014 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 17520 loaded transitions and there are now 86602 transitions total divided into 80 trajectories
+loading from buffer 6 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9546 loaded transitions and there are now 96148 transitions total divided into 90 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11305 loaded transitions and there are now 107453 transitions total divided into 100 trajectories
+loading from buffer 47 which has 11305 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 22143 loaded transitions and there are now 118291 transitions total divided into 110 trajectories
+loading from buffer 5 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=5
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 7919 loaded transitions and there are now 126210 transitions total divided into 120 trajectories
+loading from buffer 24 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=24
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13864 loaded transitions and there are now 140074 transitions total divided into 130 trajectories
+loading from buffer 37 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=37
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 14489 loaded transitions and there are now 154563 transitions total divided into 140 trajectories
+loading from buffer 7 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=7
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 8997 loaded transitions and there are now 163560 transitions total divided into 150 trajectories
+loading from buffer 3 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=3
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 6340 loaded transitions and there are now 169900 transitions total divided into 160 trajectories
+loading from buffer 13 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=13
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9707 loaded transitions and there are now 179607 transitions total divided into 170 trajectories
+loading from buffer 24 which has 13864 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=24
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 24477 loaded transitions and there are now 190220 transitions total divided into 180 trajectories
+loading from buffer 6 which has 9546 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 21047 loaded transitions and there are now 201721 transitions total divided into 190 trajectories
+loading from buffer 35 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13872 loaded transitions and there are now 215593 transitions total divided into 200 trajectories
+loading from buffer 18 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=18
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 9861 loaded transitions and there are now 225454 transitions total divided into 210 trajectories
+loading from buffer 38 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=38
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 16262 loaded transitions and there are now 241716 transitions total divided into 220 trajectories
+loading from buffer 31 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=31
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 14741 loaded transitions and there are now 256457 transitions total divided into 230 trajectories
+loading from buffer 16 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=16
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12219 loaded transitions and there are now 268676 transitions total divided into 240 trajectories
+loading from buffer 28 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11616 loaded transitions and there are now 280292 transitions total divided into 250 trajectories
+loading from buffer 26 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=26
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11561 loaded transitions and there are now 291853 transitions total divided into 260 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13003 loaded transitions and there are now 304856 transitions total divided into 270 trajectories
+loading from buffer 43 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=43
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 13825 loaded transitions and there are now 318681 transitions total divided into 280 trajectories
+loading from buffer 22 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=22
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 12811 loaded transitions and there are now 331492 transitions total divided into 290 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10083 loaded transitions and there are now 341575 transitions total divided into 300 trajectories
+loading from buffer 43 which has 13825 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=43
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 27028 loaded transitions and there are now 354778 transitions total divided into 310 trajectories
+loading from buffer 32 which has 11304 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 26670 loaded transitions and there are now 370144 transitions total divided into 320 trajectories
+loading from buffer 10 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=10
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 10581 loaded transitions and there are now 380725 transitions total divided into 330 trajectories
+loading from buffer 38 which has 16262 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=38
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 31621 loaded transitions and there are now 396084 transitions total divided into 340 trajectories
+loading from buffer 35 which has 13872 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 27323 loaded transitions and there are now 409535 transitions total divided into 350 trajectories
+loading from buffer 26 which has 11561 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=26
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 21097 loaded transitions and there are now 419071 transitions total divided into 360 trajectories
+loading from buffer 22 which has 12811 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=22
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 25075 loaded transitions and there are now 431335 transitions total divided into 370 trajectories
+loading from buffer 33 which has 13732 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 24968 loaded transitions and there are now 442571 transitions total divided into 380 trajectories
+loading from buffer 49 which has 13003 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23128 loaded transitions and there are now 452696 transitions total divided into 390 trajectories
+loading from buffer 37 which has 14489 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=37
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 25608 loaded transitions and there are now 463815 transitions total divided into 400 trajectories
+loading from buffer 28 which has 11616 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 23880 loaded transitions and there are now 476079 transitions total divided into 410 trajectories
+loading from buffer 14 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=14
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 11662 loaded transitions and there are now 487741 transitions total divided into 420 trajectories
+loading from buffer 37 which has 25608 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=37
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 37715 loaded transitions and there are now 499848 transitions total divided into 430 trajectories
+loading from buffer 19 which has 27244 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Qbert/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Qbert/1/replay_logs
+this buffer has 37846 loaded transitions and there are now 510450 transitions total divided into 440 trajectories
+max rtg is 505
+max timestep is 3411
+GPU available.
+device=0
+python run_dt_atari.py --seed 123 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Breakout --batch_size 128
+loading from buffer 45 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=45
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 17002 loaded transitions and there are now 17002 transitions total divided into 10 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 6399 loaded transitions and there are now 23401 transitions total divided into 20 trajectories
+loading from buffer 28 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 15858 loaded transitions and there are now 39259 transitions total divided into 30 trajectories
+loading from buffer 34 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 13835 loaded transitions and there are now 53094 transitions total divided into 40 trajectories
+loading from buffer 38 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=38
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 14626 loaded transitions and there are now 67720 transitions total divided into 50 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 17381 loaded transitions and there are now 85101 transitions total divided into 60 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 15091 loaded transitions and there are now 100192 transitions total divided into 70 trajectories
+loading from buffer 42 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=42
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 12335 loaded transitions and there are now 112527 transitions total divided into 80 trajectories
+loading from buffer 22 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=22
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 12635 loaded transitions and there are now 125162 transitions total divided into 90 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 12683 loaded transitions and there are now 137845 transitions total divided into 100 trajectories
+loading from buffer 32 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 17346 loaded transitions and there are now 155191 transitions total divided into 110 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 13576 loaded transitions and there are now 168767 transitions total divided into 120 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 12788 loaded transitions and there are now 181555 transitions total divided into 130 trajectories
+loading from buffer 9 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=9
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 11717 loaded transitions and there are now 193272 transitions total divided into 140 trajectories
+loading from buffer 32 which has 17346 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 32526 loaded transitions and there are now 208452 transitions total divided into 150 trajectories
+loading from buffer 46 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=46
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 12857 loaded transitions and there are now 221309 transitions total divided into 160 trajectories
+loading from buffer 32 which has 32526 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 46996 loaded transitions and there are now 235779 transitions total divided into 170 trajectories
+loading from buffer 47 which has 12788 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 27005 loaded transitions and there are now 249996 transitions total divided into 180 trajectories
+loading from buffer 25 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=25
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 14467 loaded transitions and there are now 264463 transitions total divided into 190 trajectories
+loading from buffer 19 which has 15091 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 27279 loaded transitions and there are now 276651 transitions total divided into 200 trajectories
+loading from buffer 14 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=14
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 13735 loaded transitions and there are now 290386 transitions total divided into 210 trajectories
+loading from buffer 36 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=36
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 12347 loaded transitions and there are now 302733 transitions total divided into 220 trajectories
+loading from buffer 32 which has 46996 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 58699 loaded transitions and there are now 314436 transitions total divided into 230 trajectories
+loading from buffer 16 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=16
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 14851 loaded transitions and there are now 329287 transitions total divided into 240 trajectories
+loading from buffer 4 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=4
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 10949 loaded transitions and there are now 340236 transitions total divided into 250 trajectories
+loading from buffer 49 which has 13576 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 28115 loaded transitions and there are now 354775 transitions total divided into 260 trajectories
+loading from buffer 3 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=3
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 8939 loaded transitions and there are now 363714 transitions total divided into 270 trajectories
+loading from buffer 2 which has 6399 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 12631 loaded transitions and there are now 369946 transitions total divided into 280 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 15119 loaded transitions and there are now 385065 transitions total divided into 290 trajectories
+loading from buffer 39 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=39
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 15206 loaded transitions and there are now 400271 transitions total divided into 300 trajectories
+loading from buffer 2 which has 12631 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 20338 loaded transitions and there are now 407978 transitions total divided into 310 trajectories
+loading from buffer 20 which has 15119 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 30897 loaded transitions and there are now 423756 transitions total divided into 320 trajectories
+loading from buffer 47 which has 27005 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 41372 loaded transitions and there are now 438123 transitions total divided into 330 trajectories
+loading from buffer 48 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=48
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 13598 loaded transitions and there are now 451721 transitions total divided into 340 trajectories
+loading from buffer 7 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=7
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 15119 loaded transitions and there are now 466840 transitions total divided into 350 trajectories
+loading from buffer 41 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=41
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 11742 loaded transitions and there are now 478582 transitions total divided into 360 trajectories
+loading from buffer 35 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 16577 loaded transitions and there are now 495159 transitions total divided into 370 trajectories
+loading from buffer 28 which has 15858 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Breakout/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Breakout/1/replay_logs
+this buffer has 31057 loaded transitions and there are now 510358 transitions total divided into 380 trajectories
+max rtg is 98
+max timestep is 2654
+GPU available.
+device=0
+python run_dt_atari.py --seed 231 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Breakout --batch_size 128
+python run_dt_atari.py --seed 312 --context_length 30 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Breakout --batch_size 128
+python run_dt_atari.py --seed 123 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Pong --batch_size 512
+loading from buffer 45 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=45
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21022 loaded transitions and there are now 21022 transitions total divided into 10 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 40466 loaded transitions and there are now 61488 transitions total divided into 20 trajectories
+loading from buffer 28 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21199 loaded transitions and there are now 82687 transitions total divided into 30 trajectories
+loading from buffer 34 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22967 loaded transitions and there are now 105654 transitions total divided into 40 trajectories
+loading from buffer 38 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=38
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 20533 loaded transitions and there are now 126187 transitions total divided into 50 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21472 loaded transitions and there are now 147659 transitions total divided into 60 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22374 loaded transitions and there are now 170033 transitions total divided into 70 trajectories
+loading from buffer 42 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=42
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22390 loaded transitions and there are now 192423 transitions total divided into 80 trajectories
+loading from buffer 22 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=22
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21111 loaded transitions and there are now 213534 transitions total divided into 90 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22594 loaded transitions and there are now 236128 transitions total divided into 100 trajectories
+loading from buffer 32 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21601 loaded transitions and there are now 257729 transitions total divided into 110 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 20917 loaded transitions and there are now 278646 transitions total divided into 120 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22863 loaded transitions and there are now 301509 transitions total divided into 130 trajectories
+loading from buffer 9 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=9
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 23485 loaded transitions and there are now 324994 transitions total divided into 140 trajectories
+loading from buffer 32 which has 21601 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 44318 loaded transitions and there are now 347711 transitions total divided into 150 trajectories
+loading from buffer 46 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=46
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21500 loaded transitions and there are now 369211 transitions total divided into 160 trajectories
+loading from buffer 32 which has 44318 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 66315 loaded transitions and there are now 391208 transitions total divided into 170 trajectories
+loading from buffer 47 which has 22863 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 44755 loaded transitions and there are now 413100 transitions total divided into 180 trajectories
+loading from buffer 25 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=25
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 20987 loaded transitions and there are now 434087 transitions total divided into 190 trajectories
+loading from buffer 19 which has 22374 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 43736 loaded transitions and there are now 455449 transitions total divided into 200 trajectories
+loading from buffer 14 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=14
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21287 loaded transitions and there are now 476736 transitions total divided into 210 trajectories
+loading from buffer 36 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=36
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 23976 loaded transitions and there are now 500712 transitions total divided into 220 trajectories
+max rtg is 21
+max timestep is 4731
+GPU available.
+device=0
+python run_dt_atari.py --seed 231 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Pong --batch_size 512
+loading from buffer 23 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=23
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21583 loaded transitions and there are now 21583 transitions total divided into 10 trajectories
+loading from buffer 48 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=48
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 20456 loaded transitions and there are now 42039 transitions total divided into 20 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21166 loaded transitions and there are now 63205 transitions total divided into 30 trajectories
+loading from buffer 9 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=9
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 23485 loaded transitions and there are now 86690 transitions total divided into 40 trajectories
+loading from buffer 11 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=11
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21627 loaded transitions and there are now 108317 transitions total divided into 50 trajectories
+loading from buffer 6 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 27212 loaded transitions and there are now 135529 transitions total divided into 60 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 40466 loaded transitions and there are now 175995 transitions total divided into 70 trajectories
+loading from buffer 30 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=30
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 23458 loaded transitions and there are now 199453 transitions total divided into 80 trajectories
+loading from buffer 20 which has 21166 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 45319 loaded transitions and there are now 223606 transitions total divided into 90 trajectories
+loading from buffer 42 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=42
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22390 loaded transitions and there are now 245996 transitions total divided into 100 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 20917 loaded transitions and there are now 266913 transitions total divided into 110 trajectories
+loading from buffer 18 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=18
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22921 loaded transitions and there are now 289834 transitions total divided into 120 trajectories
+loading from buffer 34 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22967 loaded transitions and there are now 312801 transitions total divided into 130 trajectories
+loading from buffer 34 which has 22967 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 47093 loaded transitions and there are now 336927 transitions total divided into 140 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22594 loaded transitions and there are now 359521 transitions total divided into 150 trajectories
+loading from buffer 35 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 23919 loaded transitions and there are now 383440 transitions total divided into 160 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21472 loaded transitions and there are now 404912 transitions total divided into 170 trajectories
+loading from buffer 44 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=44
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 23214 loaded transitions and there are now 428126 transitions total divided into 180 trajectories
+loading from buffer 27 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=27
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22163 loaded transitions and there are now 450289 transitions total divided into 190 trajectories
+loading from buffer 1 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=1
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 24636 loaded transitions and there are now 474925 transitions total divided into 200 trajectories
+loading from buffer 33 which has 22594 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 47337 loaded transitions and there are now 499668 transitions total divided into 210 trajectories
+loading from buffer 25 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=25
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 20987 loaded transitions and there are now 520655 transitions total divided into 220 trajectories
+max rtg is 21
+max timestep is 4731
+GPU available.
+device=0
+python run_dt_atari.py --seed 312 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Pong --batch_size 512
+loading from buffer 32 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21601 loaded transitions and there are now 21601 transitions total divided into 10 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21166 loaded transitions and there are now 42767 transitions total divided into 20 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22374 loaded transitions and there are now 65141 transitions total divided into 30 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 40466 loaded transitions and there are now 105607 transitions total divided into 40 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22594 loaded transitions and there are now 128201 transitions total divided into 50 trajectories
+loading from buffer 19 which has 22374 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 43736 loaded transitions and there are now 149563 transitions total divided into 60 trajectories
+loading from buffer 0 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=0
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 9919 loaded transitions and there are now 159482 transitions total divided into 70 trajectories
+loading from buffer 2 which has 40466 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 79608 loaded transitions and there are now 198624 transitions total divided into 80 trajectories
+loading from buffer 6 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 27212 loaded transitions and there are now 225836 transitions total divided into 90 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22863 loaded transitions and there are now 248699 transitions total divided into 100 trajectories
+loading from buffer 47 which has 22863 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 44755 loaded transitions and there are now 270591 transitions total divided into 110 trajectories
+loading from buffer 5 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=5
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 28917 loaded transitions and there are now 299508 transitions total divided into 120 trajectories
+loading from buffer 24 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=24
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 21885 loaded transitions and there are now 321393 transitions total divided into 130 trajectories
+loading from buffer 37 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=37
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22721 loaded transitions and there are now 344114 transitions total divided into 140 trajectories
+loading from buffer 7 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=7
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 25785 loaded transitions and there are now 369899 transitions total divided into 150 trajectories
+loading from buffer 3 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=3
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 42212 loaded transitions and there are now 412111 transitions total divided into 160 trajectories
+loading from buffer 13 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=13
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 22321 loaded transitions and there are now 434432 transitions total divided into 170 trajectories
+loading from buffer 24 which has 21885 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=24
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 45028 loaded transitions and there are now 457575 transitions total divided into 180 trajectories
+loading from buffer 6 which has 27212 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 54945 loaded transitions and there are now 485308 transitions total divided into 190 trajectories
+loading from buffer 35 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Pong/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Pong/1/replay_logs
+this buffer has 23919 loaded transitions and there are now 509227 transitions total divided into 200 trajectories
+max rtg is 21
+max timestep is 5102
+GPU available.
+device=0
+echo python run_dt_atari.py --seed 123 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Seaquest --batch_size 512
+loading from buffer 45 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=45
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 19360 loaded transitions and there are now 19360 transitions total divided into 10 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 11579 loaded transitions and there are now 30939 transitions total divided into 20 trajectories
+loading from buffer 28 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 14246 loaded transitions and there are now 45185 transitions total divided into 30 trajectories
+loading from buffer 34 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 17723 loaded transitions and there are now 62908 transitions total divided into 40 trajectories
+loading from buffer 38 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=38
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 14216 loaded transitions and there are now 77124 transitions total divided into 50 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18170 loaded transitions and there are now 95294 transitions total divided into 60 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 19398 loaded transitions and there are now 114692 transitions total divided into 70 trajectories
+loading from buffer 42 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=42
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18326 loaded transitions and there are now 133018 transitions total divided into 80 trajectories
+loading from buffer 22 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=22
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18298 loaded transitions and there are now 151316 transitions total divided into 90 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 16700 loaded transitions and there are now 168016 transitions total divided into 100 trajectories
+loading from buffer 32 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18597 loaded transitions and there are now 186613 transitions total divided into 110 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 20842 loaded transitions and there are now 207455 transitions total divided into 120 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 21924 loaded transitions and there are now 229379 transitions total divided into 130 trajectories
+loading from buffer 9 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=9
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 14023 loaded transitions and there are now 243402 transitions total divided into 140 trajectories
+loading from buffer 32 which has 18597 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 34330 loaded transitions and there are now 259135 transitions total divided into 150 trajectories
+loading from buffer 46 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=46
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 21014 loaded transitions and there are now 280149 transitions total divided into 160 trajectories
+loading from buffer 32 which has 34330 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 51467 loaded transitions and there are now 297286 transitions total divided into 170 trajectories
+loading from buffer 47 which has 21924 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 40469 loaded transitions and there are now 315831 transitions total divided into 180 trajectories
+loading from buffer 25 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=25
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18544 loaded transitions and there are now 334375 transitions total divided into 190 trajectories
+loading from buffer 19 which has 19398 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 37780 loaded transitions and there are now 352757 transitions total divided into 200 trajectories
+loading from buffer 14 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=14
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 16998 loaded transitions and there are now 369755 transitions total divided into 210 trajectories
+loading from buffer 36 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=36
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 15232 loaded transitions and there are now 384987 transitions total divided into 220 trajectories
+loading from buffer 32 which has 51467 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=32
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 67644 loaded transitions and there are now 401164 transitions total divided into 230 trajectories
+loading from buffer 16 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=16
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18449 loaded transitions and there are now 419613 transitions total divided into 240 trajectories
+loading from buffer 4 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=4
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 10318 loaded transitions and there are now 429931 transitions total divided into 250 trajectories
+loading from buffer 49 which has 20842 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 38865 loaded transitions and there are now 447954 transitions total divided into 260 trajectories
+loading from buffer 3 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=3
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 11398 loaded transitions and there are now 459352 transitions total divided into 270 trajectories
+loading from buffer 2 which has 11579 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 22099 loaded transitions and there are now 469872 transitions total divided into 280 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 16193 loaded transitions and there are now 486065 transitions total divided into 290 trajectories
+loading from buffer 39 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=39
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 16601 loaded transitions and there are now 502666 transitions total divided into 300 trajectories
+max rtg is 290
+max timestep is 2719
+GPU available.
+device=0
+echo python run_dt_atari.py --seed 231 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Seaquest --batch_size 512
+loading from buffer 23 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=23
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18187 loaded transitions and there are now 18187 transitions total divided into 10 trajectories
+loading from buffer 48 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=48
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 20788 loaded transitions and there are now 38975 transitions total divided into 20 trajectories
+loading from buffer 20 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 16193 loaded transitions and there are now 55168 transitions total divided into 30 trajectories
+loading from buffer 9 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=9
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 14023 loaded transitions and there are now 69191 transitions total divided into 40 trajectories
+loading from buffer 11 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=11
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 12754 loaded transitions and there are now 81945 transitions total divided into 50 trajectories
+loading from buffer 6 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 11143 loaded transitions and there are now 93088 transitions total divided into 60 trajectories
+loading from buffer 2 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=2
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 11579 loaded transitions and there are now 104667 transitions total divided into 70 trajectories
+loading from buffer 30 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=30
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 12549 loaded transitions and there are now 117216 transitions total divided into 80 trajectories
+loading from buffer 20 which has 16193 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=20
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 33688 loaded transitions and there are now 134711 transitions total divided into 90 trajectories
+loading from buffer 42 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=42
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18326 loaded transitions and there are now 153037 transitions total divided into 100 trajectories
+loading from buffer 49 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=49
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 20842 loaded transitions and there are now 173879 transitions total divided into 110 trajectories
+loading from buffer 18 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=18
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 16461 loaded transitions and there are now 190340 transitions total divided into 120 trajectories
+loading from buffer 34 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 17723 loaded transitions and there are now 208063 transitions total divided into 130 trajectories
+loading from buffer 34 which has 17723 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 36726 loaded transitions and there are now 227066 transitions total divided into 140 trajectories
+loading from buffer 33 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 16700 loaded transitions and there are now 243766 transitions total divided into 150 trajectories
+loading from buffer 35 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=35
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 17983 loaded transitions and there are now 261749 transitions total divided into 160 trajectories
+loading from buffer 17 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=17
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18170 loaded transitions and there are now 279919 transitions total divided into 170 trajectories
+loading from buffer 44 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=44
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 21403 loaded transitions and there are now 301322 transitions total divided into 180 trajectories
+loading from buffer 27 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=27
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 15982 loaded transitions and there are now 317304 transitions total divided into 190 trajectories
+loading from buffer 1 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=1
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 11727 loaded transitions and there are now 329031 transitions total divided into 200 trajectories
+loading from buffer 33 which has 16700 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=33
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 36350 loaded transitions and there are now 348681 transitions total divided into 210 trajectories
+loading from buffer 25 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=25
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 18544 loaded transitions and there are now 367225 transitions total divided into 220 trajectories
+loading from buffer 28 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 14246 loaded transitions and there are now 381471 transitions total divided into 230 trajectories
+loading from buffer 34 which has 36726 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=34
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 57045 loaded transitions and there are now 401790 transitions total divided into 240 trajectories
+loading from buffer 47 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=47
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 21924 loaded transitions and there are now 423714 transitions total divided into 250 trajectories
+loading from buffer 19 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=19
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 19398 loaded transitions and there are now 443112 transitions total divided into 260 trajectories
+loading from buffer 12 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=12
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 12722 loaded transitions and there are now 455834 transitions total divided into 270 trajectories
+loading from buffer 28 which has 14246 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=28
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 31692 loaded transitions and there are now 473280 transitions total divided into 280 trajectories
+loading from buffer 6 which has 11143 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=6
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 24094 loaded transitions and there are now 486231 transitions total divided into 290 trajectories
+loading from buffer 3 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=3
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 11398 loaded transitions and there are now 497629 transitions total divided into 300 trajectories
+loading from buffer 0 which has 0 already loaded
+If branch: Load single buffer
+Begin _load_buffer
+self._data_dir=./dqn_replay/Seaquest/1/replay_logs, suffix=0
+End _load_buffer
+data_dir=./dqn_replay/Seaquest/1/replay_logs
+this buffer has 6130 loaded transitions and there are now 503759 transitions total divided into 310 trajectories
+max rtg is 298
+max timestep is 3171
+GPU available.
+device=0
+echo python run_dt_atari.py --seed 312 --context_length 50 --epochs 5 --model_type reward_conditioned --num_steps 500000 --num_buffers 50 --game Seaquest --batch_size 512

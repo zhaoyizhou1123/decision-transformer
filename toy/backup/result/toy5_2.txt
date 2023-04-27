@@ -1,0 +1,204 @@
+python run_toy.py --context_length 2 --epochs 50 --model_type reward_conditioned --batch_size 4 --horizon 20 --goal 20 --data_file ./dataset/toy5.csv --ckpt_prefix ./model/m5
+190
+GPU available.
+device=0
+------------
+Epoch 0
+Save model to ./model/m5_epoch0.pth
+target return: 20, eval return: 10
+------------
+Epoch 1
+Save model to ./model/m5_epoch1.pth
+target return: 20, eval return: 11
+------------
+Epoch 2
+Save model to ./model/m5_epoch2.pth
+target return: 20, eval return: 10
+------------
+Epoch 3
+Save model to ./model/m5_epoch3.pth
+target return: 20, eval return: 12
+------------
+Epoch 4
+Save model to ./model/m5_epoch4.pth
+target return: 20, eval return: 14
+------------
+Epoch 5
+Save model to ./model/m5_epoch5.pth
+target return: 20, eval return: 10
+------------
+Epoch 6
+Save model to ./model/m5_epoch6.pth
+target return: 20, eval return: 11
+------------
+Epoch 7
+Save model to ./model/m5_epoch7.pth
+target return: 20, eval return: 13
+------------
+Epoch 8
+Save model to ./model/m5_epoch8.pth
+target return: 20, eval return: 16
+------------
+Epoch 9
+Save model to ./model/m5_epoch9.pth
+target return: 20, eval return: 17
+------------
+Epoch 10
+Save model to ./model/m5_epoch10.pth
+target return: 20, eval return: 15
+------------
+Epoch 11
+Save model to ./model/m5_epoch11.pth
+target return: 20, eval return: 15
+------------
+Epoch 12
+Save model to ./model/m5_epoch12.pth
+target return: 20, eval return: 13
+------------
+Epoch 13
+Save model to ./model/m5_epoch13.pth
+target return: 20, eval return: 16
+------------
+Epoch 14
+Save model to ./model/m5_epoch14.pth
+target return: 20, eval return: 13
+------------
+Epoch 15
+Save model to ./model/m5_epoch15.pth
+target return: 20, eval return: 15
+------------
+Epoch 16
+Save model to ./model/m5_epoch16.pth
+target return: 20, eval return: 20
+------------
+Epoch 17
+Save model to ./model/m5_epoch17.pth
+target return: 20, eval return: 15
+------------
+Epoch 18
+Save model to ./model/m5_epoch18.pth
+target return: 20, eval return: 13
+------------
+Epoch 19
+Save model to ./model/m5_epoch19.pth
+target return: 20, eval return: 15
+------------
+Epoch 20
+Save model to ./model/m5_epoch20.pth
+target return: 20, eval return: 15
+------------
+Epoch 21
+Save model to ./model/m5_epoch21.pth
+target return: 20, eval return: 14
+------------
+Epoch 22
+Save model to ./model/m5_epoch22.pth
+target return: 20, eval return: 15
+------------
+Epoch 23
+Save model to ./model/m5_epoch23.pth
+target return: 20, eval return: 15
+------------
+Epoch 24
+Save model to ./model/m5_epoch24.pth
+target return: 20, eval return: 15
+------------
+Epoch 25
+Save model to ./model/m5_epoch25.pth
+target return: 20, eval return: 15
+------------
+Epoch 26
+Save model to ./model/m5_epoch26.pth
+target return: 20, eval return: 15
+------------
+Epoch 27
+Save model to ./model/m5_epoch27.pth
+target return: 20, eval return: 15
+------------
+Epoch 28
+Save model to ./model/m5_epoch28.pth
+target return: 20, eval return: 15
+------------
+Epoch 29
+Save model to ./model/m5_epoch29.pth
+target return: 20, eval return: 15
+------------
+Epoch 30
+Save model to ./model/m5_epoch30.pth
+target return: 20, eval return: 15
+------------
+Epoch 31
+Save model to ./model/m5_epoch31.pth
+target return: 20, eval return: 15
+------------
+Epoch 32
+Save model to ./model/m5_epoch32.pth
+target return: 20, eval return: 15
+------------
+Epoch 33
+Save model to ./model/m5_epoch33.pth
+target return: 20, eval return: 15
+------------
+Epoch 34
+Save model to ./model/m5_epoch34.pth
+target return: 20, eval return: 19
+------------
+Epoch 35
+Save model to ./model/m5_epoch35.pth
+target return: 20, eval return: 15
+------------
+Epoch 36
+Save model to ./model/m5_epoch36.pth
+target return: 20, eval return: 15
+------------
+Epoch 37
+Save model to ./model/m5_epoch37.pth
+target return: 20, eval return: 15
+------------
+Epoch 38
+Save model to ./model/m5_epoch38.pth
+target return: 20, eval return: 15
+------------
+Epoch 39
+Save model to ./model/m5_epoch39.pth
+target return: 20, eval return: 15
+------------
+Epoch 40
+Save model to ./model/m5_epoch40.pth
+target return: 20, eval return: 15
+------------
+Epoch 41
+Save model to ./model/m5_epoch41.pth
+target return: 20, eval return: 15
+------------
+Epoch 42
+Save model to ./model/m5_epoch42.pth
+target return: 20, eval return: 15
+------------
+Epoch 43
+Save model to ./model/m5_epoch43.pth
+target return: 20, eval return: 15
+------------
+Epoch 44
+Save model to ./model/m5_epoch44.pth
+target return: 20, eval return: 15
+------------
+Epoch 45
+Save model to ./model/m5_epoch45.pth
+target return: 20, eval return: 15
+------------
+Epoch 46
+Save model to ./model/m5_epoch46.pth
+target return: 20, eval return: 15
+------------
+Epoch 47
+Save model to ./model/m5_epoch47.pth
+target return: 20, eval return: 15
+------------
+Epoch 48
+Save model to ./model/m5_epoch48.pth
+target return: 20, eval return: 15
+------------
+Epoch 49
+Save model to ./model/m5_epoch49.pth
+target return: 20, eval return: 15

@@ -1,0 +1,27 @@
+Namespace(batch_size=7, context_length=2, data_dir_prefix='./dqn_replay/', epochs=2, game='Breakout', log_level='WARNING', model_type='reward_conditioned', num_buffers=1, num_steps=5, seed=123, trajectories_per_buffer=10)
+max rtg is 79
+max timestep is 1842
+GPU available.
+device=0
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+target return: 90, eval return: 1
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+Shape of initial state is torch.Size([4, 84, 84])
+target return: 90, eval return: 1
