@@ -1,0 +1,655 @@
+python run_toy.py --context_length 2 --epochs 50 --model_type reward_conditioned --batch_size 4 --horizon 20 --goal 20 --data_file ./dataset/toy6.csv
+190
+n_layer=1, n_head=20, n_embd=40
+
+device=0
+------------
+Epoch 0
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 12
+------------
+Epoch 1
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 17
+------------
+Epoch 2
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 19
+------------
+Epoch 3
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 19
+------------
+Epoch 4
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 5
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 6
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 7
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 8
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 9
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 10
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 11
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 12
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 13
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 14
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 15
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 16
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 17
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 18
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 19
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 20
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 21
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 22
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 23
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 24
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 25
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 26
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 27
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 28
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 29
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 30
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 31
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 32
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 33
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 34
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 35
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 36
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 37
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 38
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 39
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 40
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 41
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 42
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 43
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 44
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 45
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 46
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 47
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 48
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
+------------
+Epoch 49
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 20, eval return: 20
