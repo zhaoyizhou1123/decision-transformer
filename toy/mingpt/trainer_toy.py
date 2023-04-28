@@ -69,7 +69,7 @@ class Trainer:
         # take over whatever gpus are on the system
         self.device = 'cpu'
         if torch.cuda.is_available():
-            print("GPU available.")
+            # print("GPU available.")
             self.device = torch.cuda.current_device()
             print(f"device={self.device}")
             self.model = torch.nn.DataParallel(self.model).to(self.device)
@@ -167,6 +167,7 @@ class Trainer:
         # best_loss = float('inf')
         
         best_return = -float('inf')
+        best_epoch = -1
 
         self.tokens = 0 # counter used for learning rate decay
 
@@ -178,10 +179,6 @@ class Trainer:
 
             # # supports early stopping based on the test loss, or just save always if no test set is provided
             # good_model = self.test_dataset is None or test_loss < best_loss
-            if self.config.ckpt_prefix is not None:
-                epoch_ckpt_path = self.config.ckpt_prefix + f"_epoch{epoch}.pth"
-                print(f"Save model to {epoch_ckpt_path}")
-                self.save_checkpoint(epoch_ckpt_path)
 
             # -- pass in target returns
             if self.config.model_type == 'naive':
@@ -198,8 +195,20 @@ class Trainer:
                 # else:
                 #     raise NotImplementedError()
                 eval_return = self.get_returns(self.config.desired_rtg)
+                
+                # Find the best return and epoch
+                if abs(eval_return-self.config.desired_rtg) < np.abs(best_return-self.config.desired_rtg):
+                    best_return = eval_return
+                    best_epoch = epoch
+                    if self.config.ckpt_prefix is not None:
+                        epoch_ckpt_path = self.config.ckpt_prefix + f"_best.pth"
+                        print(f"Better return {best_return}, better epoch {best_epoch}. Save model to {epoch_ckpt_path}")
+                        self.save_checkpoint(epoch_ckpt_path)
             else:
                 raise NotImplementedError()
+            
+        # Save the best model
+
 
     def get_returns(self, ret):
         self.model.train(False)
@@ -218,7 +227,7 @@ class Trainer:
             sampled_action = sample(self.model.module, state, 1, temperature=1.0, sample=True, actions=None, 
                 rtgs=torch.tensor(rtgs, dtype=torch.long).to(self.device).unsqueeze(0).unsqueeze(-1), 
                 timesteps=torch.zeros((1, 1, 1), dtype=torch.int64).to(self.device))
-
+            print(f"Evaluation, timestep 1, action={sampled_action}")
             j = 0
             all_states = state
             actions = []

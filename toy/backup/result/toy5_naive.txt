@@ -1,0 +1,423 @@
+python run_toy.py --context_length 2 --epochs 30 --model_type naive --batch_size 4 --horizon 20 --goal 20 --data_file ./dataset/toy5.csv --ckpt_prefix ./model/m5_naive
+190
+device=0
+------------
+Epoch 0
+Save model to ./model/m5_naive_epoch0.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 8
+------------
+Epoch 1
+Save model to ./model/m5_naive_epoch1.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 10
+------------
+Epoch 2
+Save model to ./model/m5_naive_epoch2.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 8
+------------
+Epoch 3
+Save model to ./model/m5_naive_epoch3.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 8
+------------
+Epoch 4
+Save model to ./model/m5_naive_epoch4.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 10
+------------
+Epoch 5
+Save model to ./model/m5_naive_epoch5.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 8
+------------
+Epoch 6
+Save model to ./model/m5_naive_epoch6.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 9
+------------
+Epoch 7
+Save model to ./model/m5_naive_epoch7.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 7
+------------
+Epoch 8
+Save model to ./model/m5_naive_epoch8.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 6
+------------
+Epoch 9
+Save model to ./model/m5_naive_epoch9.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 8
+------------
+Epoch 10
+Save model to ./model/m5_naive_epoch10.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 4
+------------
+Epoch 11
+Save model to ./model/m5_naive_epoch11.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 5
+------------
+Epoch 12
+Save model to ./model/m5_naive_epoch12.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 2
+------------
+Epoch 13
+Save model to ./model/m5_naive_epoch13.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 1
+------------
+Epoch 14
+Save model to ./model/m5_naive_epoch14.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 9
+------------
+Epoch 15
+Save model to ./model/m5_naive_epoch15.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 5
+------------
+Epoch 16
+Save model to ./model/m5_naive_epoch16.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 3
+------------
+Epoch 17
+Save model to ./model/m5_naive_epoch17.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 3
+------------
+Epoch 18
+Save model to ./model/m5_naive_epoch18.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 9
+------------
+Epoch 19
+Save model to ./model/m5_naive_epoch19.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 7
+------------
+Epoch 20
+Save model to ./model/m5_naive_epoch20.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 17
+------------
+Epoch 21
+Save model to ./model/m5_naive_epoch21.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 8
+------------
+Epoch 22
+Save model to ./model/m5_naive_epoch22.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 10
+------------
+Epoch 23
+Save model to ./model/m5_naive_epoch23.pth
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 14
+------------
+Epoch 24
+Save model to ./model/m5_naive_epoch24.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 6
+------------
+Epoch 25
+Save model to ./model/m5_naive_epoch25.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 5
+------------
+Epoch 26
+Save model to ./model/m5_naive_epoch26.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 7
+------------
+Epoch 27
+Save model to ./model/m5_naive_epoch27.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+target return: 0, eval return: 5
+------------
+Epoch 28
+Save model to ./model/m5_naive_epoch28.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 9
+------------
+Epoch 29
+Save model to ./model/m5_naive_epoch29.pth
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[1]], device='cuda:0')
+Evaluation, timestep 1, action=tensor([[0]], device='cuda:0')
+target return: 0, eval return: 12

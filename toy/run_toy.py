@@ -46,6 +46,7 @@ parser.add_argument('--log_level', type=str, default='WARNING')
 parser.add_argument('--goal', type=int, default=5, help="The desired RTG")
 parser.add_argument('--horizon', type=int, default=5, help="Should be consistent with dataset")
 parser.add_argument('--ckpt_prefix', type=str, default=None )
+parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
 args = parser.parse_args()
 # print(args)
 
@@ -159,7 +160,7 @@ print(train_dataset.len())
 
 # print("Begin GPT configuartion.")
 mconf = GPTConfig(train_dataset.vocab_size, train_dataset.block_size,
-                  n_layer=1, n_head=5, n_embd=10, model_type=args.model_type, max_timestep=args.horizon)
+                  n_layer=1, n_head=20, n_embd=40, model_type=args.model_type, max_timestep=args.horizon)
 # print("End GPT config, begin model generation")
 model = GPT(mconf)
 # print("End model generation")
@@ -168,7 +169,7 @@ model = GPT(mconf)
 epochs = args.epochs
 
 # print("Begin Trainer configuartion")
-tconf = TrainerConfig(max_epochs=epochs, batch_size=args.batch_size, learning_rate=6e-3,
+tconf = TrainerConfig(max_epochs=epochs, batch_size=args.batch_size, learning_rate=args.rate,
                       lr_decay=True, warmup_tokens=512*20, final_tokens=2*train_dataset.len()*args.context_length*3,
                       num_workers=4, model_type=args.model_type, max_timestep=args.horizon, horizon=args.horizon, 
                       desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix)
