@@ -1,0 +1,660 @@
+Namespace(batch_size=4, ckpt_prefix='./model/m_mix', context_length=20, data_file='./dataset/toy_mix.csv', epochs=50, goal=20, horizon=20, log_level='WARNING', model_type='reward_conditioned', rate=0.0006)
+20
+GPTConfig: n_layer=1, n_head=20, n_embd=40
+------------
+Epoch 0
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 12
+Better return 12.5, better epoch 0. Save model to ./model/m_mix_best.pth
+------------
+Epoch 1
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 9
+------------
+Epoch 2
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 8
+------------
+Epoch 3
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 9
+------------
+Epoch 4
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 9
+------------
+Epoch 5
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 10
+------------
+Epoch 6
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 10
+------------
+Epoch 7
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 10
+------------
+Epoch 8
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 9
+------------
+Epoch 9
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 10
+------------
+Epoch 10
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 10
+------------
+Epoch 11
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 12
+------------
+Epoch 12
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 10
+------------
+Epoch 13
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 11
+------------
+Epoch 14
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 11
+------------
+Epoch 15
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 10
+------------
+Epoch 16
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 9
+------------
+Epoch 17
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 10
+------------
+Epoch 18
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 10
+------------
+Epoch 19
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 13
+Better return 13.0, better epoch 19. Save model to ./model/m_mix_best.pth
+------------
+Epoch 20
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 13
+Better return 13.1, better epoch 20. Save model to ./model/m_mix_best.pth
+------------
+Epoch 21
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 13
+Better return 13.7, better epoch 21. Save model to ./model/m_mix_best.pth
+------------
+Epoch 22
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+Better return 17.0, better epoch 22. Save model to ./model/m_mix_best.pth
+------------
+Epoch 23
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 16
+------------
+Epoch 24
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 18
+Better return 18.1, better epoch 24. Save model to ./model/m_mix_best.pth
+------------
+Epoch 25
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 26
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 16
+------------
+Epoch 27
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 28
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 29
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+target return: 20, eval return: 17
+------------
+Epoch 30
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 31
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 32
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 18
+Better return 18.2, better epoch 32. Save model to ./model/m_mix_best.pth
+------------
+Epoch 33
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 34
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 18
+------------
+Epoch 35
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 36
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 18
+------------
+Epoch 37
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 16
+------------
+Epoch 38
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 18
+------------
+Epoch 39
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 40
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 41
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 42
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 43
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 18
+------------
+Epoch 44
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 18
+------------
+Epoch 45
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 46
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 47
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 48
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 17
+------------
+Epoch 49
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[0]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+Evaluation, timestep 1, action=tensor([[1]])
+target return: 20, eval return: 16

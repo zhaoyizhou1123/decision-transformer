@@ -1,0 +1,924 @@
+Namespace(batch_size=4, ckpt_prefix=None, context_length=20, data_file='./dataset/toy5.csv', epochs=50, goal=20, horizon=20, n_embd=20, rate=0.006, weight_decay=0.1)
+------------
+Epoch 0 (Initial model)
+target return: 20, eval return: 10.3
+------------
+Epoch 1
+target return: 20, eval return: 11.4
+------------
+Epoch 2
+target return: 20, eval return: 11.7
+------------
+Epoch 3
+target return: 20, eval return: 13.1
+------------
+Epoch 4
+target return: 20, eval return: 13.7
+------------
+Epoch 5
+target return: 20, eval return: 14.8
+------------
+Epoch 6
+target return: 20, eval return: 14.3
+------------
+Epoch 7
+target return: 20, eval return: 14.4
+------------
+Epoch 8
+target return: 20, eval return: 14.0
+------------
+Epoch 9
+target return: 20, eval return: 13.0
+------------
+Epoch 10
+target return: 20, eval return: 12.0
+------------
+Epoch 11
+target return: 20, eval return: 13.2
+------------
+Epoch 12
+target return: 20, eval return: 13.0
+------------
+Epoch 13
+target return: 20, eval return: 11.9
+------------
+Epoch 14
+target return: 20, eval return: 12.6
+------------
+Epoch 15
+target return: 20, eval return: 12.4
+------------
+Epoch 16
+target return: 20, eval return: 11.7
+------------
+Epoch 17
+target return: 20, eval return: 11.7
+------------
+Epoch 18
+target return: 20, eval return: 12.7
+------------
+Epoch 19
+target return: 20, eval return: 13.4
+------------
+Epoch 20
+target return: 20, eval return: 11.7
+------------
+Epoch 21
+target return: 20, eval return: 11.3
+------------
+Epoch 22
+target return: 20, eval return: 11.6
+------------
+Epoch 23
+target return: 20, eval return: 11.3
+------------
+Epoch 24
+target return: 20, eval return: 10.5
+------------
+Epoch 25
+target return: 20, eval return: 11.8
+------------
+Epoch 26
+target return: 20, eval return: 10.0
+------------
+Epoch 27
+target return: 20, eval return: 13.9
+------------
+Epoch 28
+target return: 20, eval return: 7.8
+------------
+Epoch 29
+target return: 20, eval return: 8.7
+------------
+Epoch 30
+target return: 20, eval return: 12.5
+------------
+Epoch 31
+target return: 20, eval return: 8.3
+------------
+Epoch 32
+target return: 20, eval return: 7.3
+------------
+Epoch 33
+target return: 20, eval return: 10.3
+------------
+Epoch 34
+target return: 20, eval return: 8.2
+------------
+Epoch 35
+target return: 20, eval return: 7.3
+------------
+Epoch 36
+target return: 20, eval return: 6.7
+------------
+Epoch 37
+target return: 20, eval return: 7.1
+------------
+Epoch 38
+target return: 20, eval return: 6.5
+------------
+Epoch 39
+target return: 20, eval return: 6.5
+------------
+Epoch 40
+target return: 20, eval return: 5.4
+------------
+Epoch 41
+target return: 20, eval return: 11.2
+------------
+Epoch 42
+target return: 20, eval return: 5.7
+------------
+Epoch 43
+target return: 20, eval return: 6.5
+------------
+Epoch 44
+target return: 20, eval return: 7.1
+------------
+Epoch 45
+target return: 20, eval return: 6.5
+------------
+Epoch 46
+target return: 20, eval return: 7.2
+------------
+Epoch 47
+target return: 20, eval return: 6.3
+------------
+Epoch 48
+target return: 20, eval return: 7.1
+------------
+Epoch 49
+target return: 20, eval return: 6.5
+------------
+Epoch 50
+target return: 20, eval return: 4.4
+Namespace(batch_size=4, ckpt_prefix=None, context_length=20, data_file='./dataset/toy5.csv', epochs=50, goal=0, horizon=20, n_embd=20, rate=0.006, weight_decay=0.1)
+------------
+Epoch 0 (Initial model)
+target return: 0, eval return: 11.9
+------------
+Epoch 1
+target return: 0, eval return: 11.3
+------------
+Epoch 2
+target return: 0, eval return: 12.0
+------------
+Epoch 3
+target return: 0, eval return: 11.3
+------------
+Epoch 4
+target return: 0, eval return: 13.3
+------------
+Epoch 5
+target return: 0, eval return: 14.0
+------------
+Epoch 6
+target return: 0, eval return: 14.7
+------------
+Epoch 7
+target return: 0, eval return: 13.4
+------------
+Epoch 8
+target return: 0, eval return: 14.4
+------------
+Epoch 9
+target return: 0, eval return: 13.5
+------------
+Epoch 10
+target return: 0, eval return: 13.4
+------------
+Epoch 11
+target return: 0, eval return: 13.9
+------------
+Epoch 12
+target return: 0, eval return: 14.0
+------------
+Epoch 13
+target return: 0, eval return: 14.6
+------------
+Epoch 14
+target return: 0, eval return: 13.9
+------------
+Epoch 15
+target return: 0, eval return: 14.9
+------------
+Epoch 16
+target return: 0, eval return: 14.8
+------------
+Epoch 17
+target return: 0, eval return: 14.2
+------------
+Epoch 18
+target return: 0, eval return: 14.1
+------------
+Epoch 19
+target return: 0, eval return: 13.7
+------------
+Epoch 20
+target return: 0, eval return: 13.9
+------------
+Epoch 21
+target return: 0, eval return: 14.5
+------------
+Epoch 22
+target return: 0, eval return: 14.1
+------------
+Epoch 23
+target return: 0, eval return: 14.1
+------------
+Epoch 24
+target return: 0, eval return: 14.0
+------------
+Epoch 25
+target return: 0, eval return: 15.1
+------------
+Epoch 26
+target return: 0, eval return: 15.2
+------------
+Epoch 27
+target return: 0, eval return: 15.1
+------------
+Epoch 28
+target return: 0, eval return: 15.3
+------------
+Epoch 29
+target return: 0, eval return: 15.1
+------------
+Epoch 30
+target return: 0, eval return: 14.4
+------------
+Epoch 31
+target return: 0, eval return: 15.3
+------------
+Epoch 32
+target return: 0, eval return: 15.0
+------------
+Epoch 33
+target return: 0, eval return: 14.7
+------------
+Epoch 34
+target return: 0, eval return: 14.9
+------------
+Epoch 35
+target return: 0, eval return: 15.3
+------------
+Epoch 36
+target return: 0, eval return: 14.6
+------------
+Epoch 37
+target return: 0, eval return: 13.9
+------------
+Epoch 38
+target return: 0, eval return: 14.1
+------------
+Epoch 39
+target return: 0, eval return: 14.7
+------------
+Epoch 40
+target return: 0, eval return: 15.2
+------------
+Epoch 41
+target return: 0, eval return: 15.0
+------------
+Epoch 42
+target return: 0, eval return: 14.1
+------------
+Epoch 43
+target return: 0, eval return: 14.3
+------------
+Epoch 44
+target return: 0, eval return: 13.6
+------------
+Epoch 45
+target return: 0, eval return: 14.2
+------------
+Epoch 46
+target return: 0, eval return: 14.5
+------------
+Epoch 47
+target return: 0, eval return: 15.2
+------------
+Epoch 48
+target return: 0, eval return: 15.3
+------------
+Epoch 49
+target return: 0, eval return: 14.3
+------------
+Epoch 50
+target return: 0, eval return: 15.0
+Namespace(batch_size=4, ckpt_prefix=None, context_length=10, data_file='./dataset/toy5.csv', epochs=50, goal=20, horizon=20, n_embd=20, rate=0.006, weight_decay=0.1)
+------------
+Epoch 0 (Initial model)
+target return: 20, eval return: 9.1
+------------
+Epoch 1
+target return: 20, eval return: 19.7
+------------
+Epoch 2
+target return: 20, eval return: 20.0
+------------
+Epoch 3
+target return: 20, eval return: 20.0
+------------
+Epoch 4
+target return: 20, eval return: 19.7
+------------
+Epoch 5
+target return: 20, eval return: 20.0
+------------
+Epoch 6
+target return: 20, eval return: 19.6
+------------
+Epoch 7
+target return: 20, eval return: 20.0
+------------
+Epoch 8
+target return: 20, eval return: 19.3
+------------
+Epoch 9
+target return: 20, eval return: 19.7
+------------
+Epoch 10
+target return: 20, eval return: 19.6
+------------
+Epoch 11
+target return: 20, eval return: 18.7
+------------
+Epoch 12
+target return: 20, eval return: 20.0
+------------
+Epoch 13
+target return: 20, eval return: 14.5
+------------
+Epoch 14
+target return: 20, eval return: 19.4
+------------
+Epoch 15
+target return: 20, eval return: 17.8
+------------
+Epoch 16
+target return: 20, eval return: 9.2
+------------
+Epoch 17
+target return: 20, eval return: 16.8
+------------
+Epoch 18
+target return: 20, eval return: 16.2
+------------
+Epoch 19
+target return: 20, eval return: 16.6
+------------
+Epoch 20
+target return: 20, eval return: 12.0
+------------
+Epoch 21
+target return: 20, eval return: 19.4
+------------
+Epoch 22
+target return: 20, eval return: 8.8
+------------
+Epoch 23
+target return: 20, eval return: 13.0
+------------
+Epoch 24
+target return: 20, eval return: 9.8
+------------
+Epoch 25
+target return: 20, eval return: 14.1
+------------
+Epoch 26
+target return: 20, eval return: 17.9
+------------
+Epoch 27
+target return: 20, eval return: 9.6
+------------
+Epoch 28
+target return: 20, eval return: 7.4
+------------
+Epoch 29
+target return: 20, eval return: 7.3
+------------
+Epoch 30
+target return: 20, eval return: 8.1
+------------
+Epoch 31
+target return: 20, eval return: 9.4
+------------
+Epoch 32
+target return: 20, eval return: 11.4
+------------
+Epoch 33
+target return: 20, eval return: 11.1
+------------
+Epoch 34
+target return: 20, eval return: 10.7
+------------
+Epoch 35
+target return: 20, eval return: 9.1
+------------
+Epoch 36
+target return: 20, eval return: 8.3
+------------
+Epoch 37
+target return: 20, eval return: 8.5
+------------
+Epoch 38
+target return: 20, eval return: 9.4
+------------
+Epoch 39
+target return: 20, eval return: 19.1
+------------
+Epoch 40
+target return: 20, eval return: 14.6
+------------
+Epoch 41
+target return: 20, eval return: 17.4
+------------
+Epoch 42
+target return: 20, eval return: 17.1
+------------
+Epoch 43
+target return: 20, eval return: 16.8
+------------
+Epoch 44
+target return: 20, eval return: 16.7
+------------
+Epoch 45
+target return: 20, eval return: 16.1
+------------
+Epoch 46
+target return: 20, eval return: 16.6
+------------
+Epoch 47
+target return: 20, eval return: 15.8
+------------
+Epoch 48
+target return: 20, eval return: 16.8
+------------
+Epoch 49
+target return: 20, eval return: 16.7
+------------
+Epoch 50
+target return: 20, eval return: 16.4
+Namespace(batch_size=4, ckpt_prefix=None, context_length=10, data_file='./dataset/toy5.csv', epochs=50, goal=0, horizon=20, n_embd=20, rate=0.006, weight_decay=0.1)
+------------
+Epoch 0 (Initial model)
+target return: 0, eval return: 10.3
+------------
+Epoch 1
+target return: 0, eval return: 7.2
+------------
+Epoch 2
+target return: 0, eval return: 4.3
+------------
+Epoch 3
+target return: 0, eval return: 2.1
+------------
+Epoch 4
+target return: 0, eval return: 1.4
+------------
+Epoch 5
+target return: 0, eval return: 1.7
+------------
+Epoch 6
+target return: 0, eval return: 2.6
+------------
+Epoch 7
+target return: 0, eval return: 1.7
+------------
+Epoch 8
+target return: 0, eval return: 1.1
+------------
+Epoch 9
+target return: 0, eval return: 1.3
+------------
+Epoch 10
+target return: 0, eval return: 0.9
+------------
+Epoch 11
+target return: 0, eval return: 0.9
+------------
+Epoch 12
+target return: 0, eval return: 0.7
+------------
+Epoch 13
+target return: 0, eval return: 0.9
+------------
+Epoch 14
+target return: 0, eval return: 0.7
+------------
+Epoch 15
+target return: 0, eval return: 1.0
+------------
+Epoch 16
+target return: 0, eval return: 2.6
+------------
+Epoch 17
+target return: 0, eval return: 1.2
+------------
+Epoch 18
+target return: 0, eval return: 2.4
+------------
+Epoch 19
+target return: 0, eval return: 5.5
+------------
+Epoch 20
+target return: 0, eval return: 5.2
+------------
+Epoch 21
+target return: 0, eval return: 7.9
+------------
+Epoch 22
+target return: 0, eval return: 8.9
+------------
+Epoch 23
+target return: 0, eval return: 9.7
+------------
+Epoch 24
+target return: 0, eval return: 12.4
+------------
+Epoch 25
+target return: 0, eval return: 13.0
+------------
+Epoch 26
+target return: 0, eval return: 11.5
+------------
+Epoch 27
+target return: 0, eval return: 9.2
+------------
+Epoch 28
+target return: 0, eval return: 12.4
+------------
+Epoch 29
+target return: 0, eval return: 10.9
+------------
+Epoch 30
+target return: 0, eval return: 13.9
+------------
+Epoch 31
+target return: 0, eval return: 15.0
+------------
+Epoch 32
+target return: 0, eval return: 2.3
+------------
+Epoch 33
+target return: 0, eval return: 2.8
+------------
+Epoch 34
+target return: 0, eval return: 2.1
+------------
+Epoch 35
+target return: 0, eval return: 1.4
+------------
+Epoch 36
+target return: 0, eval return: 1.7
+------------
+Epoch 37
+target return: 0, eval return: 1.9
+------------
+Epoch 38
+target return: 0, eval return: 1.8
+------------
+Epoch 39
+target return: 0, eval return: 1.6
+------------
+Epoch 40
+target return: 0, eval return: 1.6
+------------
+Epoch 41
+target return: 0, eval return: 1.9
+------------
+Epoch 42
+target return: 0, eval return: 2.2
+------------
+Epoch 43
+target return: 0, eval return: 2.4
+------------
+Epoch 44
+target return: 0, eval return: 1.7
+------------
+Epoch 45
+target return: 0, eval return: 2.1
+------------
+Epoch 46
+target return: 0, eval return: 2.2
+------------
+Epoch 47
+target return: 0, eval return: 1.6
+------------
+Epoch 48
+target return: 0, eval return: 1.4
+------------
+Epoch 49
+target return: 0, eval return: 2.0
+------------
+Epoch 50
+target return: 0, eval return: 1.6
+Namespace(batch_size=4, ckpt_prefix=None, context_length=2, data_file='./dataset/toy5.csv', epochs=50, goal=20, horizon=20, n_embd=20, rate=0.006, weight_decay=0.1)
+------------
+Epoch 0 (Initial model)
+target return: 20, eval return: 3.7
+------------
+Epoch 1
+target return: 20, eval return: 10.7
+------------
+Epoch 2
+target return: 20, eval return: 0.2
+------------
+Epoch 3
+target return: 20, eval return: 11.4
+------------
+Epoch 4
+target return: 20, eval return: 15.1
+------------
+Epoch 5
+target return: 20, eval return: 17.5
+------------
+Epoch 6
+target return: 20, eval return: 14.4
+------------
+Epoch 7
+target return: 20, eval return: 0.6
+------------
+Epoch 8
+target return: 20, eval return: 12.6
+------------
+Epoch 9
+target return: 20, eval return: 14.5
+------------
+Epoch 10
+target return: 20, eval return: 12.2
+------------
+Epoch 11
+target return: 20, eval return: 1.8
+------------
+Epoch 12
+target return: 20, eval return: 12.0
+------------
+Epoch 13
+target return: 20, eval return: 8.0
+------------
+Epoch 14
+target return: 20, eval return: 13.6
+------------
+Epoch 15
+target return: 20, eval return: 4.9
+------------
+Epoch 16
+target return: 20, eval return: 11.7
+------------
+Epoch 17
+target return: 20, eval return: 5.7
+------------
+Epoch 18
+target return: 20, eval return: 11.6
+------------
+Epoch 19
+target return: 20, eval return: 0.3
+------------
+Epoch 20
+target return: 20, eval return: 14.0
+------------
+Epoch 21
+target return: 20, eval return: 13.1
+------------
+Epoch 22
+target return: 20, eval return: 15.6
+------------
+Epoch 23
+target return: 20, eval return: 14.9
+------------
+Epoch 24
+target return: 20, eval return: 13.8
+------------
+Epoch 25
+target return: 20, eval return: 14.1
+------------
+Epoch 26
+target return: 20, eval return: 13.6
+------------
+Epoch 27
+target return: 20, eval return: 13.8
+------------
+Epoch 28
+target return: 20, eval return: 13.7
+------------
+Epoch 29
+target return: 20, eval return: 14.4
+------------
+Epoch 30
+target return: 20, eval return: 13.2
+------------
+Epoch 31
+target return: 20, eval return: 13.1
+------------
+Epoch 32
+target return: 20, eval return: 15.1
+------------
+Epoch 33
+target return: 20, eval return: 13.5
+------------
+Epoch 34
+target return: 20, eval return: 14.0
+------------
+Epoch 35
+target return: 20, eval return: 13.5
+------------
+Epoch 36
+target return: 20, eval return: 13.1
+------------
+Epoch 37
+target return: 20, eval return: 13.8
+------------
+Epoch 38
+target return: 20, eval return: 14.0
+------------
+Epoch 39
+target return: 20, eval return: 15.5
+------------
+Epoch 40
+target return: 20, eval return: 14.0
+------------
+Epoch 41
+target return: 20, eval return: 15.3
+------------
+Epoch 42
+target return: 20, eval return: 14.0
+------------
+Epoch 43
+target return: 20, eval return: 13.0
+------------
+Epoch 44
+target return: 20, eval return: 13.5
+------------
+Epoch 45
+target return: 20, eval return: 13.8
+------------
+Epoch 46
+target return: 20, eval return: 14.9
+------------
+Epoch 47
+target return: 20, eval return: 13.9
+------------
+Epoch 48
+target return: 20, eval return: 14.8
+------------
+Epoch 49
+target return: 20, eval return: 13.2
+------------
+Epoch 50
+target return: 20, eval return: 10.5
+Namespace(batch_size=4, ckpt_prefix=None, context_length=2, data_file='./dataset/toy5.csv', epochs=50, goal=0, horizon=20, n_embd=20, rate=0.006, weight_decay=0.1)
+------------
+Epoch 0 (Initial model)
+target return: 0, eval return: 10.2
+------------
+Epoch 1
+target return: 0, eval return: 2.6
+------------
+Epoch 2
+target return: 0, eval return: 0.9
+------------
+Epoch 3
+target return: 0, eval return: 1.0
+------------
+Epoch 4
+target return: 0, eval return: 0.8
+------------
+Epoch 5
+target return: 0, eval return: 1.0
+------------
+Epoch 6
+target return: 0, eval return: 1.0
+------------
+Epoch 7
+target return: 0, eval return: 1.0
+------------
+Epoch 8
+target return: 0, eval return: 1.0
+------------
+Epoch 9
+target return: 0, eval return: 1.0
+------------
+Epoch 10
+target return: 0, eval return: 1.0
+------------
+Epoch 11
+target return: 0, eval return: 1.0
+------------
+Epoch 12
+target return: 0, eval return: 1.0
+------------
+Epoch 13
+target return: 0, eval return: 1.0
+------------
+Epoch 14
+target return: 0, eval return: 1.0
+------------
+Epoch 15
+target return: 0, eval return: 1.0
+------------
+Epoch 16
+target return: 0, eval return: 1.0
+------------
+Epoch 17
+target return: 0, eval return: 1.0
+------------
+Epoch 18
+target return: 0, eval return: 1.0
+------------
+Epoch 19
+target return: 0, eval return: 1.0
+------------
+Epoch 20
+target return: 0, eval return: 1.0
+------------
+Epoch 21
+target return: 0, eval return: 1.0
+------------
+Epoch 22
+target return: 0, eval return: 1.0
+------------
+Epoch 23
+target return: 0, eval return: 0.2
+------------
+Epoch 24
+target return: 0, eval return: 2.0
+------------
+Epoch 25
+target return: 0, eval return: 1.3
+------------
+Epoch 26
+target return: 0, eval return: 0.5
+------------
+Epoch 27
+target return: 0, eval return: 0.9
+------------
+Epoch 28
+target return: 0, eval return: 0.8
+------------
+Epoch 29
+target return: 0, eval return: 0.6
+------------
+Epoch 30
+target return: 0, eval return: 1.0
+------------
+Epoch 31
+target return: 0, eval return: 0.9
+------------
+Epoch 32
+target return: 0, eval return: 1.3
+------------
+Epoch 33
+target return: 0, eval return: 1.1
+------------
+Epoch 34
+target return: 0, eval return: 1.1
+------------
+Epoch 35
+target return: 0, eval return: 0.9
+------------
+Epoch 36
+target return: 0, eval return: 1.2
+------------
+Epoch 37
+target return: 0, eval return: 1.5
+------------
+Epoch 38
+target return: 0, eval return: 1.8
+------------
+Epoch 39
+target return: 0, eval return: 1.8
+------------
+Epoch 40
+target return: 0, eval return: 1.8
+------------
+Epoch 41
+target return: 0, eval return: 1.5
+------------
+Epoch 42
+target return: 0, eval return: 2.0
+------------
+Epoch 43
+target return: 0, eval return: 2.0
+------------
+Epoch 44
+target return: 0, eval return: 2.0
+------------
+Epoch 45
+target return: 0, eval return: 1.8
+------------
+Epoch 46
+target return: 0, eval return: 1.9
+------------
+Epoch 47
+target return: 0, eval return: 2.0
+------------
+Epoch 48
+target return: 0, eval return: 2.0
+------------
+Epoch 49
+target return: 0, eval return: 2.0
+------------
+Epoch 50
+target return: 0, eval return: 2.0

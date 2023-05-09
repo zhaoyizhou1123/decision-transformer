@@ -1,0 +1,1505 @@
+Namespace(batch_size=4, ckpt_prefix='./model/m5_simple', context_length=2, data_file='./dataset/toy5.csv', epochs=500, freeze_att=False, goal=20, horizon=20, init_att='0', n_embd=5, rate=0.0006, weight_decay=0.1)
+------------
+Epoch 0 (Initial model)
+target return: 20, eval return: 11.0
+------------
+Epoch 1
+target return: 20, eval return: 11.4
+------------
+Epoch 2
+target return: 20, eval return: 13.6
+------------
+Epoch 3
+target return: 20, eval return: 14.4
+------------
+Epoch 4
+target return: 20, eval return: 13.8
+------------
+Epoch 5
+target return: 20, eval return: 15.4
+------------
+Epoch 6
+target return: 20, eval return: 15.2
+------------
+Epoch 7
+target return: 20, eval return: 14.0
+------------
+Epoch 8
+target return: 20, eval return: 15.7
+------------
+Epoch 9
+target return: 20, eval return: 15.1
+------------
+Epoch 10
+target return: 20, eval return: 15.9
+------------
+Epoch 11
+target return: 20, eval return: 15.4
+------------
+Epoch 12
+target return: 20, eval return: 15.6
+------------
+Epoch 13
+target return: 20, eval return: 16.3
+------------
+Epoch 14
+target return: 20, eval return: 15.1
+------------
+Epoch 15
+target return: 20, eval return: 15.6
+------------
+Epoch 16
+target return: 20, eval return: 16.0
+------------
+Epoch 17
+target return: 20, eval return: 16.5
+------------
+Epoch 18
+target return: 20, eval return: 16.3
+------------
+Epoch 19
+target return: 20, eval return: 17.0
+------------
+Epoch 20
+target return: 20, eval return: 16.7
+------------
+Epoch 21
+target return: 20, eval return: 16.5
+------------
+Epoch 22
+target return: 20, eval return: 16.9
+------------
+Epoch 23
+target return: 20, eval return: 17.4
+------------
+Epoch 24
+target return: 20, eval return: 16.2
+------------
+Epoch 25
+target return: 20, eval return: 16.3
+------------
+Epoch 26
+target return: 20, eval return: 17.3
+------------
+Epoch 27
+target return: 20, eval return: 16.9
+------------
+Epoch 28
+target return: 20, eval return: 18.4
+------------
+Epoch 29
+target return: 20, eval return: 17.3
+------------
+Epoch 30
+target return: 20, eval return: 17.3
+------------
+Epoch 31
+target return: 20, eval return: 17.1
+------------
+Epoch 32
+target return: 20, eval return: 17.4
+------------
+Epoch 33
+target return: 20, eval return: 17.3
+------------
+Epoch 34
+target return: 20, eval return: 17.9
+------------
+Epoch 35
+target return: 20, eval return: 17.6
+------------
+Epoch 36
+target return: 20, eval return: 17.5
+------------
+Epoch 37
+target return: 20, eval return: 16.9
+------------
+Epoch 38
+target return: 20, eval return: 17.3
+------------
+Epoch 39
+target return: 20, eval return: 17.0
+------------
+Epoch 40
+target return: 20, eval return: 18.2
+------------
+Epoch 41
+target return: 20, eval return: 18.2
+------------
+Epoch 42
+target return: 20, eval return: 17.4
+------------
+Epoch 43
+target return: 20, eval return: 17.0
+------------
+Epoch 44
+target return: 20, eval return: 17.2
+------------
+Epoch 45
+target return: 20, eval return: 18.1
+------------
+Epoch 46
+target return: 20, eval return: 18.0
+------------
+Epoch 47
+target return: 20, eval return: 17.3
+------------
+Epoch 48
+target return: 20, eval return: 18.1
+------------
+Epoch 49
+target return: 20, eval return: 18.0
+------------
+Epoch 50
+target return: 20, eval return: 17.4
+------------
+Epoch 51
+target return: 20, eval return: 18.4
+------------
+Epoch 52
+target return: 20, eval return: 18.8
+------------
+Epoch 53
+target return: 20, eval return: 17.6
+------------
+Epoch 54
+target return: 20, eval return: 18.0
+------------
+Epoch 55
+target return: 20, eval return: 17.7
+------------
+Epoch 56
+target return: 20, eval return: 17.9
+------------
+Epoch 57
+target return: 20, eval return: 18.5
+------------
+Epoch 58
+target return: 20, eval return: 18.4
+------------
+Epoch 59
+target return: 20, eval return: 17.8
+------------
+Epoch 60
+target return: 20, eval return: 18.1
+------------
+Epoch 61
+target return: 20, eval return: 17.4
+------------
+Epoch 62
+target return: 20, eval return: 17.7
+------------
+Epoch 63
+target return: 20, eval return: 18.4
+------------
+Epoch 64
+target return: 20, eval return: 18.6
+------------
+Epoch 65
+target return: 20, eval return: 18.6
+------------
+Epoch 66
+target return: 20, eval return: 18.6
+------------
+Epoch 67
+target return: 20, eval return: 19.0
+------------
+Epoch 68
+target return: 20, eval return: 18.6
+------------
+Epoch 69
+target return: 20, eval return: 18.5
+------------
+Epoch 70
+target return: 20, eval return: 18.7
+------------
+Epoch 71
+target return: 20, eval return: 18.6
+------------
+Epoch 72
+target return: 20, eval return: 18.4
+------------
+Epoch 73
+target return: 20, eval return: 17.9
+------------
+Epoch 74
+target return: 20, eval return: 18.4
+------------
+Epoch 75
+target return: 20, eval return: 18.9
+------------
+Epoch 76
+target return: 20, eval return: 18.6
+------------
+Epoch 77
+target return: 20, eval return: 18.5
+------------
+Epoch 78
+target return: 20, eval return: 19.6
+------------
+Epoch 79
+target return: 20, eval return: 18.5
+------------
+Epoch 80
+target return: 20, eval return: 19.3
+------------
+Epoch 81
+target return: 20, eval return: 18.9
+------------
+Epoch 82
+target return: 20, eval return: 19.1
+------------
+Epoch 83
+target return: 20, eval return: 19.1
+------------
+Epoch 84
+target return: 20, eval return: 19.8
+------------
+Epoch 85
+target return: 20, eval return: 19.2
+------------
+Epoch 86
+target return: 20, eval return: 19.5
+------------
+Epoch 87
+target return: 20, eval return: 18.8
+------------
+Epoch 88
+target return: 20, eval return: 19.4
+------------
+Epoch 89
+target return: 20, eval return: 19.3
+------------
+Epoch 90
+target return: 20, eval return: 19.3
+------------
+Epoch 91
+target return: 20, eval return: 19.7
+------------
+Epoch 92
+target return: 20, eval return: 19.1
+------------
+Epoch 93
+target return: 20, eval return: 19.5
+------------
+Epoch 94
+target return: 20, eval return: 19.8
+------------
+Epoch 95
+target return: 20, eval return: 19.5
+------------
+Epoch 96
+target return: 20, eval return: 19.1
+------------
+Epoch 97
+target return: 20, eval return: 19.2
+------------
+Epoch 98
+target return: 20, eval return: 19.9
+------------
+Epoch 99
+target return: 20, eval return: 19.6
+------------
+Epoch 100
+target return: 20, eval return: 19.5
+------------
+Epoch 101
+target return: 20, eval return: 19.6
+------------
+Epoch 102
+target return: 20, eval return: 19.4
+------------
+Epoch 103
+target return: 20, eval return: 19.7
+------------
+Epoch 104
+target return: 20, eval return: 19.5
+------------
+Epoch 105
+target return: 20, eval return: 19.6
+------------
+Epoch 106
+target return: 20, eval return: 19.9
+------------
+Epoch 107
+target return: 20, eval return: 19.9
+------------
+Epoch 108
+target return: 20, eval return: 19.6
+------------
+Epoch 109
+target return: 20, eval return: 19.9
+------------
+Epoch 110
+target return: 20, eval return: 19.3
+------------
+Epoch 111
+target return: 20, eval return: 20.0
+------------
+Epoch 112
+target return: 20, eval return: 19.5
+------------
+Epoch 113
+target return: 20, eval return: 19.3
+------------
+Epoch 114
+target return: 20, eval return: 19.5
+------------
+Epoch 115
+target return: 20, eval return: 19.7
+------------
+Epoch 116
+target return: 20, eval return: 19.8
+------------
+Epoch 117
+target return: 20, eval return: 19.9
+------------
+Epoch 118
+target return: 20, eval return: 19.9
+------------
+Epoch 119
+target return: 20, eval return: 20.0
+------------
+Epoch 120
+target return: 20, eval return: 20.0
+------------
+Epoch 121
+target return: 20, eval return: 19.9
+------------
+Epoch 122
+target return: 20, eval return: 19.7
+------------
+Epoch 123
+target return: 20, eval return: 19.7
+------------
+Epoch 124
+target return: 20, eval return: 20.0
+------------
+Epoch 125
+target return: 20, eval return: 19.5
+------------
+Epoch 126
+target return: 20, eval return: 20.0
+------------
+Epoch 127
+target return: 20, eval return: 19.6
+------------
+Epoch 128
+target return: 20, eval return: 19.9
+------------
+Epoch 129
+target return: 20, eval return: 19.7
+------------
+Epoch 130
+target return: 20, eval return: 19.7
+------------
+Epoch 131
+target return: 20, eval return: 19.6
+------------
+Epoch 132
+target return: 20, eval return: 19.9
+------------
+Epoch 133
+target return: 20, eval return: 19.9
+------------
+Epoch 134
+target return: 20, eval return: 19.6
+------------
+Epoch 135
+target return: 20, eval return: 20.0
+------------
+Epoch 136
+target return: 20, eval return: 19.0
+------------
+Epoch 137
+target return: 20, eval return: 19.6
+------------
+Epoch 138
+target return: 20, eval return: 19.9
+------------
+Epoch 139
+target return: 20, eval return: 19.9
+------------
+Epoch 140
+target return: 20, eval return: 20.0
+------------
+Epoch 141
+target return: 20, eval return: 20.0
+------------
+Epoch 142
+target return: 20, eval return: 19.4
+------------
+Epoch 143
+target return: 20, eval return: 18.7
+------------
+Epoch 144
+target return: 20, eval return: 19.0
+------------
+Epoch 145
+target return: 20, eval return: 19.9
+------------
+Epoch 146
+target return: 20, eval return: 19.3
+------------
+Epoch 147
+target return: 20, eval return: 19.8
+------------
+Epoch 148
+target return: 20, eval return: 19.8
+------------
+Epoch 149
+target return: 20, eval return: 19.6
+------------
+Epoch 150
+target return: 20, eval return: 19.0
+------------
+Epoch 151
+target return: 20, eval return: 20.0
+------------
+Epoch 152
+target return: 20, eval return: 19.7
+------------
+Epoch 153
+target return: 20, eval return: 19.4
+------------
+Epoch 154
+target return: 20, eval return: 19.8
+------------
+Epoch 155
+target return: 20, eval return: 18.8
+------------
+Epoch 156
+target return: 20, eval return: 19.8
+------------
+Epoch 157
+target return: 20, eval return: 19.8
+------------
+Epoch 158
+target return: 20, eval return: 20.0
+------------
+Epoch 159
+target return: 20, eval return: 19.9
+------------
+Epoch 160
+target return: 20, eval return: 19.9
+------------
+Epoch 161
+target return: 20, eval return: 18.8
+------------
+Epoch 162
+target return: 20, eval return: 19.9
+------------
+Epoch 163
+target return: 20, eval return: 20.0
+------------
+Epoch 164
+target return: 20, eval return: 19.5
+------------
+Epoch 165
+target return: 20, eval return: 19.5
+------------
+Epoch 166
+target return: 20, eval return: 19.7
+------------
+Epoch 167
+target return: 20, eval return: 18.9
+------------
+Epoch 168
+target return: 20, eval return: 19.6
+------------
+Epoch 169
+target return: 20, eval return: 19.2
+------------
+Epoch 170
+target return: 20, eval return: 19.6
+------------
+Epoch 171
+target return: 20, eval return: 19.2
+------------
+Epoch 172
+target return: 20, eval return: 20.0
+------------
+Epoch 173
+target return: 20, eval return: 19.8
+------------
+Epoch 174
+target return: 20, eval return: 19.4
+------------
+Epoch 175
+target return: 20, eval return: 20.0
+------------
+Epoch 176
+target return: 20, eval return: 19.9
+------------
+Epoch 177
+target return: 20, eval return: 20.0
+------------
+Epoch 178
+target return: 20, eval return: 19.7
+------------
+Epoch 179
+target return: 20, eval return: 19.7
+------------
+Epoch 180
+target return: 20, eval return: 19.9
+------------
+Epoch 181
+target return: 20, eval return: 19.7
+------------
+Epoch 182
+target return: 20, eval return: 19.9
+------------
+Epoch 183
+target return: 20, eval return: 20.0
+------------
+Epoch 184
+target return: 20, eval return: 18.9
+------------
+Epoch 185
+target return: 20, eval return: 20.0
+------------
+Epoch 186
+target return: 20, eval return: 19.8
+------------
+Epoch 187
+target return: 20, eval return: 19.8
+------------
+Epoch 188
+target return: 20, eval return: 20.0
+------------
+Epoch 189
+target return: 20, eval return: 19.5
+------------
+Epoch 190
+target return: 20, eval return: 19.6
+------------
+Epoch 191
+target return: 20, eval return: 20.0
+------------
+Epoch 192
+target return: 20, eval return: 19.4
+------------
+Epoch 193
+target return: 20, eval return: 19.4
+------------
+Epoch 194
+target return: 20, eval return: 19.7
+------------
+Epoch 195
+target return: 20, eval return: 19.4
+------------
+Epoch 196
+target return: 20, eval return: 19.9
+------------
+Epoch 197
+target return: 20, eval return: 19.3
+------------
+Epoch 198
+target return: 20, eval return: 18.7
+------------
+Epoch 199
+target return: 20, eval return: 19.6
+------------
+Epoch 200
+target return: 20, eval return: 18.8
+------------
+Epoch 201
+target return: 20, eval return: 18.9
+------------
+Epoch 202
+target return: 20, eval return: 19.5
+------------
+Epoch 203
+target return: 20, eval return: 19.4
+------------
+Epoch 204
+target return: 20, eval return: 19.3
+------------
+Epoch 205
+target return: 20, eval return: 19.0
+------------
+Epoch 206
+target return: 20, eval return: 19.8
+------------
+Epoch 207
+target return: 20, eval return: 19.7
+------------
+Epoch 208
+target return: 20, eval return: 19.3
+------------
+Epoch 209
+target return: 20, eval return: 20.0
+------------
+Epoch 210
+target return: 20, eval return: 19.2
+------------
+Epoch 211
+target return: 20, eval return: 19.5
+------------
+Epoch 212
+target return: 20, eval return: 19.8
+------------
+Epoch 213
+target return: 20, eval return: 19.8
+------------
+Epoch 214
+target return: 20, eval return: 19.7
+------------
+Epoch 215
+target return: 20, eval return: 19.0
+------------
+Epoch 216
+target return: 20, eval return: 19.7
+------------
+Epoch 217
+target return: 20, eval return: 19.8
+------------
+Epoch 218
+target return: 20, eval return: 19.8
+------------
+Epoch 219
+target return: 20, eval return: 20.0
+------------
+Epoch 220
+target return: 20, eval return: 20.0
+------------
+Epoch 221
+target return: 20, eval return: 19.8
+------------
+Epoch 222
+target return: 20, eval return: 19.9
+------------
+Epoch 223
+target return: 20, eval return: 19.7
+------------
+Epoch 224
+target return: 20, eval return: 19.6
+------------
+Epoch 225
+target return: 20, eval return: 20.0
+------------
+Epoch 226
+target return: 20, eval return: 20.0
+------------
+Epoch 227
+target return: 20, eval return: 19.7
+------------
+Epoch 228
+target return: 20, eval return: 19.8
+------------
+Epoch 229
+target return: 20, eval return: 19.5
+------------
+Epoch 230
+target return: 20, eval return: 19.9
+------------
+Epoch 231
+target return: 20, eval return: 20.0
+------------
+Epoch 232
+target return: 20, eval return: 19.9
+------------
+Epoch 233
+target return: 20, eval return: 19.8
+------------
+Epoch 234
+target return: 20, eval return: 20.0
+------------
+Epoch 235
+target return: 20, eval return: 19.8
+------------
+Epoch 236
+target return: 20, eval return: 19.5
+------------
+Epoch 237
+target return: 20, eval return: 20.0
+------------
+Epoch 238
+target return: 20, eval return: 19.5
+------------
+Epoch 239
+target return: 20, eval return: 20.0
+------------
+Epoch 240
+target return: 20, eval return: 20.0
+------------
+Epoch 241
+target return: 20, eval return: 19.4
+------------
+Epoch 242
+target return: 20, eval return: 20.0
+------------
+Epoch 243
+target return: 20, eval return: 19.4
+------------
+Epoch 244
+target return: 20, eval return: 19.7
+------------
+Epoch 245
+target return: 20, eval return: 19.7
+------------
+Epoch 246
+target return: 20, eval return: 19.3
+------------
+Epoch 247
+target return: 20, eval return: 20.0
+------------
+Epoch 248
+target return: 20, eval return: 19.8
+------------
+Epoch 249
+target return: 20, eval return: 19.4
+------------
+Epoch 250
+target return: 20, eval return: 19.8
+------------
+Epoch 251
+target return: 20, eval return: 19.5
+------------
+Epoch 252
+target return: 20, eval return: 20.0
+------------
+Epoch 253
+target return: 20, eval return: 19.9
+------------
+Epoch 254
+target return: 20, eval return: 19.6
+------------
+Epoch 255
+target return: 20, eval return: 19.0
+------------
+Epoch 256
+target return: 20, eval return: 19.6
+------------
+Epoch 257
+target return: 20, eval return: 19.7
+------------
+Epoch 258
+target return: 20, eval return: 19.9
+------------
+Epoch 259
+target return: 20, eval return: 19.8
+------------
+Epoch 260
+target return: 20, eval return: 20.0
+------------
+Epoch 261
+target return: 20, eval return: 19.8
+------------
+Epoch 262
+target return: 20, eval return: 19.8
+------------
+Epoch 263
+target return: 20, eval return: 19.8
+------------
+Epoch 264
+target return: 20, eval return: 20.0
+------------
+Epoch 265
+target return: 20, eval return: 19.6
+------------
+Epoch 266
+target return: 20, eval return: 19.8
+------------
+Epoch 267
+target return: 20, eval return: 19.9
+------------
+Epoch 268
+target return: 20, eval return: 19.6
+------------
+Epoch 269
+target return: 20, eval return: 19.9
+------------
+Epoch 270
+target return: 20, eval return: 19.5
+------------
+Epoch 271
+target return: 20, eval return: 19.3
+------------
+Epoch 272
+target return: 20, eval return: 19.5
+------------
+Epoch 273
+target return: 20, eval return: 20.0
+------------
+Epoch 274
+target return: 20, eval return: 19.8
+------------
+Epoch 275
+target return: 20, eval return: 19.0
+------------
+Epoch 276
+target return: 20, eval return: 19.6
+------------
+Epoch 277
+target return: 20, eval return: 19.9
+------------
+Epoch 278
+target return: 20, eval return: 19.9
+------------
+Epoch 279
+target return: 20, eval return: 19.5
+------------
+Epoch 280
+target return: 20, eval return: 19.2
+------------
+Epoch 281
+target return: 20, eval return: 19.8
+------------
+Epoch 282
+target return: 20, eval return: 19.8
+------------
+Epoch 283
+target return: 20, eval return: 20.0
+------------
+Epoch 284
+target return: 20, eval return: 19.8
+------------
+Epoch 285
+target return: 20, eval return: 20.0
+------------
+Epoch 286
+target return: 20, eval return: 20.0
+------------
+Epoch 287
+target return: 20, eval return: 19.5
+------------
+Epoch 288
+target return: 20, eval return: 20.0
+------------
+Epoch 289
+target return: 20, eval return: 19.9
+------------
+Epoch 290
+target return: 20, eval return: 19.9
+------------
+Epoch 291
+target return: 20, eval return: 19.9
+------------
+Epoch 292
+target return: 20, eval return: 20.0
+------------
+Epoch 293
+target return: 20, eval return: 18.9
+------------
+Epoch 294
+target return: 20, eval return: 20.0
+------------
+Epoch 295
+target return: 20, eval return: 19.2
+------------
+Epoch 296
+target return: 20, eval return: 20.0
+------------
+Epoch 297
+target return: 20, eval return: 19.5
+------------
+Epoch 298
+target return: 20, eval return: 19.7
+------------
+Epoch 299
+target return: 20, eval return: 20.0
+------------
+Epoch 300
+target return: 20, eval return: 19.9
+------------
+Epoch 301
+target return: 20, eval return: 19.7
+------------
+Epoch 302
+target return: 20, eval return: 19.8
+------------
+Epoch 303
+target return: 20, eval return: 19.7
+------------
+Epoch 304
+target return: 20, eval return: 20.0
+------------
+Epoch 305
+target return: 20, eval return: 19.9
+------------
+Epoch 306
+target return: 20, eval return: 19.7
+------------
+Epoch 307
+target return: 20, eval return: 19.9
+------------
+Epoch 308
+target return: 20, eval return: 19.9
+------------
+Epoch 309
+target return: 20, eval return: 20.0
+------------
+Epoch 310
+target return: 20, eval return: 19.9
+------------
+Epoch 311
+target return: 20, eval return: 20.0
+------------
+Epoch 312
+target return: 20, eval return: 20.0
+------------
+Epoch 313
+target return: 20, eval return: 20.0
+------------
+Epoch 314
+target return: 20, eval return: 19.6
+------------
+Epoch 315
+target return: 20, eval return: 20.0
+------------
+Epoch 316
+target return: 20, eval return: 20.0
+------------
+Epoch 317
+target return: 20, eval return: 19.9
+------------
+Epoch 318
+target return: 20, eval return: 20.0
+------------
+Epoch 319
+target return: 20, eval return: 19.8
+------------
+Epoch 320
+target return: 20, eval return: 20.0
+------------
+Epoch 321
+target return: 20, eval return: 20.0
+------------
+Epoch 322
+target return: 20, eval return: 20.0
+------------
+Epoch 323
+target return: 20, eval return: 19.7
+------------
+Epoch 324
+target return: 20, eval return: 20.0
+------------
+Epoch 325
+target return: 20, eval return: 19.9
+------------
+Epoch 326
+target return: 20, eval return: 19.2
+------------
+Epoch 327
+target return: 20, eval return: 20.0
+------------
+Epoch 328
+target return: 20, eval return: 19.7
+------------
+Epoch 329
+target return: 20, eval return: 18.9
+------------
+Epoch 330
+target return: 20, eval return: 20.0
+------------
+Epoch 331
+target return: 20, eval return: 19.7
+------------
+Epoch 332
+target return: 20, eval return: 20.0
+------------
+Epoch 333
+target return: 20, eval return: 19.5
+------------
+Epoch 334
+target return: 20, eval return: 20.0
+------------
+Epoch 335
+target return: 20, eval return: 19.3
+------------
+Epoch 336
+target return: 20, eval return: 19.8
+------------
+Epoch 337
+target return: 20, eval return: 19.4
+------------
+Epoch 338
+target return: 20, eval return: 19.8
+------------
+Epoch 339
+target return: 20, eval return: 19.9
+------------
+Epoch 340
+target return: 20, eval return: 19.3
+------------
+Epoch 341
+target return: 20, eval return: 20.0
+------------
+Epoch 342
+target return: 20, eval return: 19.7
+------------
+Epoch 343
+target return: 20, eval return: 20.0
+------------
+Epoch 344
+target return: 20, eval return: 20.0
+------------
+Epoch 345
+target return: 20, eval return: 19.5
+------------
+Epoch 346
+target return: 20, eval return: 18.9
+------------
+Epoch 347
+target return: 20, eval return: 20.0
+------------
+Epoch 348
+target return: 20, eval return: 20.0
+------------
+Epoch 349
+target return: 20, eval return: 19.3
+------------
+Epoch 350
+target return: 20, eval return: 20.0
+------------
+Epoch 351
+target return: 20, eval return: 19.5
+------------
+Epoch 352
+target return: 20, eval return: 20.0
+------------
+Epoch 353
+target return: 20, eval return: 19.2
+------------
+Epoch 354
+target return: 20, eval return: 19.7
+------------
+Epoch 355
+target return: 20, eval return: 19.6
+------------
+Epoch 356
+target return: 20, eval return: 19.4
+------------
+Epoch 357
+target return: 20, eval return: 19.9
+------------
+Epoch 358
+target return: 20, eval return: 19.5
+------------
+Epoch 359
+target return: 20, eval return: 19.5
+------------
+Epoch 360
+target return: 20, eval return: 19.3
+------------
+Epoch 361
+target return: 20, eval return: 19.4
+------------
+Epoch 362
+target return: 20, eval return: 20.0
+------------
+Epoch 363
+target return: 20, eval return: 19.4
+------------
+Epoch 364
+target return: 20, eval return: 19.8
+------------
+Epoch 365
+target return: 20, eval return: 20.0
+------------
+Epoch 366
+target return: 20, eval return: 19.7
+------------
+Epoch 367
+target return: 20, eval return: 20.0
+------------
+Epoch 368
+target return: 20, eval return: 20.0
+------------
+Epoch 369
+target return: 20, eval return: 19.8
+------------
+Epoch 370
+target return: 20, eval return: 19.8
+------------
+Epoch 371
+target return: 20, eval return: 20.0
+------------
+Epoch 372
+target return: 20, eval return: 19.9
+------------
+Epoch 373
+target return: 20, eval return: 19.8
+------------
+Epoch 374
+target return: 20, eval return: 20.0
+------------
+Epoch 375
+target return: 20, eval return: 19.9
+------------
+Epoch 376
+target return: 20, eval return: 20.0
+------------
+Epoch 377
+target return: 20, eval return: 19.1
+------------
+Epoch 378
+target return: 20, eval return: 19.6
+------------
+Epoch 379
+target return: 20, eval return: 19.9
+------------
+Epoch 380
+target return: 20, eval return: 19.9
+------------
+Epoch 381
+target return: 20, eval return: 19.5
+------------
+Epoch 382
+target return: 20, eval return: 19.8
+------------
+Epoch 383
+target return: 20, eval return: 19.9
+------------
+Epoch 384
+target return: 20, eval return: 20.0
+------------
+Epoch 385
+target return: 20, eval return: 20.0
+------------
+Epoch 386
+target return: 20, eval return: 19.9
+------------
+Epoch 387
+target return: 20, eval return: 19.8
+------------
+Epoch 388
+target return: 20, eval return: 20.0
+------------
+Epoch 389
+target return: 20, eval return: 19.7
+------------
+Epoch 390
+target return: 20, eval return: 19.8
+------------
+Epoch 391
+target return: 20, eval return: 19.5
+------------
+Epoch 392
+target return: 20, eval return: 20.0
+------------
+Epoch 393
+target return: 20, eval return: 19.6
+------------
+Epoch 394
+target return: 20, eval return: 19.7
+------------
+Epoch 395
+target return: 20, eval return: 20.0
+------------
+Epoch 396
+target return: 20, eval return: 19.5
+------------
+Epoch 397
+target return: 20, eval return: 20.0
+------------
+Epoch 398
+target return: 20, eval return: 19.7
+------------
+Epoch 399
+target return: 20, eval return: 19.9
+------------
+Epoch 400
+target return: 20, eval return: 20.0
+------------
+Epoch 401
+target return: 20, eval return: 19.7
+------------
+Epoch 402
+target return: 20, eval return: 19.9
+------------
+Epoch 403
+target return: 20, eval return: 19.7
+------------
+Epoch 404
+target return: 20, eval return: 19.7
+------------
+Epoch 405
+target return: 20, eval return: 19.7
+------------
+Epoch 406
+target return: 20, eval return: 20.0
+------------
+Epoch 407
+target return: 20, eval return: 19.4
+------------
+Epoch 408
+target return: 20, eval return: 19.5
+------------
+Epoch 409
+target return: 20, eval return: 19.7
+------------
+Epoch 410
+target return: 20, eval return: 19.4
+------------
+Epoch 411
+target return: 20, eval return: 19.7
+------------
+Epoch 412
+target return: 20, eval return: 19.8
+------------
+Epoch 413
+target return: 20, eval return: 19.9
+------------
+Epoch 414
+target return: 20, eval return: 20.0
+------------
+Epoch 415
+target return: 20, eval return: 19.9
+------------
+Epoch 416
+target return: 20, eval return: 20.0
+------------
+Epoch 417
+target return: 20, eval return: 20.0
+------------
+Epoch 418
+target return: 20, eval return: 19.8
+------------
+Epoch 419
+target return: 20, eval return: 19.1
+------------
+Epoch 420
+target return: 20, eval return: 19.5
+------------
+Epoch 421
+target return: 20, eval return: 20.0
+------------
+Epoch 422
+target return: 20, eval return: 19.6
+------------
+Epoch 423
+target return: 20, eval return: 19.9
+------------
+Epoch 424
+target return: 20, eval return: 20.0
+------------
+Epoch 425
+target return: 20, eval return: 19.8
+------------
+Epoch 426
+target return: 20, eval return: 20.0
+------------
+Epoch 427
+target return: 20, eval return: 20.0
+------------
+Epoch 428
+target return: 20, eval return: 19.9
+------------
+Epoch 429
+target return: 20, eval return: 19.4
+------------
+Epoch 430
+target return: 20, eval return: 19.9
+------------
+Epoch 431
+target return: 20, eval return: 20.0
+------------
+Epoch 432
+target return: 20, eval return: 19.7
+------------
+Epoch 433
+target return: 20, eval return: 20.0
+------------
+Epoch 434
+target return: 20, eval return: 19.8
+------------
+Epoch 435
+target return: 20, eval return: 18.5
+------------
+Epoch 436
+target return: 20, eval return: 19.8
+------------
+Epoch 437
+target return: 20, eval return: 19.7
+------------
+Epoch 438
+target return: 20, eval return: 19.9
+------------
+Epoch 439
+target return: 20, eval return: 19.9
+------------
+Epoch 440
+target return: 20, eval return: 20.0
+------------
+Epoch 441
+target return: 20, eval return: 19.9
+------------
+Epoch 442
+target return: 20, eval return: 20.0
+------------
+Epoch 443
+target return: 20, eval return: 19.8
+------------
+Epoch 444
+target return: 20, eval return: 20.0
+------------
+Epoch 445
+target return: 20, eval return: 20.0
+------------
+Epoch 446
+target return: 20, eval return: 19.7
+------------
+Epoch 447
+target return: 20, eval return: 19.9
+------------
+Epoch 448
+target return: 20, eval return: 20.0
+------------
+Epoch 449
+target return: 20, eval return: 19.7
+------------
+Epoch 450
+target return: 20, eval return: 19.7
+------------
+Epoch 451
+target return: 20, eval return: 20.0
+------------
+Epoch 452
+target return: 20, eval return: 19.7
+------------
+Epoch 453
+target return: 20, eval return: 20.0
+------------
+Epoch 454
+target return: 20, eval return: 20.0
+------------
+Epoch 455
+target return: 20, eval return: 20.0
+------------
+Epoch 456
+target return: 20, eval return: 19.9
+------------
+Epoch 457
+target return: 20, eval return: 19.8
+------------
+Epoch 458
+target return: 20, eval return: 20.0
+------------
+Epoch 459
+target return: 20, eval return: 19.7
+------------
+Epoch 460
+target return: 20, eval return: 20.0
+------------
+Epoch 461
+target return: 20, eval return: 19.7
+------------
+Epoch 462
+target return: 20, eval return: 20.0
+------------
+Epoch 463
+target return: 20, eval return: 20.0
+------------
+Epoch 464
+target return: 20, eval return: 20.0
+------------
+Epoch 465
+target return: 20, eval return: 20.0
+------------
+Epoch 466
+target return: 20, eval return: 20.0
+------------
+Epoch 467
+target return: 20, eval return: 19.9
+------------
+Epoch 468
+target return: 20, eval return: 20.0
+------------
+Epoch 469
+target return: 20, eval return: 20.0
+------------
+Epoch 470
+target return: 20, eval return: 20.0
+------------
+Epoch 471
+target return: 20, eval return: 19.8
+------------
+Epoch 472
+target return: 20, eval return: 19.9
+------------
+Epoch 473
+target return: 20, eval return: 19.7
+------------
+Epoch 474
+target return: 20, eval return: 20.0
+------------
+Epoch 475
+target return: 20, eval return: 20.0
+------------
+Epoch 476
+target return: 20, eval return: 20.0
+------------
+Epoch 477
+target return: 20, eval return: 19.4
+------------
+Epoch 478
+target return: 20, eval return: 19.9
+------------
+Epoch 479
+target return: 20, eval return: 20.0
+------------
+Epoch 480
+target return: 20, eval return: 19.8
+------------
+Epoch 481
+target return: 20, eval return: 19.8
+------------
+Epoch 482
+target return: 20, eval return: 19.7
+------------
+Epoch 483
+target return: 20, eval return: 19.9
+------------
+Epoch 484
+target return: 20, eval return: 19.2
+------------
+Epoch 485
+target return: 20, eval return: 20.0
+------------
+Epoch 486
+target return: 20, eval return: 20.0
+------------
+Epoch 487
+target return: 20, eval return: 19.9
+------------
+Epoch 488
+target return: 20, eval return: 19.8
+------------
+Epoch 489
+target return: 20, eval return: 19.6
+------------
+Epoch 490
+target return: 20, eval return: 19.8
+------------
+Epoch 491
+target return: 20, eval return: 19.2
+------------
+Epoch 492
+target return: 20, eval return: 20.0
+------------
+Epoch 493
+target return: 20, eval return: 19.7
+------------
+Epoch 494
+target return: 20, eval return: 19.7
+------------
+Epoch 495
+target return: 20, eval return: 20.0
+------------
+Epoch 496
+target return: 20, eval return: 19.8
+------------
+Epoch 497
+target return: 20, eval return: 20.0
+------------
+Epoch 498
+target return: 20, eval return: 19.6
+------------
+Epoch 499
+target return: 20, eval return: 19.6
+------------
+Epoch 500
+target return: 20, eval return: 19.9
+Final return 20.0, final epoch 110. Save model to ./model/m5_simple_final.pth
