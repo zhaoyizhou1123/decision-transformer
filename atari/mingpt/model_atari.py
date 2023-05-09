@@ -77,6 +77,13 @@ class CausalSelfAttention(nn.Module):
         self.n_head = config.n_head
 
     def forward(self, x, layer_past=None):
+        '''
+        x, (batch, seq_length, n_embd). During training, seq_length = 3*ctx_length (all actions are included).
+        During testing, it is 3*min{ctx_length, t}-1 (the action to predict is not given). \n
+        Predict all next tokens. If x is sequence 0:T-1, then it outputs prediction for 1:T
+        Use masks so that only previous tokens can be used to predict a token   
+        '''
+
         B, T, C = x.size()
 
         # calculate query, key, values for all heads in batch and move head forward to be the batch dim
@@ -87,7 +94,7 @@ class CausalSelfAttention(nn.Module):
         # causal self-attention; Self-attend: (B, nh, T, hs) x (B, nh, hs, T) -> (B, nh, T, T)
         # print(f"Attention parameters are: q={q}, k={k}")
         att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-        att = att.masked_fill(self.mask[:,:,:T,:T] == 0, float('-inf'))
+        att = att.masked_fill(self.mask[:,:,:T,:T] == 0, float('-inf')) # Mask future tokens
         att = F.softmax(att, dim=-1)
         att = self.attn_drop(att)
         y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)

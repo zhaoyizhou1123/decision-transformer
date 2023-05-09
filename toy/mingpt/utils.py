@@ -58,7 +58,7 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
         # sample from the distribution or take the most likely
         if sample:
             ix = torch.multinomial(probs, num_samples=1)
-            print(f"Utils.py: t={timesteps}, probs={probs}, action = {ix}")
+            # print(f"Utils.py: t={timesteps}, probs={probs}, action = {ix}")
         else:
             _, ix = torch.topk(probs, k=1, dim=-1)
         # append to the sequence and continue
@@ -66,3 +66,12 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
         x = ix
 
     return x
+
+def state_hash(state):
+    '''
+    Hash a state. We want to verify that DT is robust to state hashing. \n
+    Input: state, scalar or np.array
+    Output: hashed state, same type as Input
+    '''
+    # Try f(x)=x^2
+    return state*state

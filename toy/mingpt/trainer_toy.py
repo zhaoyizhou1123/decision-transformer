@@ -33,7 +33,9 @@ import random
 # import cv2
 import torch
 # from PIL import Image
-from env.no_best_RTG import BanditEnv as Env
+# from env.no_best_RTG import BanditEnv as Env
+# from env.no_best_RTG import BanditEnvReverse as Env
+
 
 class TrainerConfig:
     # optimization parameters
@@ -213,7 +215,8 @@ class Trainer:
     def get_returns(self, ret):
         self.model.train(False)
         # args=Args(horizon=self.config.horizon)
-        env = Env(self.config.horizon)
+        # env = Env(self.config.horizon)
+        env = self.config.env
         # env.eval()
 
         T_rewards, T_Qs = [], []
@@ -224,10 +227,11 @@ class Trainer:
             state = state.type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0) # size (batch,block_size,1)
             rtgs = [ret]
             # first state is from env, first rtg is target return, and first timestep is 0
-            sampled_action = sample(self.model.module, state, 1, temperature=1.0, sample=True, actions=None, 
+            model = self.model.module if hasattr(self.model, "module") else self.model # Avoid error: no attribute module
+            sampled_action = sample(model, state, 1, temperature=1.0, sample=True, actions=None, 
                 rtgs=torch.tensor(rtgs, dtype=torch.long).to(self.device).unsqueeze(0).unsqueeze(-1), 
                 timesteps=torch.zeros((1, 1, 1), dtype=torch.int64).to(self.device))
-            print(f"Evaluation, timestep 1, action={sampled_action}")
+            # print(f"Evaluation, timestep 1, action={sampled_action}")
             j = 0
             all_states = state
             actions = []
@@ -253,7 +257,7 @@ class Trainer:
                 rtgs += [rtgs[-1] - reward]
                 # all_states has all previous states and rtgs has all previous rtgs (will be cut to block_size in utils.sample)
                 # timestep is just current timestep
-                sampled_action = sample(self.model.module, all_states.unsqueeze(0), 1, temperature=1.0, sample=True, 
+                sampled_action = sample(self.model, all_states.unsqueeze(0), 1, temperature=1.0, sample=True, 
                     actions=torch.tensor(actions, dtype=torch.long).to(self.device).unsqueeze(1).unsqueeze(0), 
                     rtgs=torch.tensor(rtgs, dtype=torch.long).to(self.device).unsqueeze(0).unsqueeze(-1), 
                     timesteps=(min(j, self.config.max_timestep) * torch.ones((1, 1, 1), dtype=torch.int64).to(self.device)))

@@ -2,10 +2,11 @@
 
 import numpy.random as random
 from env.no_best_RTG import BanditEnv as Env
+# from env.no_best_RTG import BanditEnvReverse as Env
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_file', type=str, default='./dataset/toy5.csv')
+parser.add_argument('--output_file', type=str, default='./dataset/toy_alternate.csv')
 parser.add_argument('--horizon', type=int, default=20)
 parser.add_argument('--num_trajectories', type=int, default=10)
 args = parser.parse_args()
@@ -39,39 +40,62 @@ with open(args.output_file, "w") as f:
     # Sample. 
     for epoch in range(args.num_trajectories//2):
         # 5 steps good, then all bad
-        for h in range(1,6):
+        # for h in range(1,6):
+        #     state = env.get_state()
+        #     f.write(f"{h},{state},")
+        #     # Always run the best policy
+        #     action = good_policy.sample_action()
+        #     _, reward, _ = env.step(action)
+        #     f.write(f"{action},{reward},")    
+        # for h in range(6, args.horizon+1):
+        #     state = env.get_state()
+        #     f.write(f"{h},{state},")
+        #     # Always run the worst policy
+        #     action = bad_policy.sample_action()
+        #     _, reward, _ = env.step(action)
+        #     f.write(f"{action},{reward},")
+        # f.write(f"{args.horizon+1}\n")
+
+        # good,bad,good,...
+        for h in range(20):
             state = env.get_state()
             f.write(f"{h},{state},")
-            # Always run the best policy
-            action = good_policy.sample_action()
-            _, reward, _ = env.step(action)
-            f.write(f"{action},{reward},")    
-        for h in range(6, args.horizon+1):
-            state = env.get_state()
-            f.write(f"{h},{state},")
-            # Always run the worst policy
-            action = bad_policy.sample_action()
+            if h % 2 == 0:
+                action = good_policy.sample_action()
+            else:
+                action = bad_policy.sample_action()
             _, reward, _ = env.step(action)
             f.write(f"{action},{reward},")
         f.write(f"{args.horizon+1}\n")
     for epoch in range(args.num_trajectories//2, args.num_trajectories):
-        # 5 steps bad, then all good
-        for h in range(1,6):
+        # # 5 steps bad, then all good
+        # for h in range(1,6):
+        #     state = env.get_state()
+        #     f.write(f"{h},{state},")
+        #     # Always run the best policy
+        #     action = bad_policy.sample_action()
+        #     _, reward, _ = env.step(action)
+        #     f.write(f"{action},{reward},")    
+        # for h in range(6, args.horizon+1):
+        #     state = env.get_state()
+        #     f.write(f"{h},{state},")
+        #     # Always run the worst policy
+        #     action = good_policy.sample_action()
+        #     _, reward, _ = env.step(action)
+        #     f.write(f"{action},{reward},")
+        # f.write(f"{args.horizon+1}\n")
+
+        # bad,good,bad,...
+        for h in range(20):
             state = env.get_state()
             f.write(f"{h},{state},")
-            # Always run the best policy
-            action = bad_policy.sample_action()
-            _, reward, _ = env.step(action)
-            f.write(f"{action},{reward},")    
-        for h in range(6, args.horizon+1):
-            state = env.get_state()
-            f.write(f"{h},{state},")
-            # Always run the worst policy
-            action = good_policy.sample_action()
+            if h % 2 == 1:
+                action = good_policy.sample_action()
+            else:
+                action = bad_policy.sample_action()
             _, reward, _ = env.step(action)
             f.write(f"{action},{reward},")
         f.write(f"{args.horizon+1}\n")
-
 
         
 

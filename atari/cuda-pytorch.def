@@ -1,0 +1,25 @@
+Bootstrap: docker
+
+From: nvcr.io/nvidia/cuda:11.4.2-base-ubuntu20.04
+
+%files
+    cuda-pytorch.yml environment.yml
+
+%environment
+    export PATH=/opt/conda/bin:${PATH}
+
+%post
+    apt update
+    apt install -y wget
+    
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda
+    export PATH=/opt/conda/bin:${PATH}    
+
+    pip3 install torch==1.12.1+cu113 -f https://download.pytorch.org/whl/torch_stable.html
+
+    conda env create -f environment.yml
+
+%runscript
+    source /opt/conda/etc/profile.d/conda.sh
+    exec /opt/conda/envs/$(head -n 1 environment.yml | cut -f 2 -d ' ')/bin/"$@"

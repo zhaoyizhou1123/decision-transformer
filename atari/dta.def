@@ -17,10 +17,17 @@ From: nvcr.io/nvidia/cuda:11.7.0-base-ubuntu18.04
     bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda
     export PATH=/opt/conda/bin:${PATH}    
 
-    
-
     conda env create -f environment.yml
+
+    apt install -y libsm6 libxext6 libxrender-dev
+    apt install -y unrar
+
+
 
 %runscript
     source /opt/conda/etc/profile.d/conda.sh
-    exec /opt/conda/envs/$(head -n 1 environment.yml | cut -f 2 -d ' ')/bin/"$@"
+    conda activate dta 
+    wget http://www.atarimania.com/roms/Roms.rar
+    unrar e Roms.rar ROMs/ -y 
+    python -m atari_py.import_roms ROMs/ 
+    pip install rsa

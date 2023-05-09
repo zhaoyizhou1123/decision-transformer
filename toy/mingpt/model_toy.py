@@ -84,6 +84,13 @@ class CausalSelfAttention(nn.Module):
         self.n_head = config.n_head
 
     def forward(self, x, layer_past=None):
+        '''
+        x, (batch, seq_length, n_embd). During training, seq_length = 3*ctx_length (all actions are included).
+        During testing, it is 3*min{ctx_length, t}-1 (the action to predict is not given). \n
+        Predict all next tokens. If x is sequence 0:T-1, then it outputs prediction for 1:T.
+        Use masks so that only previous tokens can be used to predict a token. \n
+        mask shape: [[1,0,0],[1,1,0],[1,1,1]]. Positions in 0 are masked.  
+        '''
         B, T, C = x.size()
 
         # calculate query, key, values for all heads in batch and move head forward to be the batch dim
@@ -96,6 +103,7 @@ class CausalSelfAttention(nn.Module):
         att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
         att = att.masked_fill(self.mask[:,:,:T,:T] == 0, float('-inf'))
         att = F.softmax(att, dim=-1)
+        # print(f"att={att[:,:,:5,:5]}")
         att = self.attn_drop(att)
         y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
         y = y.transpose(1, 2).contiguous().view(B, T, C) # re-assemble all head outputs side by side
@@ -236,7 +244,7 @@ class GPT(nn.Module):
             rtg_embeddings = self.ret_emb(rtgs.type(torch.float32))
             action_embeddings = self.action_embeddings(actions.type(torch.long).squeeze(-1)) # (batch, block_size, n_embd)
 
-            # If there is targets, then it is training, remove the last action
+            # If there are no targets, then it is testing, we don't have the last action
             token_embeddings = torch.zeros((states.shape[0], states.shape[1]*3 - int(targets is None), self.config.n_embd), dtype=torch.float32, device=state_embeddings.device)
             token_embeddings[:,::3,:] = rtg_embeddings
             token_embeddings[:,1::3,:] = state_embeddings
@@ -282,6 +290,9 @@ class GPT(nn.Module):
         # if we are given some desired targets also calculate the loss
         loss = None
         if targets is not None:
+            # F.cross_entropy takes prediction first and target second. 
+            # Prediction is taken softmax automatically.
+            # target can be labels
             loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)), targets.reshape(-1))
 
         return logits, loss

@@ -18,5 +18,5 @@ conda activate test
 # conda activate dta
 # singularity exec --nv --bind /gscratch dta.sif ./run.sh > result/Breakout2.txt
 
-output_file=toy_hash.txt
-./run.sh > result/${output_file}
+output_file=toy5_simple_freeze.txt
+./simpleDT.sh > result/${output_file}

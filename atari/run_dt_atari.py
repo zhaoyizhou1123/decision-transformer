@@ -47,7 +47,7 @@ class StateActionReturnDataset(Dataset):
         self.actions = actions
         self.done_idxs = done_idxs
         self.rtgs = rtgs
-        self.timesteps = timesteps
+        self.timesteps = timesteps # order: 0,1,2, ...
     
     def __len__(self):
         return len(self.data) - self.block_size # I think should be self.block_size // 3
@@ -64,9 +64,9 @@ class StateActionReturnDataset(Dataset):
         states = states / 255.
         actions = torch.tensor(self.actions[idx:done_idx], dtype=torch.long).unsqueeze(1) # (block_size, 1)
         rtgs = torch.tensor(self.rtgs[idx:done_idx], dtype=torch.float32).unsqueeze(1)
-        timesteps = torch.tensor(self.timesteps[idx:idx+1], dtype=torch.int64).unsqueeze(1)
+        timesteps = torch.tensor(self.timesteps[idx:idx+1], dtype=torch.int64).unsqueeze(1) # the starting idx
 
-        return states, actions, rtgs, timesteps
+        return states, actions, rtgs, timesteps # starting timesteps are not trained
 
 obss, actions, returns, done_idxs, rtgs, timesteps = create_dataset(args.num_buffers, args.num_steps, args.game, args.data_dir_prefix, args.trajectories_per_buffer)
 

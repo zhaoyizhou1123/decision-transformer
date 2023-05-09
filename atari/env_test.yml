@@ -1,0 +1,23 @@
+name: test
+channels:
+- pytorch
+dependencies:
+- python
+- pytorch
+- cudatoolkit=11.*
+- numpy
+- psutil #5.9.0
+- opencv
+- pip
+  # - pip:
+  # - atari-py
+  # - pyprind
+  # - protobuf
+  # - tensorflow
+  # - absl-py
+  # - gin-config
+  # - gym
+  # - tqdm
+  # - opencv-python
+  # - pillow
+  # - git+https://github.com/google/dopamine.git

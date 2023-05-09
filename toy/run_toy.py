@@ -11,7 +11,7 @@ from torch.nn import functional as F
 from torch.utils.data import Dataset
 from mingpt.model_toy import GPT, GPTConfig
 from mingpt.trainer_toy import Trainer, TrainerConfig
-# from mingpt.utils import sample
+from mingpt.utils import state_hash
 # from collections import deque
 # import random
 import torch
@@ -19,6 +19,7 @@ import torch
 # import blosc
 import argparse
 # from create_dataset import create_dataset
+from env.no_best_RTG import BanditEnv as Env
 
 # from __future__ import print_function, division
 import os
@@ -47,8 +48,9 @@ parser.add_argument('--goal', type=int, default=5, help="The desired RTG")
 parser.add_argument('--horizon', type=int, default=5, help="Should be consistent with dataset")
 parser.add_argument('--ckpt_prefix', type=str, default=None )
 parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
+parser.add_argument('--hash', type=bool, default=False, help="Hash states if True")
 args = parser.parse_args()
-# print(args)
+print(args)
 
 # Read dataset
 data_frame = pd.read_csv(args.data_file)
@@ -65,6 +67,10 @@ timesteps=np.asarray(timesteps)
 states=np.asarray(states)
 actions=np.asarray(actions)
 rewards = np.asarray(rewards)
+
+# Hash the states
+if args.hash:
+    states = state_hash(states)
 
 # create rtgs array
 rtgs = np.zeros_like(rewards) # n*args.horizon, n is trajectory number
@@ -158,9 +164,15 @@ train_dataset = BanditReturnDataset(states, args.context_length*3, actions, None
 print(train_dataset.len())
 # print("Finish generation")
 
+# Set GPT parameters
+n_layer = 6
+n_head = 20
+n_embd = 40
+print(f"GPTConfig: n_layer={n_layer}, n_head={n_head}, n_embd={n_embd}")
+
 # print("Begin GPT configuartion.")
 mconf = GPTConfig(train_dataset.vocab_size, train_dataset.block_size,
-                  n_layer=1, n_head=20, n_embd=40, model_type=args.model_type, max_timestep=args.horizon)
+                  n_layer=n_layer, n_head=n_head, n_embd=n_embd, model_type=args.model_type, max_timestep=args.horizon)
 # print("End GPT config, begin model generation")
 model = GPT(mconf)
 # print("End model generation")
@@ -168,11 +180,19 @@ model = GPT(mconf)
 # initialize a trainer instance and kick off training
 epochs = args.epochs
 
+# Set up environment
+if args.hash:
+    hash_method = state_hash
+else:
+    hash_method = None
+
+env = Env(horizon = args.horizon, state_hash = hash_method)
+
 # print("Begin Trainer configuartion")
 tconf = TrainerConfig(max_epochs=epochs, batch_size=args.batch_size, learning_rate=args.rate,
                       lr_decay=True, warmup_tokens=512*20, final_tokens=2*train_dataset.len()*args.context_length*3,
                       num_workers=4, model_type=args.model_type, max_timestep=args.horizon, horizon=args.horizon, 
-                      desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix)
+                      desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix, env = env)
 # print("End trainer configuration, begin trainer generation")
 trainer = Trainer(model, train_dataset, None, tconf)
 
