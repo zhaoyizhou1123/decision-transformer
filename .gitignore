@@ -4,5 +4,7 @@ slurm-*
 *.sif
 toy/result
 toy/model
+# events.*
+toy/logs
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt

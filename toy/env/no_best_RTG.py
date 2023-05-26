@@ -10,7 +10,7 @@ import torch
 class BanditEnv(gym.Env):
     '''A repeat bandit env of horizon H'''
     metadata = {'render.modes': ['human']}
-    def __init__(self, horizon, state_hash):
+    def __init__(self, horizon, state_hash=None):
         '''
         - horizon: int
         - state_hash: function | None. If not None, specifies a way to hash states'''

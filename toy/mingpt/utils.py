@@ -27,7 +27,7 @@ def top_k_logits(logits, k):
     return out
 
 @torch.no_grad()
-def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=None, rtgs=None, timesteps=None):
+def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=None, rtgs=None, timesteps=None, is_debug = False):
     """
     take a conditioning sequence of indices in x (of shape (b,t)) and predict the next token in
     the sequence, feeding the predictions back into the model each time. Clearly the sampling
@@ -58,7 +58,8 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
         # sample from the distribution or take the most likely
         if sample:
             ix = torch.multinomial(probs, num_samples=1)
-            # print(f"Utils.py: t={timesteps}, probs={probs}, action = {ix}")
+            if is_debug:
+                print(f"Utils.py: t={timesteps}, probs={probs}, action = {ix}")
         else:
             _, ix = torch.topk(probs, k=1, dim=-1)
         # append to the sequence and continue

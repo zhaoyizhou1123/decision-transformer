@@ -35,6 +35,7 @@ import torch
 # from PIL import Image
 # from env.no_best_RTG import BanditEnv as Env
 # from env.no_best_RTG import BanditEnvReverse as Env
+from torch.utils.tensorboard import SummaryWriter  
 
 
 class TrainerConfig:
@@ -54,6 +55,7 @@ class TrainerConfig:
     num_workers = 0 # for DataLoader
     horizon = 5
     desired_rtg = horizon
+    tb_log = None # tensorboard logger folder
 
     def __init__(self, **kwargs):
         for k,v in kwargs.items():
@@ -76,6 +78,10 @@ class Trainer:
             print(f"device={self.device}")
             self.model = torch.nn.DataParallel(self.model).to(self.device)
         # print("Finish Trainer __init__")
+
+        # Initialize tensorboard writer
+        if config.tb_log is not None:
+            self.tb_writer = SummaryWriter(config.tb_log)
             
     def save_checkpoint(self, ckpt_path):
         '''
@@ -197,22 +203,34 @@ class Trainer:
                 # else:
                 #     raise NotImplementedError()
                 eval_return = self.get_returns(self.config.desired_rtg)
+                # return name: ctx, batch, goal, lr
+                # ret_name = f"avg_ret_{self.config.ctx}_{self.config.batch_size}_{self.config.desired_rtg}_{self.config.learning_rate}"
+                self.tb_writer.add_scalar("avg_ret", eval_return, epoch)
                 
                 # Find the best return and epoch
-                if abs(eval_return-self.config.desired_rtg) < np.abs(best_return-self.config.desired_rtg):
-                    best_return = eval_return
-                    best_epoch = epoch
-                    if self.config.ckpt_prefix is not None:
-                        epoch_ckpt_path = self.config.ckpt_prefix + f"_best.pth"
-                        print(f"Better return {best_return}, better epoch {best_epoch}. Save model to {epoch_ckpt_path}")
-                        self.save_checkpoint(epoch_ckpt_path)
+                # if abs(eval_return-self.config.desired_rtg) < np.abs(best_return-self.config.desired_rtg):
+                #     best_return = eval_return
+                #     best_epoch = epoch
+                #     if self.config.ckpt_prefix is not None:
+                #         epoch_ckpt_path = self.config.ckpt_prefix + f"_best.pth"
+                #         print(f"Better return {best_return}, better epoch {best_epoch}. Save model to {epoch_ckpt_path}")
+                #         self.save_checkpoint(epoch_ckpt_path)
             else:
                 raise NotImplementedError()
+            
+        # Save the final model
+        if self.config.ckpt_prefix is not None:
+            epoch_ckpt_path = self.config.ckpt_prefix + f"_final.pth"
+            print(f"Final return {eval_return}. Save final model to {epoch_ckpt_path}")
+            self.save_checkpoint(epoch_ckpt_path)
             
         # Save the best model
 
 
-    def get_returns(self, ret):
+    def get_returns(self, ret, is_debug=False):
+        '''
+        is_debug: True if we are debugging. Will output debugging info
+        '''
         self.model.train(False)
         # args=Args(horizon=self.config.horizon)
         # env = Env(self.config.horizon)
@@ -221,16 +239,27 @@ class Trainer:
 
         T_rewards, T_Qs = [], []
         done = True
+        if is_debug:
+            print(f"----------------\n Goal is {ret}")
         for i in range(10): # Run the Env 10 times to take average
+            if is_debug:
+                print(f"\n Eval epoch {i}")
             state = env.reset()
             # state = torch.Tensor([state])
             state = state.type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0) # size (batch,block_size,1)
             rtgs = [ret]
             # first state is from env, first rtg is target return, and first timestep is 0
+
+            # Debug
+            # has_module = hasattr(self.model, "module")
+            # print(f"self.model has module is {has_module}")
             model = self.model.module if hasattr(self.model, "module") else self.model # Avoid error: no attribute module
+            # print(f"self.model type is {type(self.model)}, model type is {type(model)}")
+            # model.get_block_size()
+            # model = self.model # Avoid error: 'DataParallel' object has no attribute 'get_block_size'
             sampled_action = sample(model, state, 1, temperature=1.0, sample=True, actions=None, 
                 rtgs=torch.tensor(rtgs, dtype=torch.long).to(self.device).unsqueeze(0).unsqueeze(-1), 
-                timesteps=torch.zeros((1, 1, 1), dtype=torch.int64).to(self.device))
+                timesteps=torch.zeros((1, 1, 1), dtype=torch.int64).to(self.device), is_debug = is_debug)
             # print(f"Evaluation, timestep 1, action={sampled_action}")
             j = 0
             all_states = state
@@ -248,6 +277,8 @@ class Trainer:
 
                 if done:
                     T_rewards.append(reward_sum)
+                    if is_debug:
+                        print(f"Total return {reward_sum}")
                     break
 
                 state = state.unsqueeze(0).unsqueeze(0).to(self.device)
@@ -257,10 +288,10 @@ class Trainer:
                 rtgs += [rtgs[-1] - reward]
                 # all_states has all previous states and rtgs has all previous rtgs (will be cut to block_size in utils.sample)
                 # timestep is just current timestep
-                sampled_action = sample(self.model, all_states.unsqueeze(0), 1, temperature=1.0, sample=True, 
+                sampled_action = sample(model, all_states.unsqueeze(0), 1, temperature=1.0, sample=True, 
                     actions=torch.tensor(actions, dtype=torch.long).to(self.device).unsqueeze(1).unsqueeze(0), 
                     rtgs=torch.tensor(rtgs, dtype=torch.long).to(self.device).unsqueeze(0).unsqueeze(-1), 
-                    timesteps=(min(j, self.config.max_timestep) * torch.ones((1, 1, 1), dtype=torch.int64).to(self.device)))
+                    timesteps=(min(j, self.config.max_timestep) * torch.ones((1, 1, 1), dtype=torch.int64).to(self.device)), is_debug=is_debug)
         env.close()
         eval_return = sum(T_rewards)/10.
         print("target return: %d, eval return: %d" % (ret, eval_return))

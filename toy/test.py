@@ -5,8 +5,35 @@ import torch.nn.functional as F
 
 from env.no_best_RTG import BanditEnv as Env
 from mingpt.utils import sample
+from mingpt.trainer_toy import TrainerConfig, Trainer
+from torch.utils.tensorboard import SummaryWriter  
+import argparse
+import os
 
-HORIZON = 20
+parser = argparse.ArgumentParser()
+# parser.add_argument('--seed', type=int, default=123)
+parser.add_argument('--context_length', type=int, default=2)
+parser.add_argument('--epochs', type=int, default=5)
+parser.add_argument('--model_type', type=str, default='reward_conditioned')
+# parser.add_argument('--num_steps', type=int, default=500000)
+# parser.add_argument('--num_buffers', type=int, default=50)
+# parser.add_argument('--game', type=str, default='Breakout')
+parser.add_argument('--batch_size', type=int, default=1)
+# 
+# parser.add_argument('--trajectories_per_buffer', type=int, default=10, help='Number of trajectories to sample from each of the buffers.')
+parser.add_argument('--data_file', type=str, default='./dataset/toy.csv')
+parser.add_argument('--log_level', type=str, default='WARNING')
+parser.add_argument('--goal', type=int, default=5, help="The desired RTG")
+parser.add_argument('--horizon', type=int, default=5, help="Should be consistent with dataset")
+parser.add_argument('--ckpt_prefix', type=str, default=None )
+parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
+parser.add_argument('--hash', type=bool, default=False, help="Hash states if True")
+parser.add_argument('--tb_path', type=str, default="./logs/", help="Folder to tensorboard logs" )
+parser.add_argument('--tb_suffix', type=str, default="0", help="Suffix used to discern different runs" )
+args = parser.parse_args()
+print(args)
+
+HORIZON = args.horizon
 # MDP = BanditEnv(H = HORIZON)
 
 # for i in range(HORIZON):
@@ -45,11 +72,30 @@ env = Env(horizon = HORIZON)
 #         probs = F.softmax(logits, dim=-1)
 #         print(f"Epoch {epoch}, desired rtg is {desired_rtg}, timestep 1, prob1 is {probs[0,1]}")
     
-model_path = f"./backup/model/m_alt_best.pth"
+model_path = args.ckpt_prefix+"_final.pth"
 model = torch.load(model_path, map_location=device)
 model.train(False)
 desired_rtg = 20
 # cur_rtg = 20
+
+
+data_file = args.data_file[10:-4] # Like "toy5", "toy_rev". args.data_file form "./dataset/xxx.csv"
+tb_dir = f"{data_file}_ctx{args.context_length}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}_{args.tb_suffix}"
+tb_dir_path = os.path.join(args.tb_path,tb_dir)
+# os.makedirs(tb_dir_path, exist_ok=True) # The directory must exist
+
+tconf = TrainerConfig(max_epochs=args.epochs, batch_size=args.batch_size, learning_rate=args.rate,
+                      lr_decay=True, warmup_tokens=512*20, final_tokens=2*10*args.context_length*3,
+                      num_workers=4, model_type=args.model_type, max_timestep=args.horizon, horizon=args.horizon, 
+                      desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
+                      ctx = args.context_length)
+trainer = Trainer(model, None, None, tconf)
+
+tb_writer = SummaryWriter(tb_dir_path)
+for goal in range(20,21):
+    eval_ret = trainer.get_returns(goal, is_debug=True)
+    tb_writer.add_scalar('eval_ret', eval_ret, goal)
+
 
 # For ctx=20
 # def get_returns(ret):
@@ -148,46 +194,46 @@ desired_rtg = 20
 #     print(f"Timestep {t+1}, prob1 is {probs[0,1]}")
 
 
-for prev_action in range(1,2):
-    # timestep 1
-    states = torch.Tensor([[0]]).type(torch.int64).unsqueeze(0)
-    actions = torch.Tensor([[]]).type(torch.int64).unsqueeze(0)
-    timesteps = torch.Tensor([[0]]).type(torch.int64).unsqueeze(0)
-    rtgs = torch.Tensor([[desired_rtg]]).type(torch.int64).unsqueeze(0)
-    # rtgs = rtgs.to(device)
-    # states = states.to(device)
-    # actions = actions.to(device)
-    # timesteps = timesteps.to(device)
-    logits, _ = model(states, actions, targets = None, rtgs=rtgs,timesteps=timesteps)
-    logits = logits[:, -1, :]
-    probs = F.softmax(logits, dim=-1)
-    print(f"desired rtg is {desired_rtg}, timestep 1, prob1 is {probs[0,1]}")
-    # timestep 2,...,20
-    states = torch.Tensor([[0],[0]]).type(torch.int64).unsqueeze(0)
-    # states = torch.Tensor([[0]]).type(torch.int64).unsqueeze(0)
-    actions = torch.Tensor([[prev_action]]).type(torch.int64).unsqueeze(0)
-    # actions = torch.Tensor([]).type(torch.int64).unsqueeze(0)
-    # states = states.to(device)
-    # actions = actions.to(device)
+# for prev_action in range(1,2):
+#     # timestep 1
+#     states = torch.Tensor([[0]]).type(torch.int64).unsqueeze(0)
+#     actions = torch.Tensor([[]]).type(torch.int64).unsqueeze(0)
+#     timesteps = torch.Tensor([[0]]).type(torch.int64).unsqueeze(0)
+#     rtgs = torch.Tensor([[desired_rtg]]).type(torch.int64).unsqueeze(0)
+#     # rtgs = rtgs.to(device)
+#     # states = states.to(device)
+#     # actions = actions.to(device)
+#     # timesteps = timesteps.to(device)
+#     logits, _ = model(states, actions, targets = None, rtgs=rtgs,timesteps=timesteps)
+#     logits = logits[:, -1, :]
+#     probs = F.softmax(logits, dim=-1)
+#     print(f"desired rtg is {desired_rtg}, timestep 1, prob1 is {probs[0,1]}")
+#     # timestep 2,...,20
+#     states = torch.Tensor([[0],[0]]).type(torch.int64).unsqueeze(0)
+#     # states = torch.Tensor([[0]]).type(torch.int64).unsqueeze(0)
+#     actions = torch.Tensor([[prev_action]]).type(torch.int64).unsqueeze(0)
+#     # actions = torch.Tensor([]).type(torch.int64).unsqueeze(0)
+#     # states = states.to(device)
+#     # actions = actions.to(device)
 
-    # In coding, t starts from 0
-    for t in range(1,20):
+#     # In coding, t starts from 0
+#     for t in range(1,20):
 
-        rtgs = torch.Tensor([[desired_rtg-t+1],[desired_rtg-t+1-prev_action]]).unsqueeze(0)
-        # rtgs = torch.Tensor([[desired_rtg-t]]).unsqueeze(0)
-        timesteps = torch.Tensor([[t]]).type(torch.int64).unsqueeze(0)
+#         rtgs = torch.Tensor([[desired_rtg-t+1],[desired_rtg-t+1-prev_action]]).unsqueeze(0)
+#         # rtgs = torch.Tensor([[desired_rtg-t]]).unsqueeze(0)
+#         timesteps = torch.Tensor([[t]]).type(torch.int64).unsqueeze(0)
 
-        # rtgs = rtgs.to(device)
-        # timesteps = timesteps.to(device)
+#         # rtgs = rtgs.to(device)
+#         # timesteps = timesteps.to(device)
 
 
-        logits, _ = model(states, actions, targets = None, rtgs=rtgs,timesteps=timesteps)
-        # print(logits)
-        # print(logits.shape)
-        logits = logits[:, -1, :]
-        # print(logits)
-        probs = F.softmax(logits, dim=-1)
-        print(f"Timestep {t+1}, prev_action {prev_action}, desired RTG {rtgs[0,0,0]} and {rtgs[0,1,0]}, prob1 is {probs[0,1]}")
+#         logits, _ = model(states, actions, targets = None, rtgs=rtgs,timesteps=timesteps)
+#         # print(logits)
+#         # print(logits.shape)
+#         logits = logits[:, -1, :]
+#         # print(logits)
+#         probs = F.softmax(logits, dim=-1)
+#         print(f"Timestep {t+1}, prev_action {prev_action}, desired RTG {rtgs[0,0,0]} and {rtgs[0,1,0]}, prob1 is {probs[0,1]}")
 
 
 
