@@ -20,6 +20,7 @@ import torch
 import argparse
 # from create_dataset import create_dataset
 from env.no_best_RTG import BanditEnv as Env
+import os
 
 # from __future__ import print_function, division
 import os
@@ -49,6 +50,8 @@ parser.add_argument('--horizon', type=int, default=5, help="Should be consistent
 parser.add_argument('--ckpt_prefix', type=str, default=None )
 parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
 parser.add_argument('--hash', type=bool, default=False, help="Hash states if True")
+parser.add_argument('--tb_path', type=str, default="./logs/", help="Folder to tensorboard logs" )
+parser.add_argument('--tb_suffix', type=str, default="0", help="Suffix used to discern different runs" )
 args = parser.parse_args()
 print(args)
 
@@ -188,11 +191,19 @@ else:
 
 env = Env(horizon = args.horizon, state_hash = hash_method)
 
+# Create tb log dir
+data_file = args.data_file[10:-4] # Like "toy5", "toy_rev". args.data_file form "./dataset/xxx.csv"
+tb_dir = f"{data_file}_ctx{args.context_length}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}_{args.tb_suffix}"
+tb_dir_path = os.path.join(args.tb_path,tb_dir)
+os.makedirs(tb_dir_path, exist_ok=True)
+
+
 # print("Begin Trainer configuartion")
 tconf = TrainerConfig(max_epochs=epochs, batch_size=args.batch_size, learning_rate=args.rate,
                       lr_decay=True, warmup_tokens=512*20, final_tokens=2*train_dataset.len()*args.context_length*3,
                       num_workers=4, model_type=args.model_type, max_timestep=args.horizon, horizon=args.horizon, 
-                      desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix, env = env)
+                      desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
+                      ctx = args.context_length)
 # print("End trainer configuration, begin trainer generation")
 trainer = Trainer(model, train_dataset, None, tconf)
 
