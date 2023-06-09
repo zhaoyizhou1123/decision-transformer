@@ -59,11 +59,11 @@ class FullyConnectedQFunction(nn.Module):
     '''
 
     def __init__(self, observation_dim, action_dim, embd_dim, horizon, arch='256-256', 
-                 token_repeat=1, orthogonal_init=False):
+                 action_repeat=1, orthogonal_init=False):
         '''
         - embd_dim: dimension of observation/action embedding
         - horizon: used for timestep embedding. Timestep starts with 0
-        - token_repeat: int, repeat tokens multiple times to emphasize it.
+        - action_repeat: int, repeat action multiple times to emphasize it.
         '''
         super().__init__()
         self.observation_dim = observation_dim
@@ -75,9 +75,9 @@ class FullyConnectedQFunction(nn.Module):
         #     2*embd_dim, 1, arch, orthogonal_init
         # )
         self.network = FullyConnectedNetwork(
-            token_repeat * (observation_dim + action_dim  + 1), 1, arch, orthogonal_init
+            observation_dim + action_dim * action_repeat + 1, 1, arch, orthogonal_init
         )
-        self.token_repeat = int(token_repeat)
+        self.action_repeat = action_repeat
         # self.embd_obs = nn.Linear(observation_dim, embd_dim)
         # self.embd_action = nn.Linear(action_dim, embd_dim)
         # self.embd_timestep = nn.Embedding(horizon, embd_dim)
@@ -99,10 +99,9 @@ class FullyConnectedQFunction(nn.Module):
             timesteps = torch.tensor(timesteps) # (1)
         timesteps = timesteps.unsqueeze(-1) # (batch, 1) or (1,1)
         # assert observations.dim() == actions.dim() and actions.dim() == timesteps.dim(), f"Dim mismatch: {observations.shape}, {actions.shape}, {timesteps.shape}"
-        # repeat_actions = [actions for i in range(self.token_repeat)] # repeat actions
-        input_list = [observations] + [actions] + [timesteps]
+        repeat_actions = [actions for i in range(self.action_repeat)] # repeat actions
+        input_list = [observations] + repeat_actions + [timesteps]
         input_tensor = torch.cat(input_list, dim=-1)
-        input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
         return torch.squeeze(self.network(input_tensor), dim=-1)
     
 # model = FullyConnectedQFunction(1,2,4,20,'').network.network

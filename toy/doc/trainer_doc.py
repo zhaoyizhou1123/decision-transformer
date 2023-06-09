@@ -58,8 +58,7 @@ class TrainerConfig:
                  eval_repeat, 
                  horizon,
                  lr = 6e-3,
-                 weight_decay = 0.1, 
-                 r_scale = 1.0, **kwargs):
+                 weight_decay = 0.1, **kwargs):
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.grad_norm_clip = grad_norm_clip
@@ -70,7 +69,6 @@ class TrainerConfig:
         self.horizon = horizon
         self.learning_rate = lr
         self.weight_decay = weight_decay
-        self.r_scale = r_scale
         for k,v in kwargs.items():
             setattr(self, k, v)
 
@@ -92,7 +90,6 @@ class Trainer:
         - horizon, int, horizon of the env
         - tradeoff_coef, alpha in CQL paper.
         - tb_log, path to tb log directory
-        - r_scale, scale the reward for better performance
         '''
         self.model = model
         self.dataset = dataset
@@ -179,19 +176,18 @@ class Trainer:
             qfs = self.model(state,all_actions,timestep)
 
             # Record in tb
-            if record_qf:
+            if record_qf and timestep[0] == 0:
                 tb_scalars = {} # dict to be added to tb_writer
                 for j in range(num_action):
-                    # assert state.shape[1]==1, f"State dim {state.shape[1]} larger than 1"
                     key = f"a{j}"
-                    tb_scalars[key] = qfs[j] * self.config.r_scale # Store the unscaled qf
-                self.tb_writer.add_scalars(f"Qf-t{int(timestep[j].item())}", tb_scalars, epoch)
-            print(f"Timestep {timestep}, Q-function {qfs}")
+                    tb_scalars[key] = qfs[j]
+                self.tb_writer.add_scalars("Q-functions", tb_scalars, epoch)
+            # print(f"Timestep {timestep}, Q-function {qfs}")
 
             # opt_index = torch.argmax(qfs).item()
             opt_action = env.get_action(qfs, mode='best')
-            # if timestep[0].item() == 0:
-            #     print(f"Timestep {timestep[0].item()}, take action {opt_action}")
+            if timestep[0].item() == 0:
+                print(f"Timestep {timestep[0].item()}, take action {opt_action}")
 
             opt_action = opt_action.reshape(1,-1) # (1,action_dim)
             # opt_action = action_space[opt_index].unsqueeze(0) # (1,action_dim)
@@ -220,12 +216,11 @@ class Trainer:
         return torch.tensor(result_qs)
 
 
-    def _run_epoch(self, epoch_num, r_scale=1.0):
+    def _run_epoch(self, epoch_num):
         '''
         Use CQL(H), Q-learning variant \n
         Run one epoch in the training process \n
-        Epoch_num: int, epoch number, used to display in progress bar. \n
-        r_scale: float, scale the reward received
+        Epoch_num: int, epoch number, used to display in progress bar
         '''
 
         loader = DataLoader(self.dataset, shuffle=True, pin_memory=True,
@@ -244,7 +239,7 @@ class Trainer:
             '''                
             states = states.to(self.device)
             actions = actions.to(self.device)
-            rewards = rewards.reshape(-1) / self.config.r_scale # guarantee shape (batch), scale the reward
+            rewards = rewards.reshape(-1) # guarantee shape (batch)
             timesteps = timesteps.type(torch.int).to(self.device)
 
             # forward the model
@@ -287,14 +282,14 @@ class Trainer:
         self.model.train(False)
 
         # Log parameters, for one-hot encoding, single layer only
-        # model_module = self.model.module if hasattr(self.model, 'module') else self.model
-        # linear_net = model_module.network.network[0]
-        # weight = linear_net.weight.data[0,:] # Should be Tensor(4)
-        # bias = linear_net.bias.data[0] # should be Tensor(scalar)
-        # # assert weight.shape[0] == 4, f"Invalid weight shape {weight.shape}"
-        # # assert bias.shape[0] == 1, f"Invalid bias shape {bias.shape}"
-        # param_dict = {'s':weight[0].item(),'wa0':weight[1].item(), 'wa1':weight[2].item(), 'wt':weight[-1].item(), 'b':bias.item()}
-        # self.tb_writer.add_scalars('params',param_dict, train_epoch)
+        model_module = self.model.module if hasattr(self.model, 'module') else self.model
+        linear_net = model_module.network.network[0]
+        weight = linear_net.weight.data[0,:] # Should be Tensor(4)
+        bias = linear_net.bias.data[0] # should be Tensor(scalar)
+        # assert weight.shape[0] == 4, f"Invalid weight shape {weight.shape}"
+        # assert bias.shape[0] == 1, f"Invalid bias shape {bias.shape}"
+        param_dict = {'s':weight[0].item(),'wa0':weight[1].item(), 'wa1':weight[2].item(), 'wt':weight[-1].item(), 'b':bias.item()}
+        self.tb_writer.add_scalars('params',param_dict, train_epoch)
 
         rets = [] # list of returns achieved in each epoch
         env = self.config.env
@@ -324,8 +319,6 @@ class Trainer:
         # Compute average ret
         avg_ret = sum(rets) / self.config.eval_repeat
         print(f"Eval return: {avg_ret}")
-        if self.config.tb_log is not None:
-            self.tb_writer.add_scalar("avg_ret", avg_ret, train_epoch)
         # Set the model back to training mode
         self.model.train(True)
         return avg_ret

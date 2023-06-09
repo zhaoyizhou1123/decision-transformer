@@ -1,4 +1,4 @@
-from env.utils import read_env, sample
+from env.utils import read_env, sample as default_sample
 import torch
 
 class BanditEnv:
@@ -7,7 +7,7 @@ class BanditEnv:
     Modification: timestep starts with 0
     '''
     # metadata = {'render.modes': ['human']}
-    def __init__(self, env_path, sample, state_hash=None, action_hash=None):
+    def __init__(self, env_path, sample=None, state_hash=None, action_hash=None):
         '''
         - env_path: str, path to environment description file
         - sample: function. A way to sample int from given probs. Should be utils.sample
@@ -18,7 +18,7 @@ class BanditEnv:
         Note: the class stores true states, specified by env description file. It outputs obs, which 
         is hashed from state by state_hash. 
         '''
-        super(BanditEnv, self).__init__()
+        # super(BanditEnv, self).__init__()
 
         # self.df = df
         # self.reward_range = (0, MAX_ACCOUNT_BALANCE)
@@ -38,9 +38,13 @@ class BanditEnv:
         self._return = 0 # total rewards
         self._state_hash = state_hash # None or int to int function
         self._action_hash = action_hash # None or int to int function
-        self._basic_sample = sample # No hashing sample function
 
-        self._current_state = sample(self.init_state_probs) # True state
+        if sample is not None:
+            self._basic_sample = sample # No hashing sample function
+        else:
+            self._basic_sample = default_sample
+
+        self._current_state = self._basic_sample(self.init_state_probs) # True state
         # self._current_state = self._hash_state(current_state)
 
     def step(self, observed_action):
@@ -57,7 +61,7 @@ class BanditEnv:
         current_state = self._current_state.item() # int
 
         next_state_probs = self.transition_table[(current_state, action)]
-        next_state = sample(next_state_probs)
+        next_state = self._basic_sample(next_state_probs)
         # next_state= self._hash_state(next_state) # hash the state if needed
         self._current_state = next_state # update state
         
@@ -71,7 +75,7 @@ class BanditEnv:
     
     def reset(self):
         '''Return initial state as torch.Tensor of shape (1,)'''
-        current_state = sample(self.init_state_probs)
+        current_state = self._basic_sample(self.init_state_probs)
         self._current_state = self._hash_state(current_state)
 
         self._timestep = 0
@@ -127,6 +131,9 @@ class BanditEnv:
             list_action_space += [hashed_action]
         # print(f"list_action_space {list_action_space}")
         return torch.tensor(list_action_space).type(torch.float32)
+    
+    def get_horizon(self):
+        return self._HORIZON
     
     def _hash_state(self, state):
         '''

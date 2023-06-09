@@ -235,10 +235,13 @@ class GPT(nn.Module):
         # actions: (batch, block_size, 1). In training, it is the same length as states. In testing, there is one less action than states.
         # targets: (batch, block_size, 1), the desired actions. In training, it is given. In testing, it is None
         # rtgs: (batch, block_size, 1)
-        # timesteps: (batch, 1, 1)
+        # timesteps: (batch, 1)
 
         state_embeddings = self.state_encoder(states.reshape(-1, 1).type(torch.float32).contiguous()) # (batch * ctx_length, n_embd)
         state_embeddings = state_embeddings.reshape(states.shape[0], states.shape[1], self.config.n_embd) # (batch, block_size, n_embd)
+
+        # print(f"timesteps {timesteps.shape}")
+        timesteps = timesteps.type(torch.int64).unsqueeze(-1) # (batch, 1, 1)
         
         if actions is not None and self.model_type == 'reward_conditioned': 
             rtg_embeddings = self.ret_emb(rtgs.type(torch.float32))
@@ -269,6 +272,7 @@ class GPT(nn.Module):
         batch_size = states.shape[0]
         all_global_pos_emb = torch.repeat_interleave(self.global_pos_emb, batch_size, dim=0) # batch_size, traj_length, n_embd
 
+        # print(f"Input {all_global_pos_emb.shape}, index {torch.repeat_interleave(timesteps, self.config.n_embd, dim=-1).shape}")
         position_embeddings = torch.gather(all_global_pos_emb, 1, torch.repeat_interleave(timesteps, self.config.n_embd, dim=-1)) + self.pos_emb[:, :token_embeddings.shape[1], :]
 
         x = self.drop(token_embeddings + position_embeddings)
@@ -293,6 +297,7 @@ class GPT(nn.Module):
             # F.cross_entropy takes prediction first and target second. 
             # Prediction is taken softmax automatically.
             # target can be labels
+            targets = targets.type(torch.int64)
             loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)), targets.reshape(-1))
 
         return logits, loss

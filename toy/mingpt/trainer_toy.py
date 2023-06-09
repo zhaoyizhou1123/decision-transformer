@@ -92,85 +92,88 @@ class Trainer:
         logger.info("saving %s", ckpt_path)
         torch.save(raw_model, ckpt_path)
 
-    def train(self):
-        model, config = self.model, self.config
+    def run_epoch(self, split, epoch_num=0):
+        model = self.model
+        config = self.config
         raw_model = model.module if hasattr(self.model, "module") else model
         optimizer = raw_model.configure_optimizers(config)
 
-        def run_epoch(split, epoch_num=0):
-            is_train = split == 'train'
-            model.train(is_train)
-            data = self.train_dataset if is_train else self.test_dataset
-            loader = DataLoader(data, shuffle=True, pin_memory=True,
-                                batch_size=config.batch_size,
-                                num_workers=config.num_workers)
-            # print("Dataloader ends.")
+        is_train = (split == 'train')
+        model.train(is_train)
+        data = self.train_dataset if is_train else self.test_dataset
+        loader = DataLoader(data, shuffle=True, pin_memory=True,
+                            batch_size=config.batch_size,
+                            num_workers=config.num_workers)
+        # print("Dataloader ends.")
 
-            losses = []
-            # print(f"tqdm begins")
-            pbar = tqdm(enumerate(loader), total=len(loader)) if is_train else enumerate(loader)
-            # print(f"tqdm ends")
-            for it, (x, y, r, t) in pbar:
-                '''
-                x is states
-                y is actions
-                r is rtgs
-                t is timesteps
-                '''                
-                # print(f"iteration {it}")
+        losses = []
+        # print(f"tqdm begins")
+        pbar = tqdm(enumerate(loader), total=len(loader)) if is_train else enumerate(loader)
+        # print(f"tqdm ends")
+        for it, (x, y, r, t) in pbar:
+            '''
+            x is states
+            y is actions
+            r is rtgs
+            t is timesteps
+            '''                
+            # print(f"iteration {it}")
 
-                # place data on the correct device
-                # if it ==0:
-                #     print(f"x={x}\n, y={y}\n, r={r}\n, t={t}")
-                # print(f"y={y}")
-                # print(f"r={r}")
-                # print(f"t={t}")
-                x = x.to(self.device)
-                # print("Finish loading data x.")
-                y = y.to(self.device)
-                r = r.to(self.device)
-                t = t.to(self.device)
-                # print("Finish loading data to devices.")
-                
-                # forward the model
-                with torch.set_grad_enabled(is_train):
-                    # logits, loss = model(x, y, r)
-                    logits, loss = model(x, y, y, r, t) # the third parameter is targets
-                    loss = loss.mean() # collapse all losses if they are scattered on multiple gpus
-                    losses.append(loss.item())
-                    # print("Finish loss computation.")
+            # place data on the correct device
+            # if it ==0:
+            #     print(f"x={x}\n, y={y}\n, r={r}\n, t={t}")
+            # print(f"y={y}")
+            # print(f"r={r}")
+            # print(f"t={t}")
+            x = x.to(self.device)
+            # print("Finish loading data x.")
+            y = y.to(self.device)
+            r = r.to(self.device)
+            t = t.to(self.device)
+            # print("Finish loading data to devices.")
+            
+            # forward the model
+            with torch.set_grad_enabled(is_train):
+                # logits, loss = model(x, y, r)
+                logits, loss = model(x, y, y, r, t) # the third parameter is targets
+                loss = loss.mean() # collapse all losses if they are scattered on multiple gpus
+                losses.append(loss.item())
+                # print("Finish loss computation.")
 
-                if is_train:
+            if is_train:
 
-                    # backprop and update the parameters
-                    model.zero_grad()
-                    loss.backward()
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), config.grad_norm_clip)
-                    optimizer.step()
+                # backprop and update the parameters
+                model.zero_grad()
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), config.grad_norm_clip)
+                optimizer.step()
 
-                    # decay the learning rate based on our progress
-                    if config.lr_decay:
-                        self.tokens += (y >= 0).sum() # number of tokens processed this step (i.e. label is not -100)
-                        if self.tokens < config.warmup_tokens:
-                            # linear warmup
-                            lr_mult = float(self.tokens) / float(max(1, config.warmup_tokens))
-                        else:
-                            # cosine learning rate decay
-                            progress = float(self.tokens - config.warmup_tokens) / float(max(1, config.final_tokens - config.warmup_tokens))
-                            lr_mult = max(0.1, 0.5 * (1.0 + math.cos(math.pi * progress)))
-                        lr = config.learning_rate * lr_mult
-                        for param_group in optimizer.param_groups:
-                            param_group['lr'] = lr
+                # decay the learning rate based on our progress
+                if config.lr_decay:
+                    self.tokens += (y >= 0).sum() # number of tokens processed this step (i.e. label is not -100)
+                    if self.tokens < config.warmup_tokens:
+                        # linear warmup
+                        lr_mult = float(self.tokens) / float(max(1, config.warmup_tokens))
                     else:
-                        lr = config.learning_rate
+                        # cosine learning rate decay
+                        progress = float(self.tokens - config.warmup_tokens) / float(max(1, config.final_tokens - config.warmup_tokens))
+                        lr_mult = max(0.1, 0.5 * (1.0 + math.cos(math.pi * progress)))
+                    lr = config.learning_rate * lr_mult
+                    for param_group in optimizer.param_groups:
+                        param_group['lr'] = lr
+                else:
+                    lr = config.learning_rate
 
-                    # report progress
-                    pbar.set_description(f"epoch {epoch+1} iter {it}: train loss {loss.item():.5f}. lr {lr:e}")
+                # report progress
+                pbar.set_description(f"epoch {epoch_num+1} iter {it}: train loss {loss.item():.5f}. lr {lr:e}")
 
-            if not is_train:
-                test_loss = float(np.mean(losses))
-                logger.info("test loss: %f", test_loss)
-                return test_loss
+        if not is_train:
+            test_loss = float(np.mean(losses))
+            logger.info("test loss: %f", test_loss)
+            return test_loss
+
+    def train(self):
+        model, config = self.model, self.config
 
         # best_loss = float('inf')
         
@@ -181,7 +184,7 @@ class Trainer:
 
         for epoch in range(config.max_epochs):
             print(f"------------\nEpoch {epoch}")
-            run_epoch('train', epoch_num=epoch)
+            self.run_epoch('train', epoch_num=epoch)
             # if self.test_dataset is not None:
             #     test_loss = run_epoch('test')
 
@@ -202,7 +205,7 @@ class Trainer:
                 #     eval_return = self.get_returns(20)
                 # else:
                 #     raise NotImplementedError()
-                eval_return = self.get_returns(self.config.desired_rtg)
+                eval_return = self.get_returns(self.config.desired_rtg, is_debug=True)
                 # return name: ctx, batch, goal, lr
                 # ret_name = f"avg_ret_{self.config.ctx}_{self.config.batch_size}_{self.config.desired_rtg}_{self.config.learning_rate}"
                 self.tb_writer.add_scalar("avg_ret", eval_return, epoch)
@@ -239,12 +242,12 @@ class Trainer:
 
         T_rewards, T_Qs = [], []
         done = True
-        if is_debug:
-            print(f"----------------\n Goal is {ret}")
+        # if is_debug:
+        #     print(f"----------------\n Goal is {ret}")
         for i in range(10): # Run the Env 10 times to take average
-            if is_debug:
-                print(f"\n Eval epoch {i}")
-            state = env.reset()
+            # if is_debug:
+            #     print(f"\n Eval epoch {i}")
+            state = env.reset() # (state_dim,)
             # state = torch.Tensor([state])
             state = state.type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0) # size (batch,block_size,1)
             rtgs = [ret]
@@ -259,7 +262,7 @@ class Trainer:
             # model = self.model # Avoid error: 'DataParallel' object has no attribute 'get_block_size'
             sampled_action = sample(model, state, 1, temperature=1.0, sample=True, actions=None, 
                 rtgs=torch.tensor(rtgs, dtype=torch.long).to(self.device).unsqueeze(0).unsqueeze(-1), 
-                timesteps=torch.zeros((1, 1, 1), dtype=torch.int64).to(self.device), is_debug = is_debug)
+                timesteps=torch.zeros((1, 1), dtype=torch.int64).to(self.device), is_debug = is_debug)
             # print(f"Evaluation, timestep 1, action={sampled_action}")
             j = 0
             all_states = state
@@ -291,8 +294,8 @@ class Trainer:
                 sampled_action = sample(model, all_states.unsqueeze(0), 1, temperature=1.0, sample=True, 
                     actions=torch.tensor(actions, dtype=torch.long).to(self.device).unsqueeze(1).unsqueeze(0), 
                     rtgs=torch.tensor(rtgs, dtype=torch.long).to(self.device).unsqueeze(0).unsqueeze(-1), 
-                    timesteps=(min(j, self.config.max_timestep) * torch.ones((1, 1, 1), dtype=torch.int64).to(self.device)), is_debug=is_debug)
-        env.close()
+                    timesteps=(min(j, self.config.max_timestep) * torch.ones((1, 1), dtype=torch.int64).to(self.device)), is_debug=is_debug)
+        # env.close()
         eval_return = sum(T_rewards)/10.
         print("target return: %d, eval return: %d" % (ret, eval_return))
         # logger.info("target return: %d, eval return: %d", ret, eval_return)

@@ -10,7 +10,10 @@ import numpy as np
 class BanditReturnDataset(Dataset):
     '''Son of the pytorch Dataset class'''
 
-    def __init__(self, states, block_size, actions, rtgs, timesteps):        
+    def __init__(self, states, block_size, actions, rtgs, timesteps, single_timestep = False):    
+        '''
+        single_timestep: bool. If true, timestep only keep initial step; Else (ctx,)
+        '''    
         self.block_size = block_size # args.context_length*3
         self.vocab_size = 2 # Specifies number of actions. The actions are represented s {0,1,2,...}
         # All 2d tensors n*args.horizon (timesteps n*(args.horizon+1))
@@ -21,6 +24,7 @@ class BanditReturnDataset(Dataset):
         self.timesteps = timesteps # (trajectory_num,horizon+1)
         self._trajectory_num = states.shape[0] # number of trajectories in dataset
         self._horizon = states.shape[1]
+        self.single_timestep = single_timestep
 
         # number of trajectories should match
         assert self._trajectory_num == actions.shape[0] 
@@ -40,7 +44,7 @@ class BanditReturnDataset(Dataset):
         - states: Tensor of size [ctx_length, state_space_size]
         - actions: Tensor of size [ctx_length, action_dim], here action is converted to one-hot representation
         - rtgs: Tensor of size [ctx_length, 1]
-        - timesteps: Tensor of size [ctx_length]
+        - timesteps: (ctx_length) if single_timestep=False; else (1,), only keep the first timestep
         '''
         # block_size = self.block_size // 3  # "//" means [5/3], here approx context length
         # done_idx = idx + block_size
@@ -62,7 +66,11 @@ class BanditReturnDataset(Dataset):
         states_slice = self.data[trajectory_idx, res_idx : res_idx + ctx, :]
         actions_slice = self.actions[trajectory_idx, res_idx : res_idx + ctx, :]
         rtgs_slice = self.rtgs[trajectory_idx, res_idx : res_idx + ctx, :]
-        timesteps_slice = self.timesteps[trajectory_idx, res_idx : res_idx + ctx]
+
+        if self.single_timestep: 
+            timesteps_slice = self.timesteps[trajectory_idx, res_idx : res_idx + 1] # (1,)
+        else:
+            timesteps_slice = self.timesteps[trajectory_idx, res_idx : res_idx + ctx] #(ctx, )
         
         # print(f"Size of output: {states_slice.shape}, {actions_slice.shape}, {rtgs_slice.shape}, {timesteps_slice.shape}")
         # print(f"Dataset actions_slice: {actions_slice.shape}")
@@ -197,13 +205,13 @@ def onehot_convert(action, action_dim):
 
 
 
-def read_data(data_file, horizon, action_dim):
+def read_data(data_file, horizon):
     '''
     data_file, str, path to data file (Bugs of relative paths?) \n
     action_dim, int, dimension of actions, or number of possible actions
     Return values:
     - states, torch.Tensor (num_trajectories, horizon, state_dim). 
-    - onehot_actions, (num_trajectories, horizon, action_dim). Here action_dim=2
+    - actions, (num_trajectories, horizon, action_dim).
     - rtgs, (num_trajectories, horizon, 1)
     - timesteps: (num_trajectories, horizon+1). Starting timestep is adjusted to 0
     '''
@@ -223,7 +231,7 @@ def read_data(data_file, horizon, action_dim):
     start_time = timesteps[0,0] # the starting time step
     timesteps = timesteps - start_time
     states = torch.Tensor(np.asarray(states)).unsqueeze(-1) # (num_trajectory, horizon, 1)
-    actions = np.asarray(actions)
+    actions = torch.Tensor(np.asarray(actions)).unsqueeze(-1) # (num_trajectory, horizon, 1)
     rewards = np.asarray(rewards)
 
     # create rtgs array
@@ -235,19 +243,19 @@ def read_data(data_file, horizon, action_dim):
     rtgs = torch.Tensor(rtgs).unsqueeze(-1) # (num_trajectory, horizon, 1)
 
     # convert actions into onehot representation
-    onehot_actions = torch.zeros((actions.shape[0],actions.shape[1], action_dim))
-    for i in range(onehot_actions.shape[0]):
-        for j in range(onehot_actions.shape[1]):
-            onehot_actions[i,j,:] = onehot_convert(actions[i,j], action_dim)
+    # onehot_actions = torch.zeros((actions.shape[0],actions.shape[1], action_dim))
+    # for i in range(onehot_actions.shape[0]):
+    #     for j in range(onehot_actions.shape[1]):
+    #         onehot_actions[i,j,:] = onehot_convert(actions[i,j], action_dim)
 
-    return states, onehot_actions, rtgs, timesteps
+    return states, actions, rtgs, timesteps
 
 def read_data_reward(data_file, horizon):
     '''
     data_file, str, path to data file (Bugs of relative paths?) \n
     Return values:
     - states, torch.Tensor (num_trajectories, horizon+1, state_dim). Final state is fixed to 0
-    - actions, (num_trajectories, horizon, action_dim). Here action_dim=2
+    - actions, (num_trajectories, horizon, action_dim). Here action_dim=1
     - rewards, (num_trajectories, horizon, 1)
     - timesteps: (num_trajectories, horizon+1). Starting timestep is adjusted to 0
     '''
