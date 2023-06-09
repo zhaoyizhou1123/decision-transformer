@@ -1,0 +1,40 @@
+# Use middle state. Policy on state 0 differs at timesteps
+# Best policy : (0,1,0.7),(2,1,0.7),(0,1,0.7),...,(2,1,0.7), (0,0,1), 0.7*100+1=71
+# Suboptimal: (0,0,1),(1,1,0.3),(1,1,0.3), ... 0.3*100+1=31
+#             (0,0,1),(1,0,0),(0,0,1),(1,0,0), ... . 1*51=51
+#             (0,1,0.7),(2,0,0.3),(2,0,0.3),... 0.7+0.3*100=30/7
+# |S|, |A|, initial state distribution, H, P, r
+# state space: 0,1,...,|S|-1
+# action space: 0,1,...,|A|-1
+# initial state distribution: prob0,prob1,...,prob(|S|-1)
+# P: each row "s,a,prob0,prob1,...,prob(|S|-1)"
+# r: each row "s,a,r"
+# Lines starting with "#" or empty lines will be omitted
+
+# |S|
+3
+
+# |A|
+2
+
+# H
+101
+
+# initial state distribution
+1,0,0
+
+# P, |S||A| rows
+0,0,0,1,0
+0,1,0,0,1
+1,0,1,0,0
+1,1,0,1,0
+2,0,0,0,1
+2,1,1,0,0
+
+# r, |S||A| rows
+0,0,1
+0,1,0.7
+1,0,0
+1,1,0.3
+2,0,0.3
+2,1,0.7
