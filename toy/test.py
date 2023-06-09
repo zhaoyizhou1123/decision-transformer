@@ -92,7 +92,7 @@ tconf = TrainerConfig(max_epochs=args.epochs, batch_size=args.batch_size, learni
 trainer = Trainer(model, None, None, tconf)
 
 tb_writer = SummaryWriter(tb_dir_path)
-for goal in range(20,21):
+for goal in range(200,201):
     eval_ret = trainer.get_returns(goal, is_debug=True)
     tb_writer.add_scalar('eval_ret', eval_ret, goal)
 
