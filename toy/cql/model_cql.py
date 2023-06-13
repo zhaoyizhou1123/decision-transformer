@@ -58,10 +58,10 @@ class FullyConnectedQFunction(nn.Module):
     Model for Q-function
     '''
 
-    def __init__(self, observation_dim, action_dim, embd_dim, horizon, arch='256-256', 
-                 token_repeat=1, orthogonal_init=False):
+    def __init__(self, observation_dim, action_dim, horizon, arch='256-256', 
+                 token_repeat=1, orthogonal_init=False, embd_dim = -1):
         '''
-        - embd_dim: dimension of observation/action embedding
+        - embd_dim: int. If <= 0, no embedding, simply input (s,a,g,t); Else embed(s)+embed(t), ...
         - horizon: used for timestep embedding. Timestep starts with 0
         - token_repeat: int, repeat tokens multiple times to emphasize it.
         '''
@@ -71,16 +71,22 @@ class FullyConnectedQFunction(nn.Module):
         self.embd_dim = embd_dim
         self.arch = arch
         self.orthogonal_init = orthogonal_init
-        # self.network = FullyConnectedNetwork(
-        #     2*embd_dim, 1, arch, orthogonal_init
-        # )
-        self.network = FullyConnectedNetwork(
-            token_repeat * (observation_dim + action_dim  + 1), 1, arch, orthogonal_init
-        )
         self.token_repeat = int(token_repeat)
-        # self.embd_obs = nn.Linear(observation_dim, embd_dim)
-        # self.embd_action = nn.Linear(action_dim, embd_dim)
-        # self.embd_timestep = nn.Embedding(horizon, embd_dim)
+
+        self.do_embd = (embd_dim <= 0) # If True, do embedding, else simply (s,g,a,t)
+
+        if self.do_embd:
+            self.embd_obs = nn.Linear(observation_dim, embd_dim)
+            self.embd_action = nn.Linear(action_dim, embd_dim)
+            self.embd_timestep = nn.Embedding(horizon, embd_dim)
+            self.network = FullyConnectedNetwork(
+                2*embd_dim, 1, arch, orthogonal_init
+            )
+        else:
+            self.network = FullyConnectedNetwork(
+                token_repeat * (observation_dim + action_dim  + 1), 1, arch, orthogonal_init
+            )
+    
 
     def forward(self, observations, actions, timesteps):
         '''
@@ -90,18 +96,21 @@ class FullyConnectedQFunction(nn.Module):
         Return: Tensor (batch,) or scalar
         '''
         actions = actions.type(torch.float)
-        # obs_embd = self.embd_obs(observations) + self.embd_timestep(timesteps)
-        # action_embd = self.embd_action(actions) + self.embd_timestep(timesteps)
-        # input_tensor = torch.cat([obs_embd, action_embd], dim=-1)
-
-        # An easer encoding (obs,action,timestep)
         if not isinstance(timesteps, torch.Tensor): # scalar
             timesteps = torch.tensor(timesteps) # (1)
-        timesteps = timesteps.unsqueeze(-1) # (batch, 1) or (1,1)
-        # assert observations.dim() == actions.dim() and actions.dim() == timesteps.dim(), f"Dim mismatch: {observations.shape}, {actions.shape}, {timesteps.shape}"
-        # repeat_actions = [actions for i in range(self.token_repeat)] # repeat actions
-        input_list = [observations] + [actions] + [timesteps]
-        input_tensor = torch.cat(input_list, dim=-1)
+
+        if self.do_embd:
+            timesteps = timesteps.long()
+            obs_embd = self.embd_obs(observations) + self.embd_timestep(timesteps)
+            action_embd = self.embd_action(actions) + self.embd_timestep(timesteps)
+            input_tensor = torch.cat([obs_embd, action_embd], dim=-1)
+        else:
+            # An easer encoding (obs,action,timestep)
+            timesteps = timesteps.unsqueeze(-1) # (batch, 1) or (1,1)
+            # assert observations.dim() == actions.dim() and actions.dim() == timesteps.dim(), f"Dim mismatch: {observations.shape}, {actions.shape}, {timesteps.shape}"
+            # repeat_actions = [actions for i in range(self.token_repeat)] # repeat actions
+            input_list = [observations] + [actions] + [timesteps]
+            input_tensor = torch.cat(input_list, dim=-1)
         input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
         return torch.squeeze(self.network(input_tensor), dim=-1)
     

@@ -51,13 +51,14 @@ class MlpPolicy(nn.Module):
     Model for policy
     '''
 
-    def __init__(self, observation_dim, n_act, ctx, token_repeat=1, arch='256-256'):
+    def __init__(self, observation_dim, n_act, ctx, horizon, token_repeat=1, arch='256-256', embd_dim = -1):
         '''
         - n_act: We expect acts given in one-hot, so action_dim = n_action
         - embd_dim: dimension of observation/action embedding
         - ctx: context length
         - horizon: used for timestep embedding. Timestep starts with 0
-        - action_repeat: int, repeat action multiple times to emphasize it.
+        - token_repeat: int, repeat action multiple times to emphasize it.
+        - embd_dim: int. If <= 0, no embedding, simply input (s,a,g,t); Else embed(s)+embed(t), ...
         '''
         super().__init__()
         self.observation_dim = observation_dim
@@ -65,12 +66,26 @@ class MlpPolicy(nn.Module):
         self.arch = arch
         self.ctx = ctx
         self.token_repeat = int(token_repeat)
+        self.embd_dim = embd_dim
+        self.do_embd = (embd_dim <= 0) # If True, do embedding, else simply (s,g,a,t)
+
+        if self.do_embd:
+            self.embd_obs = nn.Linear(observation_dim, embd_dim)
+            self.embd_action = nn.Linear(self.action_dim, embd_dim)
+            self.embd_rtg = nn.Linear(1, embd_dim)
+            self.embd_timestep = nn.Embedding(horizon, embd_dim)
 
         # s,g,t * ctx, a * ctx-1
-        self.network = FullyConnectedNetwork(
-            self.token_repeat*(ctx * (observation_dim + 1 + 1) + (ctx-1) * self.action_dim), 
-            self.action_dim, arch
-        )
+        if self.do_embd:
+            self.network = FullyConnectedNetwork(
+                self.token_repeat*(ctx * embd_dim * 2 + (ctx-1) * embd_dim), 
+                self.action_dim, arch
+            )
+        else:
+            self.network = FullyConnectedNetwork(
+                self.token_repeat*(ctx * (self.observation_dim + 1 + 1) + (ctx-1) * self.action_dim), 
+                self.action_dim, arch
+            )
 
     def forward(self, obs, acts, rtgs, timesteps):
         '''
@@ -84,29 +99,42 @@ class MlpPolicy(nn.Module):
 
         # Convert actions to one-hot
         assert acts.shape[-1] == 1, f"Invalid action_dim {acts.shape[-1]}"
-        acts = acts.squeeze(dim=-1) # (batch,ctx)
-        acts = f.one_hot(acts.long(),self.action_dim) # (batch, ctx, n_act)
+        acts = acts.squeeze(dim=-1) # (batch,T-1)
+        acts = f.one_hot(acts.long(),self.action_dim) # (batch, T-1, n_act)
 
         obs = obs.type(torch.float32)
         acts = acts.type(torch.float32)
         rtgs = rtgs.type(torch.float32)
-        timesteps = timesteps.unsqueeze(-1).type(torch.float32) # (batch, T, 1)
+
+        if self.do_embd: # embed obs, acts and rtgs
+            obs = self.embd_obs(obs) + self.embd_timestep(timesteps)
+            acts = self.embd_action(acts) + self.embd_timestep(timesteps[:, :-1]) # exclude the last timestep
+            rtgs = self.embd_rtg(rtgs) + self.embd_timestep(timesteps)
+        else:
+            timesteps = timesteps.unsqueeze(-1).type(torch.float32) # (batch, T, 1)
 
         # Pad to ctx length. Timesteps pad with -1, acts pad to ctx-1
         obs = torch.cat([torch.zeros(batch, self.ctx-obs.shape[1], obs.shape[-1]).to(obs.device), obs], dim=1)
         acts = torch.cat([torch.zeros(batch, self.ctx-1-acts.shape[1], acts.shape[-1]).to(acts.device), acts], dim=1)
         rtgs = torch.cat([torch.zeros(batch, self.ctx-rtgs.shape[1], rtgs.shape[-1]).to(rtgs.device), rtgs], dim=1)
-        timesteps = torch.cat([torch.zeros(batch, self.ctx-timesteps.shape[1], timesteps.shape[-1]).to(timesteps.device)-1, timesteps], dim=1)
+
+        if not self.do_embd:
+            timesteps = torch.cat([torch.zeros(batch, self.ctx-timesteps.shape[1], timesteps.shape[-1]).to(timesteps.device)-1, timesteps], dim=1)
 
         # Reshape
-        obs = obs.reshape(batch, -1) # (batch, ctx*obs_dim)
-        acts = acts.reshape(batch, -1) # (batch, (ctx-1)*act_dim)
-        rtgs = rtgs.reshape(batch, -1) # (batch, ctx*1)
-        timesteps = timesteps.reshape(batch, -1) # (batch, ctx*1)
+        obs = obs.reshape(batch, -1) # (batch, ctx*obs_dim) or (batch, ctx*embd_dim)
+        acts = acts.reshape(batch, -1) # (batch, (ctx-1)*act_dim) or (batch, (ctx-1)*embd_dim)
+        rtgs = rtgs.reshape(batch, -1) # (batch, ctx*1) or (batch, ctx*embd_dim)
+
+        if not self.do_embd:
+            timesteps = timesteps.reshape(batch, -1) # (batch, ctx*1)
 
 
         # Order of tokens is unimportant for mlp, so we don't use interleave
-        input_tensor = torch.cat([timesteps, obs, rtgs, acts], dim=-1)  
+        if not self.do_embd:
+            input_tensor = torch.cat([timesteps, obs, rtgs, acts], dim=-1)  
+        else:
+            input_tensor = torch.cat([obs, rtgs, acts], dim=-1)
         input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
 
         # (batch, action_dim)      

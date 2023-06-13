@@ -8,14 +8,16 @@ import argparse
 import torch
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_file', type=str, default='./dataset/mid-s_exp.csv')
+parser.add_argument('--output_file', type=str, default='./dataset/bandit_exp_hasha.csv')
 # parser.add_argument('--horizon', type=int, default=20)
-parser.add_argument('--env_path', type=str, default='./env/env_mid-s.txt')
+parser.add_argument('--env_path', type=str, default='./env/env_bandit.txt')
+parser.add_argument('--time_depend_s', action='store_true')
+parser.add_argument('--time_depend_a', action='store_false')
 # parser.add_argument('--num_trajectories', type=int, default=100)
 args = parser.parse_args()
 
 # Create Env instance
-env = Env(args.env_path, sample)
+env = Env(args.env_path, sample, time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
 horizon = env.get_horizon()
 
 # Some common policies
@@ -28,15 +30,17 @@ alt01_policy = full_policies.alt_bad_good_policy() # 0,1,0,1,...
 
 first0then1_policy = full_policies.bad_good_policy(1)
 first1then0_policy = full_policies.good_bad_policy(1)
-all1last0_policy = full_policies.good_bad_policy(100)
+# all1last0_policy = full_policies.good_bad_policy(100)
 
-def sample_and_write(dataset_path: str, env, horizon, sample_policy_list: list, num_repeat_list: list):
+def sample_and_write(dataset_path: str, env, horizon, sample_policy_list: list, num_repeat_list: list, 
+                     time_depend_a: bool):
     '''
     - dataset_path: Path to output file
     - env: Sampling environment
     - horizon: Env environment
     - sample_policy_list: list of full sampling policy, each element is list(utils.Policy)
     - num_repeat_list: how much times each policy in sample_policy_list is repeated. Must be of same length 
+    - time_depend: bool. If true, action becomes (a+1)*(t+1).
     as sample_policy_list.
     '''
     assert len(sample_policy_list) == len(num_repeat_list), "Mismatch lengths!"
@@ -56,15 +60,18 @@ def sample_and_write(dataset_path: str, env, horizon, sample_policy_list: list, 
                     f.write(f"{h},{int(state.item())},")
                     stage_policy = sample_policy[h]
                     action = stage_policy.sample_action()
+                    if time_depend_a:
+                        real_num_action = int(env.get_num_action() / horizon)
+                        action = action + h * real_num_action
                     state, reward, _ = env.step(torch.tensor(action))
-                    f.write(f"{action},{int(reward)},")
+                    f.write(f"{action},{reward},")
                 f.write(f"{horizon}\n")
 
 # sample_policy_list = [all1_policy, all0_policy, alt01_policy, alt10_policy]
-sample_policy_list = [first0then1_policy, first1then0_policy, all1last0_policy, all0_policy]
-num_repeat_list = [10,10,10,10]
+sample_policy_list = [alt01_policy, alt10_policy, all1_policy, all0_policy]
+num_repeat_list = [5,5,5,5]
 
-sample_and_write(args.output_file, env, horizon, sample_policy_list, num_repeat_list)
+sample_and_write(args.output_file, env, horizon, sample_policy_list, num_repeat_list, args.time_depend_a)
 
 
 # with open(args.output_file, "w") as f:

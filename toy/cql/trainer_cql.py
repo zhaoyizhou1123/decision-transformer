@@ -179,14 +179,14 @@ class Trainer:
             qfs = self.model(state,all_actions,timestep)
 
             # Record in tb
-            if record_qf:
-                tb_scalars = {} # dict to be added to tb_writer
-                for j in range(num_action):
-                    # assert state.shape[1]==1, f"State dim {state.shape[1]} larger than 1"
-                    key = f"a{j}"
-                    tb_scalars[key] = qfs[j] * self.config.r_scale # Store the unscaled qf
-                self.tb_writer.add_scalars(f"Qf-t{int(timestep[j].item())}", tb_scalars, epoch)
-            print(f"Timestep {timestep}, Q-function {qfs}")
+            # if record_qf:
+            #     tb_scalars = {} # dict to be added to tb_writer
+            #     for j in range(num_action):
+            #         # assert state.shape[1]==1, f"State dim {state.shape[1]} larger than 1"
+            #         key = f"a{j}"
+            #         tb_scalars[key] = qfs[j] * self.config.r_scale # Store the unscaled qf
+            #     self.tb_writer.add_scalars(f"Qf-t{int(timestep[j].item())}", tb_scalars, epoch)
+            # print(f"Timestep {timestep}, Q-function {qfs}")
 
             # opt_index = torch.argmax(qfs).item()
             opt_action = env.get_action(qfs, mode='best')
@@ -310,7 +310,7 @@ class Trainer:
             ret = 0 # total return 
             for h in range(self.config.horizon):
                 action = self._get_optimal_action(state,timestep,env,record_qf=True,epoch=train_epoch)
-                print(f"Epoch {train_epoch}, timestep {h}, action {action}")
+                # print(f"Epoch {train_epoch}, timestep {h}, action {action}")
                 # action = action.item() # Change to int, only for 1-dim actions!
 
                 # Update state, observe reward

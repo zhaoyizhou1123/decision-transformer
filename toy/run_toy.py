@@ -39,16 +39,19 @@ parser.add_argument('--goal', type=int, default=5, help="The desired RTG")
 # parser.add_argument('--horizon', type=int, default=5, help="Should be consistent with dataset")
 parser.add_argument('--ckpt_prefix', type=str, default=None )
 parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
-parser.add_argument('--hash', type=bool, default=False, help="Hash states if True")
+parser.add_argument('--hash', action='store_true', help="Hash states if True")
 parser.add_argument('--tb_path', type=str, default="./logs/rvs/", help="Folder to tensorboard logs" )
 parser.add_argument('--tb_suffix', type=str, default="0", help="Suffix used to discern different runs" )
 parser.add_argument('--env_path', type=str, default='./env/env_rev.txt', help='Path to env description file')
-parser.add_argument('--n_embd', type=int, default=10, help="token embedding dimension")
+parser.add_argument('--n_embd', type=int, default=-1, help="token embedding dimension, default -1 for no embedding")
 parser.add_argument('--n_layer', type=int, default=1, help="Transformer layer")
 parser.add_argument('--n_head', type=int, default=1, help="Transformer head")
 parser.add_argument('--model', type=str, default='dt', help="mlp or dt")
 parser.add_argument('--arch', type=str, default='', help="Hidden layer size of mlp model" )
 parser.add_argument('--repeat', type=int, default=10, help="Repeat tokens in Q-network")
+parser.add_argument('--sample', action='store_false', help="Sample action by probs, or choose the largest prob")
+parser.add_argument('--time_depend_s',action='store_true')
+parser.add_argument('--time_depend_a',action='store_false')
 args = parser.parse_args()
 print(args)
 
@@ -160,7 +163,9 @@ print(args)
 # print(f"timesteps:{timesteps_slice}")
 
 # print("Begin generating train_dataset")
-env = Env(args.env_path, sample, None, None)
+env = Env(args.env_path, sample, None, None, 
+          time_depend_s=args.time_depend_s,
+          time_depend_a=args.time_depend_a)
 horizon = env.get_horizon()
 
 states, actions, rtgs, timesteps = read_data(args.data_file, horizon)
@@ -184,7 +189,8 @@ if args.model == 'dt':
     # print("End model generation")
 elif args.model == 'mlp':
     num_action = env.get_num_action()
-    model = MlpPolicy(1, num_action, args.context_length, args.repeat, args.arch)
+    # print(f"num_action={num_action}")
+    model = MlpPolicy(1, num_action, args.context_length, horizon, args.repeat, args.arch, args.n_embd)
 else:
     raise(Exception(f"Unimplemented model {args.model}!"))
 
@@ -199,9 +205,13 @@ else:
 
 # Create tb log dir
 data_file = args.data_file[10:-4] # Like "toy5", "toy_rev". args.data_file form "./dataset/xxx.csv"
-tb_dir = f"{args.model}_{data_file}_ctx{args.context_length}_arch{args.arch}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}"
+if args.model == 'dt':
+    tb_dir = f"{args.model}_{data_file}_ctx{args.context_length}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}"
+else: # 'mlp'
+    sample_method = 'sample' if args.sample else 'top'
+    tb_dir = f"{args.model}_{data_file}_ctx{args.context_length}_arch{args.arch}_{sample_method}_rep{args.repeat}_embd{args.n_embd}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}"
 tb_dir_path = os.path.join(args.tb_path,args.tb_suffix,tb_dir)
-os.makedirs(tb_dir_path, exist_ok=True)
+os.makedirs(tb_dir_path, exist_ok=False)
 
 # print("Begin Trainer configuartion")
 if args.model == 'dt':
@@ -216,7 +226,7 @@ elif args.model == 'mlp':
     tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch_size, learning_rate=args.rate,
                 lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
                 desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
-                ctx = args.context_length)
+                ctx = args.context_length, sample = args.sample)
     trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
 
 # print("End trainer generation. Begin training.")
