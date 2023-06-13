@@ -58,7 +58,8 @@ class TrainerConfig:
                  eval_repeat, 
                  horizon,
                  lr = 6e-3,
-                 weight_decay = 0.1, **kwargs):
+                 weight_decay = 0.1, 
+                 sample = True, **kwargs):
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.grad_norm_clip = grad_norm_clip
@@ -69,6 +70,7 @@ class TrainerConfig:
         self.horizon = horizon
         self.learning_rate = lr
         self.weight_decay = weight_decay
+        self.sample = sample
         for k,v in kwargs.items():
             setattr(self, k, v)
 
@@ -156,7 +158,8 @@ class Trainer:
                 history_actions = actions[:, :-1, :]
                 target_action = actions[:,-1,:] # The last action is target
                 pred_action_logits = self.model(states, history_actions, rtgs, timesteps) # (batch,num_action)
-                loss = self._loss(pred_action_logits, target_action) # Tensor(scalar)
+                # print(target_action.min(), target_action.max(), pred_action_logits.shape[-1])
+                loss = self._loss(pred_action_logits, target_action) # Tensor(scalar)               
 
                 # loss = loss.mean() # scalar tensor. Collapse all losses if they are scattered on multiple gpus
                 # print("Finish loss computation.")      
@@ -192,7 +195,10 @@ class Trainer:
                 # print(f"Eval logits {pred_action_logits[0,:]}")
                 probs = F.softmax(pred_action_logits[0,:], dim=0) #(num_action)
                 # print(f"Step {h+1}, eval policy {probs}")
-                sample_action = torch.multinomial(probs, num_samples=1) # Tensor (1,), between [0,num_action-1]
+                if self.config.sample:
+                    sample_action = torch.multinomial(probs, num_samples=1) # Tensor (1,), between [0,num_action-1]
+                else:
+                    _, sample_action = torch.topk(probs, k=1, dim=-1) # Tensor(1,)                 
                 # sample_action = torch.zeros(action_dim)
                 # sample_action[sample] = 1 # one-hot representation, (action_dim)
 

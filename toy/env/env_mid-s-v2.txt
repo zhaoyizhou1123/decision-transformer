@@ -1,8 +1,11 @@
 # Use middle state. Policy on state 0 differs at timesteps
-# Best policy : (0,1,0.7),(2,1,0.7),(0,1,0.7),...,(2,1,0.7), (0,0,1), 0.7*100+1=71
-# Suboptimal: (0,0,1),(1,1,0.3),(1,1,0.3), ... 0.3*100+1=31
-#             (0,0,1),(1,0,0),(0,0,1),(1,0,0), ... . 1*51=51
-#             (0,1,0.7),(2,0,0.3),(2,0,0.3),... 0.7+0.3*100=30.7
+# Based on mid-s, but scales the reward to strength difference, and shorten horizon
+# Removed the last state
+# 
+# Best policy : (0,1,7),(2,1,7),(0,1,7),...,(2,1,7) 7*20=140
+# Suboptimal: (0,0,10),(1,1,3),(1,1,3), ... 3*19+10=67
+#             (0,0,10),(1,0,0),(0,0,10),(1,0,0), ... . 10*10=100
+#             (0,1,7),(2,0,3),(2,0,3),... 7+3*19=64
 # |S|, |A|, initial state distribution, H, P, r
 # state space: 0,1,...,|S|-1
 # action space: 0,1,...,|A|-1
@@ -18,7 +21,7 @@
 2
 
 # H
-101
+20
 
 # initial state distribution
 1,0,0
@@ -32,9 +35,9 @@
 2,1,1,0,0
 
 # r, |S||A| rows
-0,0,1
-0,1,0.7
+0,0,10
+0,1,7
 1,0,0
-1,1,0.3
-2,0,0.3
-2,1,0.7
+1,1,3
+2,0,3
+2,1,7
