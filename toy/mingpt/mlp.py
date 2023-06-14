@@ -15,7 +15,8 @@ class FullyConnectedNetwork(nn.Module):
     '''
     def __init__(self, input_dim, output_dim, arch='256-256'):
         '''
-        arch: specifies dim of hidden layers, separated by '-'. We only want one layer, so 'int'
+        arch: specifies dim of hidden layers, separated by '-'. We only want one layer, so 'int'. \n
+        Upd: arch = '/' is equivalent to '', so it can be run in cmd
         '''
         super().__init__()
         self.input_dim = input_dim
@@ -24,7 +25,7 @@ class FullyConnectedNetwork(nn.Module):
 
         d = input_dim
         modules = []
-        if arch == '': # No hidden layers
+        if arch == '' or arch == '/': # No hidden layers
             hidden_sizes = []
         else:
             hidden_sizes = [int(h) for h in arch.split('-')]
@@ -51,9 +52,9 @@ class MlpPolicy(nn.Module):
     Model for policy
     '''
 
-    def __init__(self, observation_dim, n_act, ctx, horizon, token_repeat=1, arch='256-256', embd_dim = -1):
+    def __init__(self, observation_dim, n_act, ctx, horizon, token_repeat=1, arch='256-256', embd_dim = -1, one_hot=False, action_dim=1):
         '''
-        - n_act: We expect acts given in one-hot, so action_dim = n_action
+        - action_dim: We expect acts given in one-hot, so action_dim = n_action
         - embd_dim: dimension of observation/action embedding
         - ctx: context length
         - horizon: used for timestep embedding. Timestep starts with 0
@@ -62,12 +63,18 @@ class MlpPolicy(nn.Module):
         '''
         super().__init__()
         self.observation_dim = observation_dim
-        self.action_dim = n_act
+        self.one_hot = one_hot
+        self.n_act = n_act
+        if one_hot:
+            self.action_dim = n_act
+        else:
+            self.action_dim = action_dim
         self.arch = arch
         self.ctx = ctx
         self.token_repeat = int(token_repeat)
         self.embd_dim = embd_dim
-        self.do_embd = (embd_dim <= 0) # If True, do embedding, else simply (s,g,a,t)
+
+        self.do_embd = (embd_dim > 0) # If True, do embedding, else simply (s,g,a,t)
 
         if self.do_embd:
             self.embd_obs = nn.Linear(observation_dim, embd_dim)
@@ -79,12 +86,12 @@ class MlpPolicy(nn.Module):
         if self.do_embd:
             self.network = FullyConnectedNetwork(
                 self.token_repeat*(ctx * embd_dim * 2 + (ctx-1) * embd_dim), 
-                self.action_dim, arch
+                n_act, arch
             )
         else:
             self.network = FullyConnectedNetwork(
                 self.token_repeat*(ctx * (self.observation_dim + 1 + 1) + (ctx-1) * self.action_dim), 
-                self.action_dim, arch
+                n_act, arch
             )
 
     def forward(self, obs, acts, rtgs, timesteps):
@@ -99,14 +106,17 @@ class MlpPolicy(nn.Module):
 
         # Convert actions to one-hot
         assert acts.shape[-1] == 1, f"Invalid action_dim {acts.shape[-1]}"
-        acts = acts.squeeze(dim=-1) # (batch,T-1)
-        acts = f.one_hot(acts.long(),self.action_dim) # (batch, T-1, n_act)
+
+        if self.one_hot:
+            acts = acts.squeeze(dim=-1) # (batch,T-1)
+            acts = f.one_hot(acts.long(),self.action_dim) # (batch, T-1, action_dim)
 
         obs = obs.type(torch.float32)
         acts = acts.type(torch.float32)
         rtgs = rtgs.type(torch.float32)
 
         if self.do_embd: # embed obs, acts and rtgs
+            timesteps = timesteps.long()
             obs = self.embd_obs(obs) + self.embd_timestep(timesteps)
             acts = self.embd_action(acts) + self.embd_timestep(timesteps[:, :-1]) # exclude the last timestep
             rtgs = self.embd_rtg(rtgs) + self.embd_timestep(timesteps)
