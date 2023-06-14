@@ -1,6 +1,13 @@
 import numpy.random as random
 
 class Policy:
+    def __init__(self) -> None:
+        pass
+    def sample_action(self):
+        return None
+    
+
+class Policy01(Policy):
     '''Abstraction of a step policy for the toy environment'''
     def __init__(self, prob0):
         assert 0<=prob0 and prob0<=1, "Invalid prob0!"
@@ -13,11 +20,17 @@ class Policy:
         '''
         action = random.choice(a=[0,1], size=1, p=[self._prob0, self._prob1]) # an array of size 1
         return action[0]
+    
+class DeterministicPolicy(Policy):
+    def __init__(self, action):
+        self._action = action
+    def sample_action(self):
+        return self._action
 
 # Define two stage policy instances
-good_policy = Policy(prob0 = 0) # Always 1, may not be really good
-bad_policy = Policy(prob0 = 1) # Always 0, may not be really bad
-rand_policy = Policy(prob0=0.5)
+good_policy = Policy01(prob0 = 0) # Always 1, may not be really good
+bad_policy = Policy01(prob0 = 1) # Always 0, may not be really bad
+rand_policy = Policy01(prob0=0.5)
 
 # Represent policies in list[Policy]
 # Some helper functions to create long policies
@@ -91,3 +104,25 @@ class FullPolicy:
         Alternating good,bad,good,...
         '''
         return alt_stage_policy(bad_policy, good_policy, self.horizon)
+    
+    def repeat_action_policy(self, action):
+        '''
+        Repeatedly choose action
+        '''
+        stage_policy = DeterministicPolicy(action)
+        return consecutive_stage_policy(stage_policy, self.horizon)
+    
+    def double_loop_full_policy(self, start_action1, start_action2, num_action):
+        '''
+        horizon must be even
+        action form a,a+1,...,a+H/2-1 % A
+        '''
+        assert self.horizon % 2 == 0, f"Horizon {self.horizon} is not an even number!"
+        loop = self.horizon // 2
+        full_policy = []
+        for t in range(loop):
+            full_policy.append(DeterministicPolicy((start_action1 + t) % num_action))
+            full_policy.append(DeterministicPolicy((start_action2 + t) % num_action))
+        return full_policy
+    
+

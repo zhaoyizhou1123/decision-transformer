@@ -1,0 +1,53 @@
+# Make mlp architecture represents optimal, but not Bellman complete.
+# New Representation: Effective action space |A|, equivalent action names for 0,1,2,...|A|-1
+# |S|, |A|, initial state distribution, H, P, r
+# state space: 0,1,...,|S|-1
+# action space: 0,1,...,|A|-1
+# initial state distribution: prob0,prob1,...,prob(|S|-1)
+# P: each row "s,a,prob0,prob1,...,prob(|S|-1)"
+# r: each row "s,a,r"
+# Lines starting with "#" or empty lines will be omitted
+
+# S
+4
+
+# A;equivalent actions for 0;equivalent actions for 1. Omit means 0,1,...,|A|-1
+# ex1: 2. Means action 0,1
+# ex2: 2;0,2,4;1,3,5. Means action 0,2,4 equivalent as 0; 1,3,5 equivalent as 1, state space is 6, effective space A=2
+3;0,2,4,6,8,10,12,14,16,18;1,3,5,7,9,11,19,15,17;13
+
+# H
+20
+
+# initial state distribution
+1,0,0,0
+
+# P, |S||A| rows
+0,0,0,0,1,0
+0,1,0,0,0,1
+0,2,0,1,0,0
+1,0,0,1,0,0
+1,1,0,1,0,0
+1,2,0,1,0,0
+2,0,0,0,0,1
+2,1,0,0,0,1
+2,2,0,0,0,1
+3,0,0,0,0,1
+3,1,0,0,0,1
+3,2,0,0,0,1
+
+
+
+# r, |S||A| rows
+0,0,0
+0,1,1
+0,2,1
+1,0,1
+1,1,1
+1,2,1
+2,0,1
+2,1,1
+2,2,1
+3,0,0
+3,1,0
+3,2,0
