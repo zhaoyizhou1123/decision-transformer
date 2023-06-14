@@ -25,7 +25,7 @@ class FullyConnectedNetwork(nn.Module):
 
         d = input_dim
         modules = []
-        if arch == '': # No hidden layers
+        if arch == '' or arch == '/': # No hidden layers
             hidden_sizes = []
         else:
             hidden_sizes = [int(h) for h in arch.split('-')]
@@ -73,14 +73,14 @@ class FullyConnectedQFunction(nn.Module):
         self.orthogonal_init = orthogonal_init
         self.token_repeat = int(token_repeat)
 
-        self.do_embd = (embd_dim <= 0) # If True, do embedding, else simply (s,g,a,t)
+        self.do_embd = (embd_dim > 0) # If True, do embedding, else simply (s,g,a,t)
 
         if self.do_embd:
             self.embd_obs = nn.Linear(observation_dim, embd_dim)
             self.embd_action = nn.Linear(action_dim, embd_dim)
             self.embd_timestep = nn.Embedding(horizon, embd_dim)
             self.network = FullyConnectedNetwork(
-                2*embd_dim, 1, arch, orthogonal_init
+                2*embd_dim*token_repeat, 1, arch, orthogonal_init
             )
         else:
             self.network = FullyConnectedNetwork(
@@ -102,6 +102,7 @@ class FullyConnectedQFunction(nn.Module):
         if self.do_embd:
             timesteps = timesteps.long()
             obs_embd = self.embd_obs(observations) + self.embd_timestep(timesteps)
+            # print(f"model_cql: action shape {actions.shape}")
             action_embd = self.embd_action(actions) + self.embd_timestep(timesteps)
             input_tensor = torch.cat([obs_embd, action_embd], dim=-1)
         else:
@@ -111,7 +112,7 @@ class FullyConnectedQFunction(nn.Module):
             # repeat_actions = [actions for i in range(self.token_repeat)] # repeat actions
             input_list = [observations] + [actions] + [timesteps]
             input_tensor = torch.cat(input_list, dim=-1)
-        input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
+        input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat 
         return torch.squeeze(self.network(input_tensor), dim=-1)
     
 # model = FullyConnectedQFunction(1,2,4,20,'').network.network

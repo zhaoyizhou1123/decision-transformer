@@ -48,10 +48,10 @@ parser.add_argument('--n_layer', type=int, default=1, help="Transformer layer")
 parser.add_argument('--n_head', type=int, default=1, help="Transformer head")
 parser.add_argument('--model', type=str, default='dt', help="mlp or dt")
 parser.add_argument('--arch', type=str, default='', help="Hidden layer size of mlp model" )
-parser.add_argument('--repeat', type=int, default=10, help="Repeat tokens in Q-network")
+parser.add_argument('--repeat', type=int, default=1, help="Repeat tokens in Q-network")
 parser.add_argument('--sample', action='store_false', help="Sample action by probs, or choose the largest prob")
 parser.add_argument('--time_depend_s',action='store_true')
-parser.add_argument('--time_depend_a',action='store_false')
+parser.add_argument('--time_depend_a',action='store_true')
 args = parser.parse_args()
 print(args)
 
@@ -190,6 +190,7 @@ if args.model == 'dt':
 elif args.model == 'mlp':
     num_action = env.get_num_action()
     # print(f"num_action={num_action}")
+    # model = MlpPolicy(1, num_action, args.context_length, horizon, args.repeat, args.arch, args.n_embd)
     model = MlpPolicy(1, num_action, args.context_length, horizon, args.repeat, args.arch, args.n_embd)
 else:
     raise(Exception(f"Unimplemented model {args.model}!"))
@@ -209,6 +210,8 @@ if args.model == 'dt':
     tb_dir = f"{args.model}_{data_file}_ctx{args.context_length}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}"
 else: # 'mlp'
     sample_method = 'sample' if args.sample else 'top'
+    if args.arch == '/':
+        args.arch = ''
     tb_dir = f"{args.model}_{data_file}_ctx{args.context_length}_arch{args.arch}_{sample_method}_rep{args.repeat}_embd{args.n_embd}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}"
 tb_dir_path = os.path.join(args.tb_path,args.tb_suffix,tb_dir)
 os.makedirs(tb_dir_path, exist_ok=False)

@@ -124,6 +124,7 @@ class Trainer:
         '''
         # Must be converted to shape (N,C), N is batch*ctx, C is action_dim / num_actions
         assert true_action.shape[-1] == 1, f"Unexpected action dim {true_action.shape[-1]}"
+        # print(f"Trainer_mlp 127: true_action {true_action.shape}, pred_policy {pred_policy.shape}")
         return F.cross_entropy(pred_policy, true_action.squeeze(dim=-1).long())
 
 

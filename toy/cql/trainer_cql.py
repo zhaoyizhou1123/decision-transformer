@@ -186,7 +186,10 @@ class Trainer:
             #         key = f"a{j}"
             #         tb_scalars[key] = qfs[j] * self.config.r_scale # Store the unscaled qf
             #     self.tb_writer.add_scalars(f"Qf-t{int(timestep[j].item())}", tb_scalars, epoch)
-            # print(f"Timestep {timestep}, Q-function {qfs}")
+
+            if record_qf:
+                sort_qfs, _ = torch.sort(qfs, descending=True)
+                print(f"Timestep {timestep[0].item()}, state {state[0].item()}, Q-function best {sort_qfs[0].item()}, next {sort_qfs[1].item()}")
 
             # opt_index = torch.argmax(qfs).item()
             opt_action = env.get_action(qfs, mode='best')
