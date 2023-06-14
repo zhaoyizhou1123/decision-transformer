@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name=toy
+#SBATCH --job-name=cql
 #SBATCH --partition=gpu-a40
 #SBATCH --account=simondu
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=16G
 #SBATCH --gres=gpu:0
 #SBATCH --time=10:00:00
@@ -18,5 +18,6 @@ conda activate test
 # conda activate dta
 # singularity exec --nv --bind /gscratch dta.sif ./run.sh > result/Breakout2.txt
 
-output_file=toy_rev_cql.txt
-./cql.sh > result/${output_file}
+output_file=alt-s_exp_cql.txt
+# ./cql.sh > result/${output_file}
+./cql.sh

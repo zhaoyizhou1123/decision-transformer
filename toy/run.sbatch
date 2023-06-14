@@ -3,10 +3,10 @@
 #SBATCH --partition=gpu-a40
 #SBATCH --account=simondu
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=16G
 #SBATCH --gres=gpu:0
-#SBATCH --time=1:00:00
+#SBATCH --time=10:00:00
 #SBATCH --chdir=/gscratch/simondu/zhaoyi/decision-transformer/toy/
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=zhaoyi20@cs.washington.edu
@@ -18,5 +18,6 @@ conda activate test
 # conda activate dta
 # singularity exec --nv --bind /gscratch dta.sif ./run.sh > result/Breakout2.txt
 
-output_file=toy_hash.txt
-./run.sh > result/${output_file}
+output_file=mid-s_exp_dt.txt
+# ./run.sh > result/${output_file}
+./run.sh
