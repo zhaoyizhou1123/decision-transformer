@@ -4,7 +4,7 @@ import torch
 class TimeVarEnv:
     '''
     A specific time-variant environment. \n
-    State: 0->1->0....
+    State: 0->1/2/3->0....
     Action: num_actions=K possible actions.
     Horizon: horizon=H
     reward: each round (0->1->0) has an a*. a* gets reward 0,3; Others 2,0 or 0,2.
@@ -13,13 +13,14 @@ class TimeVarEnv:
         assert horizon % 2 == 0, f"Horizon must be even!"
         self.horizon = horizon
         self.num_actions = num_actions
+        self.num_states = int(4)
 
         self._state_hash = state_hash # None or int to int function
         self._action_hash = action_hash # None or int to int function
 
         self._basic_sample = default_sample
 
-        self.state_space = [torch.tensor([0]), torch.tensor([1]), torch.tensor([2])]
+        self.state_space = [torch.tensor([s]) for s in range(self.num_states)]
         self.action_space = [torch.tensor([a]) for a in range(self.num_actions)]
 
         # initial state
@@ -43,12 +44,16 @@ class TimeVarEnv:
         state = state.item()
         action = action.item()
         opt_action = self.opt_action_table[timestep]
+        assert state in range(self.num_states), f"Transition: Invalid state {state}!"
         if state == 0:
-            next_state = int(2) if action == opt_action else int(1)
-        elif state == 1 or state == 2:
-            next_state = int(0)
+            if action == opt_action:
+                next_state = int(3)  
+            elif action % 2 == 1:
+                next_state = int(1)
+            else:
+                next_state = int(2)
         else:
-            raise Exception(f"Transition: Invalid state {state}!")
+            next_state = int(0)
         return torch.tensor([next_state])
     
     def _get_reward(self, state, action, timestep):
@@ -61,7 +66,7 @@ class TimeVarEnv:
         state = state.item()
         action = action.item()
 
-        assert state == 0 or state == 1 or state == 2, f"Reward: Invalid state {state}"
+        assert state in range(self.num_states), f"Reward: Invalid state {state}"
         assert action in list(range(self.num_actions)), f"Reward: Invalid action {action}"
         assert 0 <= timestep and timestep < self.horizon, f"Reward: Invalid timestep {timestep}"
 
@@ -81,17 +86,22 @@ class TimeVarEnv:
             else:
                 reward = 1
         elif state == 1:
-            if action == opt_action:
-                reward = 0
-            elif action % 2 == 0:
-                reward = 1
-            else:
-                reward = 2
-        else: # state == 2
-            if action == opt_action:
-                reward = 3
-            else:
-                reward = 0
+            reward = 2 if action % 2 == 1 else 0
+
+            # if action == opt_action:
+            #     reward = 0
+            # elif action % 2 == 0:
+            #     reward = 1
+            # else:
+            #     reward = 2
+        elif state == 2:
+            reward = 1 if action % 2 == 0 else 0
+            # if action == opt_action:
+            #     reward = 3
+            # else:
+            #     reward = 0
+        else:
+            reward = 3 if action == opt_action else 0
         
         
         return reward

@@ -6,5 +6,8 @@ toy/result
 toy/model
 # events.*
 toy/logs
+*.sh
+*.sbatch
+*.json
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt

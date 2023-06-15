@@ -1,7 +1,7 @@
 # Sample a dataset, store in a csv file
 
-from env.bandit_env import BanditEnv as Env
-# from env.time_var_env import TimeVarEnv as Env
+# from env.bandit_env import BanditEnv as Env
+from env.time_var_env import TimeVarEnv as Env
 # from env.no_best_RTG import BanditEnvReverse as Env
 from env.utils import sample
 from dataset.utils import FullPolicy
@@ -9,7 +9,7 @@ import argparse
 import torch
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_file', type=str, default='./dataset/hard-exp.csv')
+parser.add_argument('--output_file', type=str, default='./dataset/timevar_exp.csv')
 parser.add_argument('--horizon', type=int, default=20)
 parser.add_argument('--env_path', type=str, default='./env/env_hard.txt')
 parser.add_argument('--time_depend_s', action='store_true')
@@ -18,8 +18,8 @@ parser.add_argument('--time_depend_a', action='store_true')
 args = parser.parse_args()
 
 # Create Env instance
-env = Env(args.env_path, sample, time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
-# env = Env(horizon=args.horizon, num_actions=10)
+# env = Env(args.env_path, sample, time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
+env = Env(horizon=args.horizon, num_actions=10)
 horizon = env.get_horizon()
 num_actions = env.get_num_action()
 
@@ -72,8 +72,8 @@ def sample_and_write(dataset_path: str, env, horizon, sample_policy_list: list, 
 
 # sample_policy_list = [all1_policy, all0_policy, alt01_policy, alt10_policy]
 # sample_policy_list = [alt01_policy, alt10_policy, all1_policy, all0_policy]
-sample_policy_list = [full_policies.repeat_action_policy(i) for i in range(num_actions)]
-# sample_policy_list = [full_policies.double_loop_full_policy(i,j,num_actions) for j in range(num_actions) for i in range(num_actions)]
+# sample_policy_list = [full_policies.repeat_action_policy(i) for i in range(num_actions)]
+sample_policy_list = [full_policies.double_loop_full_policy(i,j,num_actions) for j in range(num_actions) for i in range(num_actions)]
 
 # num_repeat_list = [1 for _ in range(num_actions)]
 num_repeat_list = [1 for _ in sample_policy_list]

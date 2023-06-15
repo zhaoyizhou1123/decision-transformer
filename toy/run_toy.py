@@ -20,7 +20,8 @@ import argparse
 import os
 from env.utils import sample
 from env.bandit_dataset import BanditReturnDataset, read_data
-from env.bandit_env import BanditEnv as Env
+from env.bandit_env import BanditEnv
+from env.time_var_env import TimeVarEnv
 
 parser = argparse.ArgumentParser()
 # parser.add_argument('--seed', type=int, default=123)
@@ -35,8 +36,8 @@ parser.add_argument('--batch_size', type=int, default=1)
 # parser.add_argument('--trajectories_per_buffer', type=int, default=10, help='Number of trajectories to sample from each of the buffers.')
 parser.add_argument('--data_file', type=str, default='./dataset/toy.csv')
 parser.add_argument('--log_level', type=str, default='WARNING')
-parser.add_argument('--goal', type=int, default=5, help="The desired RTG")
-# parser.add_argument('--horizon', type=int, default=5, help="Should be consistent with dataset")
+parser.add_argument('--goal', type=int, default=20, help="The desired RTG")
+parser.add_argument('--horizon', type=int, default=20, help="Should be consistent with dataset")
 parser.add_argument('--ckpt_prefix', type=str, default=None )
 parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
 parser.add_argument('--hash', action='store_true', help="Hash states if True")
@@ -52,6 +53,7 @@ parser.add_argument('--repeat', type=int, default=1, help="Repeat tokens in Q-ne
 parser.add_argument('--sample', action='store_false', help="Sample action by probs, or choose the largest prob")
 parser.add_argument('--time_depend_s',action='store_true')
 parser.add_argument('--time_depend_a',action='store_true')
+parser.add_argument('--time_var',action='store_true')
 args = parser.parse_args()
 print(args)
 
@@ -163,10 +165,15 @@ print(args)
 # print(f"timesteps:{timesteps_slice}")
 
 # print("Begin generating train_dataset")
-env = Env(args.env_path, sample, None, None, 
-          time_depend_s=args.time_depend_s,
-          time_depend_a=args.time_depend_a)
-horizon = env.get_horizon()
+if not args.time_var:
+    env = BanditEnv(args.env_path, sample=sample, state_hash=None, action_hash=None, 
+                    time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
+    horizon = env.get_horizon()
+else:
+    horizon = args.horizon
+    assert horizon % 2 == 0, f"Horizon {horizon} must be even!"
+    num_actions = horizon // 2
+    env = TimeVarEnv(horizon, num_actions)
 
 states, actions, rtgs, timesteps = read_data(args.data_file, horizon)
 train_dataset = BanditReturnDataset(states, args.context_length*3, actions, rtgs, timesteps, single_timestep=True)
