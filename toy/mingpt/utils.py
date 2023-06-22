@@ -27,7 +27,7 @@ def top_k_logits(logits, k):
     return out
 
 @torch.no_grad()
-def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=None, rtgs=None, timesteps=None):
+def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=None, rtgs=None, timesteps=None, is_debug = False):
     """
     take a conditioning sequence of indices in x (of shape (b,t)) and predict the next token in
     the sequence, feeding the predictions back into the model each time. Clearly the sampling
@@ -35,7 +35,7 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
     of block_size, unlike an RNN that has an infinite context window.
     """
     '''
-    x: state sequence, shape (1,num_states,1,4,84,84)
+    actions: One less than x, or states during testing
     '''
     block_size = model.get_block_size()
     model.eval()
@@ -53,9 +53,13 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
             logits = top_k_logits(logits, top_k)
         # apply softmax to convert to probabilities
         probs = F.softmax(logits, dim=-1)
+        # if int(timesteps[0,0,0]) == 0:
+        
         # sample from the distribution or take the most likely
         if sample:
             ix = torch.multinomial(probs, num_samples=1)
+            if is_debug:
+                print(f"Utils.py: t={timesteps}, probs={probs}, action = {ix}")
         else:
             _, ix = torch.topk(probs, k=1, dim=-1)
         # append to the sequence and continue
@@ -63,3 +67,12 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None, actions=N
         x = ix
 
     return x
+
+def state_hash(state):
+    '''
+    Hash a state. We want to verify that DT is robust to state hashing. \n
+    Input: state, scalar or np.array
+    Output: hashed state, same type as Input
+    '''
+    # Try f(x)=x^2
+    return state*state

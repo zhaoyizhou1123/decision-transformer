@@ -1,40 +1,21 @@
 
 # Decision Transformer
 
-Lili Chen\*, Kevin Lu\*, Aravind Rajeswaran, Kimin Lee, Aditya Grover, Michael Laskin, Pieter Abbeel, Aravind Srinivas†, and Igor Mordatch†
+The code is based on the decision transformer [code](https://github.com/kzl/decision-transformer). I write my own test code in `toy/` directory. 
 
-\*equal contribution, †equal advising
+## Installing dependencies
+I listed my conda environment in `toy/dependency.txt`.
 
-A link to our paper can be found on [arXiv](https://arxiv.org/abs/2106.01345).
+## Run code
+The file paths below are all relevant to path `toy/`.
 
-## Overview
+There are two main files. `run_toy.py` runs rvs/dt method, while `run_cql.py` runs Q-learning/cql method.
 
-Official codebase for [Decision Transformer: Reinforcement Learning via Sequence Modeling](https://sites.google.com/berkeley.edu/decision-transformer).
-Contains scripts to reproduce experiments.
+A sample running script is provided in `run.sh`. 
 
-![image info](./architecture.png)
+During running, the evaluation result will be printed, and tensorboard logs will be written in `logs/` directory.
 
-## Instructions
+## Customize environments and datasets
+You can define customized environments by writting a environment description file under `env/` directory. You may see the `env/*.txt` files for the formats.
 
-We provide code in two sub-directories: `atari` containing code for Atari experiments and `gym` containing code for OpenAI Gym experiments.
-See corresponding READMEs in each folder for instructions; scripts should be run from the respective directories.
-It may be necessary to add the respective directories to your PYTHONPATH.
-
-## Citation
-
-Please cite our paper as:
-
-```
-@article{chen2021decisiontransformer,
-  title={Decision Transformer: Reinforcement Learning via Sequence Modeling},
-  author={Lili Chen and Kevin Lu and Aravind Rajeswaran and Kimin Lee and Aditya Grover and Michael Laskin and Pieter Abbeel and Aravind Srinivas and Igor Mordatch},
-  journal={arXiv preprint arXiv:2106.01345},
-  year={2021}
-}
-```
-
-Note: this is not an official Google or Facebook product.
-
-## License
-
-MIT
+After defining environment, you should create a dataset by running `create_dataset.py`. Remember you need to provide the environment description file path in the command-line argument. You may also need to modify the code `create_dataset.py` to specify the behavior policy. By default, the dataset file will be written to `dataset/` directory and is stored as a csv file.

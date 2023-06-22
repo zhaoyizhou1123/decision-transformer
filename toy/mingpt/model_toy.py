@@ -17,6 +17,13 @@ GPT model:
 - the final decoder is a linear projection into a vanilla Softmax classifier
 """
 
+'''
+Main modifications:
+Remove Conv2d layers in state_encoder, because state space is too simple
+n_emd = 1, because state space too small
+n_head = 1
+'''
+
 import math
 import logging
 
@@ -80,10 +87,10 @@ class CausalSelfAttention(nn.Module):
         '''
         x, (batch, seq_length, n_embd). During training, seq_length = 3*ctx_length (all actions are included).
         During testing, it is 3*min{ctx_length, t}-1 (the action to predict is not given). \n
-        Predict all next tokens. If x is sequence 0:T-1, then it outputs prediction for 1:T
-        Use masks so that only previous tokens can be used to predict a token   
+        Predict all next tokens. If x is sequence 0:T-1, then it outputs prediction for 1:T.
+        Use masks so that only previous tokens can be used to predict a token. \n
+        mask shape: [[1,0,0],[1,1,0],[1,1,1]]. Positions in 0 are masked.  
         '''
-
         B, T, C = x.size()
 
         # calculate query, key, values for all heads in batch and move head forward to be the batch dim
@@ -94,8 +101,9 @@ class CausalSelfAttention(nn.Module):
         # causal self-attention; Self-attend: (B, nh, T, hs) x (B, nh, hs, T) -> (B, nh, T, T)
         # print(f"Attention parameters are: q={q}, k={k}")
         att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-        att = att.masked_fill(self.mask[:,:,:T,:T] == 0, float('-inf')) # Mask future tokens
+        att = att.masked_fill(self.mask[:,:,:T,:T] == 0, float('-inf'))
         att = F.softmax(att, dim=-1)
+        # print(f"att={att[:,:,:5,:5]}")
         att = self.attn_drop(att)
         y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
         y = y.transpose(1, 2).contiguous().view(B, T, C) # re-assemble all head outputs side by side
@@ -153,13 +161,8 @@ class GPT(nn.Module):
 
         logger.info("number of parameters: %e", sum(p.numel() for p in self.parameters()))
 
-        # The state_encoder network works for any dim0 value (which is the batch size), 
-        # dim0 value is kept throughout the network
-        # Output dim is (input_dim0, config.n_embd)
-        self.state_encoder = nn.Sequential(nn.Conv2d(4, 32, 8, stride=4, padding=0), nn.ReLU(),
-                                 nn.Conv2d(32, 64, 4, stride=2, padding=0), nn.ReLU(),
-                                 nn.Conv2d(64, 64, 3, stride=1, padding=0), nn.ReLU(),
-                                 nn.Flatten(), nn.Linear(3136, config.n_embd), nn.Tanh())
+        # The state is too, simple, remove the Conv2d layers
+        self.state_encoder = nn.Sequential(nn.Linear(1, config.n_embd), nn.Tanh())
 
         self.ret_emb = nn.Sequential(nn.Linear(1, config.n_embd), nn.Tanh())
 
@@ -228,23 +231,23 @@ class GPT(nn.Module):
 
     # state, action, and return
     def forward(self, states, actions, targets=None, rtgs=None, timesteps=None):
-        # states: (batch, block_size, 4*84*84)
-        # actions: (batch, block_size, 1)
-        # targets: (batch, block_size, 1)
+        # states: (batch, ctx_length, 1)
+        # actions: (batch, block_size, 1). In training, it is the same length as states. In testing, there is one less action than states.
+        # targets: (batch, block_size, 1), the desired actions. In training, it is given. In testing, it is None
         # rtgs: (batch, block_size, 1)
-        # timesteps: (batch, 1, 1)
-        '''
-        states: The shape of states may vary in different scenarios. 
-        When called in utils.sample(), x_cond is of shape (1,<=ctx_length, 4, 84,84)
-        '''
+        # timesteps: (batch, 1)
 
-        state_embeddings = self.state_encoder(states.reshape(-1, 4, 84, 84).type(torch.float32).contiguous()) # (batch * block_size, n_embd)
+        state_embeddings = self.state_encoder(states.reshape(-1, 1).type(torch.float32).contiguous()) # (batch * ctx_length, n_embd)
         state_embeddings = state_embeddings.reshape(states.shape[0], states.shape[1], self.config.n_embd) # (batch, block_size, n_embd)
+
+        # print(f"timesteps {timesteps.shape}")
+        timesteps = timesteps.type(torch.int64).unsqueeze(-1) # (batch, 1, 1)
         
         if actions is not None and self.model_type == 'reward_conditioned': 
             rtg_embeddings = self.ret_emb(rtgs.type(torch.float32))
             action_embeddings = self.action_embeddings(actions.type(torch.long).squeeze(-1)) # (batch, block_size, n_embd)
 
+            # If there are no targets, then it is testing, we don't have the last action
             token_embeddings = torch.zeros((states.shape[0], states.shape[1]*3 - int(targets is None), self.config.n_embd), dtype=torch.float32, device=state_embeddings.device)
             token_embeddings[:,::3,:] = rtg_embeddings
             token_embeddings[:,1::3,:] = state_embeddings
@@ -269,6 +272,7 @@ class GPT(nn.Module):
         batch_size = states.shape[0]
         all_global_pos_emb = torch.repeat_interleave(self.global_pos_emb, batch_size, dim=0) # batch_size, traj_length, n_embd
 
+        # print(f"Input {all_global_pos_emb.shape}, index {torch.repeat_interleave(timesteps, self.config.n_embd, dim=-1).shape}")
         position_embeddings = torch.gather(all_global_pos_emb, 1, torch.repeat_interleave(timesteps, self.config.n_embd, dim=-1)) + self.pos_emb[:, :token_embeddings.shape[1], :]
 
         x = self.drop(token_embeddings + position_embeddings)
@@ -290,6 +294,10 @@ class GPT(nn.Module):
         # if we are given some desired targets also calculate the loss
         loss = None
         if targets is not None:
+            # F.cross_entropy takes prediction first and target second. 
+            # Prediction is taken softmax automatically.
+            # target can be labels
+            targets = targets.type(torch.int64)
             loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)), targets.reshape(-1))
 
         return logits, loss

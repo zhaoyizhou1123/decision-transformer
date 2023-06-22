@@ -57,17 +57,20 @@ class TrainerConfig:
 class Trainer:
 
     def __init__(self, model, train_dataset, test_dataset, config):
-        self.model = model
-        self.train_dataset = train_dataset
-        self.test_dataset = test_dataset
+        self.model = model # should be a GPT model
+        self.train_dataset = train_dataset # Comes from run_dt_atari.py, a class called StateActionReturnDataset, son of torch Dataset
+        self.test_dataset = test_dataset # Should be None
         self.config = config
 
         # take over whatever gpus are on the system
         self.device = 'cpu'
         if torch.cuda.is_available():
+            print("GPU available.")
             self.device = torch.cuda.current_device()
+            print(f"device={self.device}")
             self.model = torch.nn.DataParallel(self.model).to(self.device)
-
+        # print("Finish Trainer __init__")
+            
     def save_checkpoint(self):
         # DataParallel wrappers keep raw model object in .module attribute
         raw_model = self.model.module if hasattr(self.model, "module") else self.model
@@ -86,23 +89,36 @@ class Trainer:
             loader = DataLoader(data, shuffle=True, pin_memory=True,
                                 batch_size=config.batch_size,
                                 num_workers=config.num_workers)
+            # print("Dataloader ends.")
 
             losses = []
+            # print(f"tqdm begins")
             pbar = tqdm(enumerate(loader), total=len(loader)) if is_train else enumerate(loader)
+            # print(f"tqdm ends")
             for it, (x, y, r, t) in pbar:
+                '''
+                x is states
+                y is actions
+                r is rtgs
+                t is timesteps
+                '''
+                # print(f"iteration {it}")
 
                 # place data on the correct device
                 x = x.to(self.device)
+                # print("Finish loading data x.")
                 y = y.to(self.device)
                 r = r.to(self.device)
                 t = t.to(self.device)
-
+                # print("Finish loading data to devices.")
+                
                 # forward the model
                 with torch.set_grad_enabled(is_train):
                     # logits, loss = model(x, y, r)
-                    logits, loss = model(x, y, y, r, t)
+                    logits, loss = model(x, y, y, r, t) # the third parameter is targets
                     loss = loss.mean() # collapse all losses if they are scattered on multiple gpus
                     losses.append(loss.item())
+                    # print("Finish loss computation.")
 
                 if is_train:
 
@@ -181,7 +197,8 @@ class Trainer:
         done = True
         for i in range(10):
             state = env.reset()
-            state = state.type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0)
+            print(f"Shape of initial state is {state.shape}")
+            state = state.type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0) # shape (1,1,4,84,84)
             rtgs = [ret]
             # first state is from env, first rtg is target return, and first timestep is 0
             sampled_action = sample(self.model.module, state, 1, temperature=1.0, sample=True, actions=None, 
@@ -204,9 +221,9 @@ class Trainer:
                     T_rewards.append(reward_sum)
                     break
 
-                state = state.unsqueeze(0).unsqueeze(0).to(self.device)
+                state = state.unsqueeze(0).unsqueeze(0).to(self.device) # expand to shape (1,1,4,84,84)
 
-                all_states = torch.cat([all_states, state], dim=0)
+                all_states = torch.cat([all_states, state], dim=0) # (num_states,1,4,84,84)
 
                 rtgs += [rtgs[-1] - reward]
                 # all_states has all previous states and rtgs has all previous rtgs (will be cut to block_size in utils.sample)
@@ -218,11 +235,18 @@ class Trainer:
         env.close()
         eval_return = sum(T_rewards)/10.
         print("target return: %d, eval return: %d" % (ret, eval_return))
+        # logger.info("target return: %d, eval return: %d", ret, eval_return)
         self.model.train(True)
         return eval_return
 
 
 class Env():
+    '''
+    Some concepts:\n
+    - Frame: 84*84, the image of the game
+    - Observation: 84*84, can be a frame, or derived from several frames
+    - State: 4*84*84, 4 consecutive observations
+    '''
     def __init__(self, args):
         self.device = args.device
         self.ale = atari_py.ALEInterface()

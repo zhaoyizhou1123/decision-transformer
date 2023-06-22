@@ -7,6 +7,8 @@ import numpy as np
 import tensorflow.compat.v1 as tf
 import gin
 
+# tf.logging.set_verbosity(tf.logging.INFO)
+
 gfile = tf.gfile
 
 STORE_FILENAME_PREFIX = circular_replay_buffer.STORE_FILENAME_PREFIX
@@ -32,13 +34,17 @@ class FixedReplayBuffer(object):
     if not self._loaded_buffers:
       if replay_suffix is not None:
         assert replay_suffix >= 0, 'Please pass a non-negative replay suffix'
+        # print("If branch: Load single buffer")
         self.load_single_buffer(replay_suffix)
       else:
+        # print("Else branch: Load replay buffer")
         self._load_replay_buffers(num_buffers=50)
 
   def load_single_buffer(self, suffix):
     """Load a single replay buffer."""
+    # print("Begin _load_buffer")
     replay_buffer = self._load_buffer(suffix)
+    # print("End _load_buffer")
     if replay_buffer is not None:
       self._replay_buffers = [replay_buffer]
       self.add_count = replay_buffer.add_count
@@ -51,6 +57,12 @@ class FixedReplayBuffer(object):
       # pytype: disable=attribute-error
       replay_buffer = circular_replay_buffer.OutOfGraphReplayBuffer(
           *self._args, **self._kwargs)
+      # print(f"self._data_dir={self._data_dir}, suffix={suffix}")
+      # try to find the load info
+      # save_elements = replay_buffer._return_checkpointable_elements()
+      # print(save_elements)
+
+      # Load process failed, "Unable to find episode_end_indices. This is expected for old checkpoints."
       replay_buffer.load(self._data_dir, suffix)
       tf.logging.info('Loaded replay buffer ckpt {} from {}'.format(
           suffix, self._data_dir))
