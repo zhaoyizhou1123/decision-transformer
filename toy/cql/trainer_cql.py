@@ -187,9 +187,10 @@ class Trainer:
             #         tb_scalars[key] = qfs[j] * self.config.r_scale # Store the unscaled qf
             #     self.tb_writer.add_scalars(f"Qf-t{int(timestep[j].item())}", tb_scalars, epoch)
 
-            if record_qf:
-                sort_qfs, _ = torch.sort(qfs, descending=True)
-                print(f"Timestep {timestep[0].item()}, state {state[0].item()}, Q-function best {sort_qfs[0].item()}, next {sort_qfs[1].item()}")
+            # if record_qf:
+            #     q13 = qfs[13].item()
+            #     sort_qfs, idx = torch.sort(qfs, descending=True)
+            #     print(f"Timestep {timestep[0].item()}, state {state[0].item()}, Q-function best {sort_qfs[0].item()}, best action {idx[0].item()}, Q13 {q13}")
 
             # opt_index = torch.argmax(qfs).item()
             opt_action = env.get_action(qfs, mode='best')
@@ -250,18 +251,21 @@ class Trainer:
             rewards = rewards.reshape(-1) / self.config.r_scale # guarantee shape (batch), scale the reward
             timesteps = timesteps.type(torch.int).to(self.device)
 
+            # print(f"run_epoch: batch = {states.shape[0]}")
+
             # forward the model
             with torch.set_grad_enabled(True):
                 qfs = self.model(states,actions,timesteps) # estimated Q-functions Q(s,a), (batch,)
                 qfs = qfs.to('cpu') # move back to cpu
                 # print(f"qfs {qfs.device}")
-
-                max_next_qfs = self._max_q(next_states,timesteps+1) #(batch, )
+                with torch.no_grad():
+                    max_next_qfs = self._max_q(next_states,timesteps+1) #(batch, )
                 # print(f"max_next_qfs: {max_next_qfs.device}")
-                bell_qfs = rewards + max_next_qfs # bellman operator, (batch, )
+                    bell_qfs = rewards + max_next_qfs # bellman operator, (batch, )
+                assert bell_qfs.requires_grad == False, "bell_qfs still requires grad!"
                 # print(f"bell_qfs: {bell_qfs.device}")
                 # print(f"bell_qfs.shape is {bell_qfs.shape}, max_next_qfs {max_next_qfs.shape}, rewards {rewards.shape}")
-                bell_loss = 0.5 * F.mse_loss(bell_qfs, qfs) # conventional Q-learning loss
+                bell_loss = 0.5 * F.mse_loss(qfs, bell_qfs) # conventional Q-learning loss
 
                 logsumexp_qfs = self._log_sum_exp_q(states, timesteps) # (batch,)
                 ood_penalty = torch.mean(logsumexp_qfs) # o.o.d penalty term
@@ -271,6 +275,9 @@ class Trainer:
                 loss = self.config.tradeoff_coef * (ood_penalty - in_distr_bonus) + bell_loss
 
                 loss = loss.mean() # scalar tensor. Collapse all losses if they are scattered on multiple gpus
+
+                if self.config.tb_log is not None:
+                    self.tb_writer.add_scalar('training_loss', loss.item(), epoch_num)
                 # losses.append(loss.item())
                 # print("Finish loss computation.")      
             

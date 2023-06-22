@@ -39,6 +39,7 @@ parser.add_argument('--scale', type=float, default=1.0, help="Scale the reward")
 parser.add_argument('--time_depend_s',action='store_true')
 parser.add_argument('--time_depend_a',action='store_true')
 parser.add_argument('--time_var',action='store_true')
+parser.add_argument('--hash_a',type=str, default=None, help='onehot')
 args = parser.parse_args()
 
 # print args
@@ -63,6 +64,7 @@ if not args.time_var:
     env = BanditEnv(args.env_path, sample=sample, state_hash=None, action_hash=None, 
                     time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
     horizon = env.get_horizon()
+    num_actions = env.get_num_action()
 else:
     horizon = args.horizon
     assert horizon % 2 == 0, f"Horizon {horizon} must be even!"
@@ -73,19 +75,33 @@ else:
 # horizon = args.horizon
 # assert horizon % 2 == 0, f"Horizon {horizon} must be even!"
 # num_actions = horizon // 2
-# hash = OneHotHash(num_actions).hash
-# env = Env(horizon, num_actions, action_hash=hash)
+
+if args.hash_a is None:
+    hash = None
+elif args.hash_a == 'onehot':
+    hash = OneHotHash(num_actions).hash
+    env._action_hash = hash
+else:
+    raise Exception(f"Invalid args.hash_a !")
+
+
 
 # Get the dataset. Actions are hashed in BanditRewardDataset
 states, true_actions, rewards, timesteps = read_data_reward(args.data_file, horizon)
 # print(f"Read data actions: {actions.shape}")
-# dataset = BanditRewardDataset(states, true_actions, rewards, timesteps, state_hash=None, action_hash=hash)
-dataset = BanditRewardDataset(states, true_actions, rewards, timesteps, state_hash=None, action_hash=None)
+dataset = BanditRewardDataset(states, true_actions, rewards, timesteps, state_hash=None, action_hash=hash)
+# dataset = BanditRewardDataset(states, true_actions, rewards, timesteps, state_hash=None, action_hash=None)
 
 # Remember to change the observed action dim according to the hashing method
-observed_action_dim = env.get_num_action()
+# observed_action_dim = env.get_num_action()
+
+if args.hash_a == 'onehot':
+    action_dim = num_actions
+else:
+    action_dim = 1
+
 model = FullyConnectedQFunction(observation_dim=1,
-                                action_dim=1, 
+                                action_dim=action_dim, 
                                 horizon=horizon, 
                                 arch=args.arch,
                                 token_repeat=args.repeat, 
@@ -97,7 +113,7 @@ model = FullyConnectedQFunction(observation_dim=1,
 data_name = args.data_file[10:-4] # Like "env_rev", args.env_path form "./env/xxx.csv"
 if args.arch == '/':
     args.arch = ''
-tb_dir = f"{data_name}_scale{args.scale}_arch{args.arch}_repeat{args.repeat}_alpha{args.tradeoff_coef}_embd{args.n_embd}_batch{args.batch_size}_lr{args.rate}"
+tb_dir = f"{data_name}_scale{args.scale}_arch{args.arch}_repeat{args.repeat}_alpha{args.tradeoff_coef}_embd{args.n_embd}_batch{args.batch_size}_lr{args.rate}_{args.hash_a}"
 tb_dir_path = os.path.join(args.tb_path, args.tb_suffix, tb_dir)
 os.makedirs(tb_dir_path, exist_ok=False)
 

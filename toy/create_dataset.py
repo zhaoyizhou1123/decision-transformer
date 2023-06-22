@@ -1,25 +1,33 @@
 # Sample a dataset, store in a csv file
 
-# from env.bandit_env import BanditEnv as Env
-from env.time_var_env import TimeVarEnv as Env
+from env.bandit_env import BanditEnv
+from env.time_var_env import TimeVarEnv
 # from env.no_best_RTG import BanditEnvReverse as Env
 from env.utils import sample
+import dataset.utils as utils
 from dataset.utils import FullPolicy
 import argparse
 import torch
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_file', type=str, default='./dataset/timevar_exp.csv')
+parser.add_argument('--output_file', type=str, default='./dataset/hard_exp_full.csv')
 parser.add_argument('--horizon', type=int, default=20)
 parser.add_argument('--env_path', type=str, default='./env/env_hard.txt')
 parser.add_argument('--time_depend_s', action='store_true')
 parser.add_argument('--time_depend_a', action='store_true')
+parser.add_argument('--env_type', type=str, default='bandit', help='bandit or timevar')
 # parser.add_argument('--num_trajectories', type=int, default=100)
 args = parser.parse_args()
 
 # Create Env instance
 # env = Env(args.env_path, sample, time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
-env = Env(horizon=args.horizon, num_actions=10)
+
+if args.env_type == 'timevar':
+    env = TimeVarEnv(horizon=args.horizon, num_actions=10)
+elif args.env_type == 'bandit':
+    env = BanditEnv(args.env_path, sample, time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
+else:
+    raise Exception(f"Unimplemented env_type {args.env_type}!")
 horizon = env.get_horizon()
 num_actions = env.get_num_action()
 
@@ -70,10 +78,43 @@ def sample_and_write(dataset_path: str, env, horizon, sample_policy_list: list, 
                     f.write(f"{action},{reward:.1f},")
                 f.write(f"{horizon}\n")
 
+def env_hard_policy(horizon):
+    assert horizon==20, f"Invalid horizon {horizon}!"
+    sample_policy_list = []
+
+    # s1 = 2
+    for a in [0,2,4,6,8,10,12,14,16,18]:
+        sample_policy_list += [full_policies.repeat_action_policy(a)]
+
+        t2to19policy = utils.consecutive_stage_policy(utils.DeterministicPolicy(a), horizon-2)
+        t0to1policy = [utils.DeterministicPolicy(a),utils.DeterministicPolicy(a+1)]
+        full_policy = utils.concat_long_policy(t0to1policy,t2to19policy)
+        sample_policy_list += [full_policy]
+
+    # s1 = 3
+    for a in [1,3,5,7,9,11,15,17,19]:
+        sample_policy_list += [full_policies.repeat_action_policy(a)]
+    for a in [0,2,4,6,8,10,12,13,14,16,18]:
+        t2to19policy = utils.consecutive_stage_policy(utils.DeterministicPolicy(a), horizon-2)
+        t0to1policy = [utils.DeterministicPolicy(1),utils.DeterministicPolicy(a)]
+        full_policy = utils.concat_long_policy(t0to1policy,t2to19policy)
+        sample_policy_list += [full_policy]
+
+    # s1 = 1
+    for a in range(horizon):        
+        t2to19policy = utils.consecutive_stage_policy(utils.DeterministicPolicy(a), horizon-2)
+        t0to1policy = [utils.DeterministicPolicy(13),utils.DeterministicPolicy(a)]
+        full_policy = utils.concat_long_policy(t0to1policy,t2to19policy)
+        sample_policy_list += [full_policy]
+    
+    return sample_policy_list
+
+
 # sample_policy_list = [all1_policy, all0_policy, alt01_policy, alt10_policy]
 # sample_policy_list = [alt01_policy, alt10_policy, all1_policy, all0_policy]
 # sample_policy_list = [full_policies.repeat_action_policy(i) for i in range(num_actions)]
-sample_policy_list = [full_policies.double_loop_full_policy(i,j,num_actions) for j in range(num_actions) for i in range(num_actions)]
+# sample_policy_list = [full_policies.double_loop_full_policy(i,j,num_actions) for j in range(num_actions) for i in range(num_actions)]
+sample_policy_list = env_hard_policy(horizon)
 
 # num_repeat_list = [1 for _ in range(num_actions)]
 num_repeat_list = [1 for _ in sample_policy_list]
