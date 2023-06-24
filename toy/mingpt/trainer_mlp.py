@@ -164,6 +164,8 @@ class Trainer:
 
                 # loss = loss.mean() # scalar tensor. Collapse all losses if they are scattered on multiple gpus
                 # print("Finish loss computation.")      
+                if self.config.tb_log is not None:
+                    self.tb_writer.add_scalar('training_loss', loss.item(), epoch_num)
             
             self.model.zero_grad()
             loss.backward()

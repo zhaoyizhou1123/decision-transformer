@@ -4,10 +4,19 @@ import torch
 class TimeVarEnv:
     '''
     A specific time-variant environment. \n
-    State: 0->1/2/3->0....
-    Action: num_actions=K possible actions.
-    Horizon: horizon=H
-    reward: each round (0->1->0) has an a*. a* gets reward 0,3; Others 2,0 or 0,2.
+    State: 0->1/2/3->0....  \n
+    Horizon: horizon=H even \n
+    Action: num_actions=K (typically H/2) possible actions. \n
+    Transition: each round (0->1/2/3->0) has an a*. Typically, a* = [h/2] From 0,
+    a* gets to state 3, other even gets to 2, other odd gets to 1. State 1,2,3 always transits to 0. \n
+    Reward: State 0: a* and other odd gets 1, other even gets 2. At state 1, other odd gets 2, rest 0;
+    state 2, other even gets 1, rest 0; state 3, a* gets 3, other 0. \n
+    Optimal action: Always choose the a* of the timestep. Return: 2H. \n
+
+    Dataset
+    ==
+    timevar_exp: double_loop_full(i,j) i,j in 0,1,...,9. Problem: Optimal policy too rare
+    timevar_exp2: Optimal policy repeated 40 times
     '''
     def __init__(self, horizon: int, num_actions: int, state_hash=None, action_hash=None):
         assert horizon % 2 == 0, f"Horizon must be even!"

@@ -86,9 +86,10 @@ class BanditRewardDataset(Dataset):
     Return (s,a,r,s',t)
     '''
 
-    def __init__(self, states, actions, rewards, timesteps, state_hash=None, action_hash=None):       
+    def __init__(self, states, actions, rewards, timesteps, state_hash=None, action_hash=None, time_order = False):       
         '''
-        state_hash: function | None. If not None, specifies a way to hash states
+        state_hash: function | None. If not None, specifies a way to hash states \n
+        time_order: If true, get data in the order of t= H-1,H-2,...,0, used for ordered training. Should be true when shuffle=False
         ''' 
         # self.block_size = block_size # args.context_length*3
         self.vocab_size = 2 # Specifies number of actions. The actions are represented s {0,1,2,...}
@@ -104,6 +105,8 @@ class BanditRewardDataset(Dataset):
 
         self._trajectory_num = states.shape[0] # number of trajectories in dataset
         self._horizon = actions.shape[1]
+
+        self._time_order = time_order
 
         # number of trajectories should match
         assert self._trajectory_num == actions.shape[0] 
@@ -138,13 +141,17 @@ class BanditRewardDataset(Dataset):
         # states = states / 255.
 
         # ctx = self.block_size // 3 # context length
-        data_num_per_trajectory = self._horizon  # number of data one trajectory provides
-        trajectory_idx = idx // data_num_per_trajectory # which trajectory to read, row
-        res_idx = idx - trajectory_idx * data_num_per_trajectory # column index to read
+        if not self._time_order:
+            data_num_per_trajectory = self._horizon  # number of data one trajectory provides
+            trajectory_idx = idx // data_num_per_trajectory # which trajectory to read, row
+            res_idx = idx - trajectory_idx * data_num_per_trajectory # column index to read
+        else: # (0, H-1), (1,H-1), ..., (num_traj-1,H-1),(0,H-2),...,(num_traj-1, 0), in this order
+            res_idx = self._horizon - 1 - idx // self._trajectory_num
+            trajectory_idx = idx % self._trajectory_num
         
         assert res_idx < self._horizon, idx
         assert trajectory_idx < self._trajectory_num, idx
-
+        
         state = self.states[trajectory_idx, res_idx, :]
         state = self._hash_state(state) # hash the state
 

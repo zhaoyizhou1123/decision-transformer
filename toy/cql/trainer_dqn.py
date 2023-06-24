@@ -9,8 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 """
 
 """
-Simple training loop; Boilerplate that could apply to any arbitrary neural network,
-so nothing in this file really has anything to do with GPT specifically.
+Use DQN network, output is approximated Q for all actions
 """
 
 import math
@@ -26,27 +25,17 @@ from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data.dataloader import DataLoader
 
 from torch.utils.tensorboard import SummaryWriter  
+from cql.model_cql import DqnNetwork
 
 logger = logging.getLogger(__name__)
 
 class TrainerConfig:
     # optimization parameters
-    # max_epochs = 10
-    # batch_size = 64
-    # learning_rate = 3e-4
-    # betas = (0.9, 0.95)
-    # grad_norm_clip = 1.0
-    # weight_decay = 0.1 # only applied on matmul weights
-    # # learning rate decay params: linear warmup followed by cosine decay to 10% of original
-    # lr_decay = False
-    # warmup_tokens = 375e6 # these two numbers come from the GPT-3 paper, but may not be good defaults elsewhere
-    # final_tokens = 260e9 # (at what point we reach 10% of original LR)
-    # # checkpoint settings
-    # ckpt_prefix = None
-    # num_workers = 0 # for DataLoader
-    # horizon = 5
-    # desired_rtg = horizon
-    # env = None # gym.Env class, the MDP environment
+    '''
+    Also needs to contain: 
+    - target_upd_period: int, the period to update target
+    '''
+
 
     def __init__(self, 
                  batch_size, 
@@ -75,9 +64,9 @@ class TrainerConfig:
             setattr(self, k, v)
 
 class Trainer:
-    def __init__(self, model, dataset, config):
+    def __init__(self, model_config, dataset, config):
         '''
-        model: nn.Module, should be class SimpleDT \n
+        model_config: model_cql.DqnConfig class.
         dataset: torch.utils.data.Dataset, should be training dataset \n
         config: TrainerConfig class, contains following elements:
         - batch_size, int
@@ -94,13 +83,19 @@ class Trainer:
         - tb_log, path to tb log directory
         - r_scale, scale the reward for better performance
         '''
-        self.model = model
+        self.target_model = DqnNetwork(model_config) # updating after every C epochs
+        self.policy_model = DqnNetwork(model_config) # keep updating
+
+        # Copy policy model params to target
+        self.target_model.load_state_dict(self.policy_model.state_dict())
+
         self.dataset = dataset
         self.config = config
 
         self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
+        assert self.action_space.shape[1] == 1, "DQN training is only implemented for action_dim = 1 !"
         
-        self.optimizer = torch.optim.AdamW(self.model.parameters(), 
+        self.optimizer = torch.optim.AdamW(self.policy_model.parameters(), 
                                            lr = config.learning_rate, 
                                            weight_decay = config.weight_decay)
 
@@ -108,7 +103,8 @@ class Trainer:
         if torch.cuda.is_available():
             self.device = torch.cuda.current_device()
             print(f"device={self.device}")
-            self.model = torch.nn.DataParallel(self.model).to(self.device)
+            self.target_model = torch.nn.DataParallel(self.target_model).to(self.device)
+            self.policy_model = torch.nn.DataParallel(self.policy_model).to(self.device)
 
         if config.tb_log is not None:
             self.tb_writer = SummaryWriter(config.tb_log)
@@ -128,31 +124,18 @@ class Trainer:
     
     def _max_q(self, states, timesteps):
         '''
-        Compute the maximum Q-function under given states, used for bellman operator. \n
+        Compute the maximum Q-function under given states using target network, used for bellman operator. \n
         Input: states, (batch,state_dim); timesteps, (batch, )
         Output: (batch,)
         '''
-        max_qs = []
-        for i in range(states.shape[0]): # Compute max for each batch element
-            action_space = self.action_space # (num_action, action_dim)
-            num_action = action_space.shape[0] # number of possible actions
 
-            state = states[i] # (state_dim)
-            state = state.repeat(num_action, 1) # (num_action, state_dim)
-
-            timestep = timesteps[i]
-            if timestep == self.config.horizon: # terminal step, Q function is 0
-                max_qs += [0]
-            else:
-                timestep = timestep.repeat(num_action) # (num_action)
-                qfs = self.model(state,action_space,timestep)
-                max_q = torch.max(qfs).item() # scalar
-                max_qs += [max_q] # add max_q to list
-        return torch.tensor(max_qs)
+        qfs = self.target_model(states, timesteps) # (batch, n_act)
+        max_qfs, _ = torch.max(qfs, 1) # return: max value, max idx, both (batch, )
+        return max_qfs
     
-    def _get_optimal_action(self, states, timesteps, env, record_qf = False, epoch=-1):
+    def _get_optimal_action(self, states, timesteps, record_qf = False, epoch=-1):
         '''
-        Compute the optimal action under given states. \n
+        Compute the optimal action under given states using policy network. \n
         Input: 
         - states, (batch,state_dim); 
         - timesteps, (batch, )
@@ -161,46 +144,13 @@ class Trainer:
         - epoch: Epoch of training. Only used when record_qf is True.
         Output: (batch,action_dim)
         '''
+
+        qfs = self.policy_model(states, timesteps) # (batch, n_act)
+        _, max_idxs = torch.max(qfs, 1) # return: max value, max idx, both (batch, )
+        
+        # Get action from action space, as there might be action renaming
         action_space = self.action_space # (num_action, action_dim)
-        num_action = action_space.shape[0] # number of possible actions
-        action_dim = action_space.shape[1]
-        opt_actions = torch.zeros((0,action_dim))
-        for i in range(states.shape[0]): # Compute max for each batch element
-
-            state = states[i] # (state_dim)
-            state = state.repeat(num_action, 1) # (num_action, state_dim)
-
-            timestep = timesteps[i]
-            timestep = timestep.repeat(num_action) # (num_action)
-            
-            state = state.type(torch.float32).to(self.device)
-            all_actions = action_space.type(torch.float32).to(self.device)
-            timestep = timestep.to(self.device)
-            qfs = self.model(state,all_actions,timestep)
-
-            # Record in tb
-            # if record_qf:
-            #     tb_scalars = {} # dict to be added to tb_writer
-            #     for j in range(num_action):
-            #         # assert state.shape[1]==1, f"State dim {state.shape[1]} larger than 1"
-            #         key = f"a{j}"
-            #         tb_scalars[key] = qfs[j] * self.config.r_scale # Store the unscaled qf
-            #     self.tb_writer.add_scalars(f"Qf-t{int(timestep[j].item())}", tb_scalars, epoch)
-
-            # if record_qf:
-            #     q13 = qfs[13].item()
-            #     sort_qfs, idx = torch.sort(qfs, descending=True)
-            #     print(f"Timestep {timestep[0].item()}, state {state[0].item()}, Q-function best {sort_qfs[0].item()}, best action {idx[0].item()}, Q13 {q13}")
-
-            # opt_index = torch.argmax(qfs).item()
-            opt_action = env.get_action(qfs, mode='best')
-            # if timestep[0].item() == 0:
-            #     print(f"Timestep {timestep[0].item()}, take action {opt_action}")
-
-            opt_action = opt_action.reshape(1,-1) # (1,action_dim)
-            # opt_action = action_space[opt_index].unsqueeze(0) # (1,action_dim)
-            opt_actions = torch.cat([opt_actions, opt_action],dim=0)
-        return opt_actions
+        return torch.index_select(action_space, dim = 0, index = max_idxs.to('cpu'))
     
     def _log_sum_exp_q(self, states, timesteps):
         '''
@@ -208,20 +158,9 @@ class Trainer:
         Input: states, (batch,state_dim); timesteps, (batch, )
         Output: (batch,)
         '''
-        result_qs = []
-        for i in range(states.shape[0]): # Compute max for each batch element
-            action_space = self.action_space # (num_action, action_dim)
-            num_action = action_space.shape[0] # number of possible actions
-
-            state = states[i] # (state_dim)
-            state = state.repeat(num_action, 1) # (num_action, state_dim)
-
-            timestep = timesteps[i]
-            timestep = timestep.repeat(num_action) # (num_action)
-            qfs = self.model(state,action_space,timestep) # (num_action,)
-            result_q = torch.logsumexp(qfs,dim=0).item()
-            result_qs += [result_q] # add max_q to list
-        return torch.tensor(result_qs)
+    
+        qfs = self.policy_model(states, timesteps) # (batch, n_act)
+        return torch.logsumexp(qfs, dim=-1)
 
 
     def _run_epoch(self, epoch_num, r_scale=1.0):
@@ -247,16 +186,20 @@ class Trainer:
             next_states, (batch, state_dim)
             '''                
             states = states.to(self.device)
-            actions = actions.to(self.device)
             rewards = rewards.reshape(-1) / self.config.r_scale # guarantee shape (batch), scale the reward
+            rewards = rewards.to(self.device)
             timesteps = timesteps.type(torch.int).to(self.device)
+
+            assert actions.shape[1] == 1, f"DQN: action dim ({actions.shape[1]}) is not 1!"
+            actions = actions.to(self.device)
 
             # print(f"run_epoch: batch = {states.shape[0]}")
 
             # forward the model
             with torch.set_grad_enabled(True):
-                qfs = self.model(states,actions,timesteps) # estimated Q-functions Q(s,a), (batch,)
-                qfs = qfs.to('cpu') # move back to cpu
+                full_qfs = self.policy_model(states, timesteps) # estimated Q-functions for all actions, (batch,n_act)
+                qfs = full_qfs.gather(-1, actions.long()).squeeze(-1) # Select Q(s,a), (batch, )
+                # qfs = qfs.to('cpu') # move back to cpu
                 # print(f"qfs {qfs.device}")
                 with torch.no_grad():
                     max_next_qfs = self._max_q(next_states,timesteps+1) #(batch, )
@@ -281,20 +224,26 @@ class Trainer:
                 # losses.append(loss.item())
                 # print("Finish loss computation.")      
             
-            self.model.zero_grad()
+            self.policy_model.zero_grad()
             loss.backward()
             # print(f"Gradient of K: {self.model.transformer.key.weight.grad}")
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.config.grad_norm_clip)
+            torch.nn.utils.clip_grad_norm_(self.policy_model.parameters(), self.config.grad_norm_clip)
             self.optimizer.step()
+            
+            # Sync target model periodically
+            if (epoch_num + 1) % self.config.target_upd_period == 0:
+                self.target_model.load_state_dict(self.policy_model.state_dict())
+
 
             pbar.set_description(f"Epoch {epoch_num+1}, iter {it}: train loss {loss.item():.5f}.")
+
 
     def eval(self, train_epoch=-1):
         '''
         train_epoch, int, the epoch of training. -1 for initial value.
         Used for tensorboard.
         '''
-        self.model.train(False)
+        self.policy_model.train(False)
 
         # Log parameters, for one-hot encoding, single layer only
         # model_module = self.model.module if hasattr(self.model, 'module') else self.model
@@ -319,7 +268,7 @@ class Trainer:
 
             ret = 0 # total return 
             for h in range(self.config.horizon):
-                action = self._get_optimal_action(state,timestep,env,record_qf=True,epoch=train_epoch)
+                action = self._get_optimal_action(state,timestep,record_qf=True,epoch=train_epoch)
                 # print(f"Epoch {train_epoch}, timestep {h}, action {action}")
                 # action = action.item() # Change to int, only for 1-dim actions!
 
@@ -338,7 +287,7 @@ class Trainer:
         if self.config.tb_log is not None:
             self.tb_writer.add_scalar("avg_ret", avg_ret, train_epoch)
         # Set the model back to training mode
-        self.model.train(True)
+        self.policy_model.train(True)
         return avg_ret
     
     def _save_checkpoint(self, ckpt_path):
@@ -346,7 +295,7 @@ class Trainer:
         ckpt_path: str, path of storing the model
         '''
         # DataParallel wrappers keep raw model object in .module attribute
-        raw_model = self.model.module if hasattr(self.model, "module") else self.model
+        raw_model = self.policy_model.module if hasattr(self.policy_model, "module") else self.policy_model
         logger.info("saving %s", ckpt_path)
         torch.save(raw_model, ckpt_path)
 
