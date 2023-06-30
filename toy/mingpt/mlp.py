@@ -52,7 +52,7 @@ class MlpPolicy(nn.Module):
     Model for policy
     '''
 
-    def __init__(self, observation_dim, n_act, ctx, horizon, token_repeat=1, arch='256-256', embd_dim = -1, one_hot=False, action_dim=1):
+    def __init__(self, observation_dim, n_act, ctx, horizon, token_repeat=1, arch='256-256', embd_dim = -1, one_hot=False, action_dim=1, simple_input=False):
         '''
         - action_dim: We expect acts given in one-hot, so action_dim = n_action
         - embd_dim: dimension of observation/action embedding
@@ -60,6 +60,7 @@ class MlpPolicy(nn.Module):
         - horizon: used for timestep embedding. Timestep starts with 0
         - token_repeat: int, repeat action multiple times to emphasize it.
         - embd_dim: int. If <= 0, no embedding, simply input (s,a,g,t); Else embed(s)+embed(t), ...
+        - simple_input: If true, only use input (g_{t-ctx+1},g_{t-ctx+2},...g_{t-1},s_t,g_t,t) as input
         '''
         super().__init__()
         self.observation_dim = observation_dim
@@ -75,6 +76,7 @@ class MlpPolicy(nn.Module):
         self.embd_dim = embd_dim
 
         self.do_embd = (embd_dim > 0) # If True, do embedding, else simply (s,g,a,t)
+        self.simple_input = simple_input
 
         if self.do_embd:
             self.embd_obs = nn.Linear(observation_dim, embd_dim)
@@ -84,15 +86,19 @@ class MlpPolicy(nn.Module):
 
         # s,g,t * ctx, a * ctx-1
         if self.do_embd:
-            self.network = FullyConnectedNetwork(
-                self.token_repeat*(ctx * embd_dim * 2 + (ctx-1) * embd_dim), 
-                n_act, arch
-            )
+            if self.simple_input:
+                input_dim = (ctx + 1) * embd_dim
+            else:
+                input_dim = ctx * embd_dim * 2 + (ctx-1) * embd_dim
         else:
-            self.network = FullyConnectedNetwork(
-                self.token_repeat*(ctx * (self.observation_dim + 1 + 1) + (ctx-1) * self.action_dim), 
-                n_act, arch
-            )
+            if self.simple_input:
+                input_dim = self.observation_dim + ctx + 1
+            else:
+                input_dim = ctx * (self.observation_dim + 1 + 1) + (ctx-1) * self.action_dim
+        self.network = FullyConnectedNetwork(
+            self.token_repeat * input_dim, 
+            n_act, arch
+        )
 
     def forward(self, obs, acts, rtgs, timesteps):
         '''
@@ -124,7 +130,7 @@ class MlpPolicy(nn.Module):
             timesteps = timesteps.unsqueeze(-1).type(torch.float32) # (batch, T, 1)
 
         # Pad to ctx length. Timesteps pad with -1, acts pad to ctx-1
-        obs = torch.cat([torch.zeros(batch, self.ctx-obs.shape[1], obs.shape[-1]).to(obs.device), obs], dim=1)
+        obs = torch.cat([torch.zeros(batch, self.ctx-obs.shape[1], obs.shape[-1]).to(obs.device), obs], dim=1) # (batch, ctx, obs_dim)
         acts = torch.cat([torch.zeros(batch, self.ctx-1-acts.shape[1], acts.shape[-1]).to(acts.device), acts], dim=1)
         rtgs = torch.cat([torch.zeros(batch, self.ctx-rtgs.shape[1], rtgs.shape[-1]).to(rtgs.device), rtgs], dim=1)
 
@@ -132,20 +138,35 @@ class MlpPolicy(nn.Module):
             timesteps = torch.cat([torch.zeros(batch, self.ctx-timesteps.shape[1], timesteps.shape[-1]).to(timesteps.device)-1, timesteps], dim=1)
 
         # Reshape
-        obs = obs.reshape(batch, -1) # (batch, ctx*obs_dim) or (batch, ctx*embd_dim)
+        if self.simple_input:
+            obs = obs[:, -1, :] # (batch, obs_dim) or (batch, embd_dim)
+        else:
+            obs = obs.reshape(batch, -1) # (batch, ctx*obs_dim) or (batch, ctx*embd_dim)
+        
+        # Don't use action in simple_input, so only consider no simple input
         acts = acts.reshape(batch, -1) # (batch, (ctx-1)*act_dim) or (batch, (ctx-1)*embd_dim)
+
+        # Rtgs always keep full length
         rtgs = rtgs.reshape(batch, -1) # (batch, ctx*1) or (batch, ctx*embd_dim)
 
         if not self.do_embd:
             timesteps = timesteps.reshape(batch, -1) # (batch, ctx*1)
+            if self.simple_input:
+                timesteps = timesteps[:, -1:] # (batch, 1)
 
 
         # Order of tokens is unimportant for mlp, so we don't use interleave
-        if not self.do_embd:
-            input_tensor = torch.cat([timesteps, obs, rtgs, acts], dim=-1)  
+        if self.simple_input:
+            if not self.do_embd:
+                input_tensor = torch.cat([timesteps, obs, rtgs], dim=-1) # (batch, 1) (batch, 1*obs_dim), (batch, ctx)
+            else:
+                input_tensor = torch.cat([obs, rtgs], dim=-1) # (batch, 1*embd_dim), (batch, ctx)
         else:
-            input_tensor = torch.cat([obs, rtgs, acts], dim=-1)
-        input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
+            if not self.do_embd:
+                input_tensor = torch.cat([timesteps, obs, rtgs, acts], dim=-1)  
+            else:
+                input_tensor = torch.cat([obs, rtgs, acts], dim=-1)
+            input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
 
         # (batch, action_dim)      
         return self.network(input_tensor)

@@ -1,5 +1,7 @@
+from typing import Any
 import torch
 import torch.nn.functional as f
+import math
 
 def read_env(env_path, time_depend_s=False, time_depend_a=False):
     '''
@@ -154,6 +156,137 @@ def read_env(env_path, time_depend_s=False, time_depend_a=False):
 
     return state_space, action_space, horizon, init_states, P, r
 
+def read_env_linearq(env_path: str):
+    '''
+    For linear Q environments. \n
+    Input: env_path, string, path to environment description file. \n
+    Output: 
+    - state_space: list of states, each state Tensor with shape (state_dim=1)
+    - action_space: list of actions, each action Tensor with shape (action_dim=1)
+    - horizon: int, horizon of the game
+    - init_states: Tensor (num_states), initial state distribution
+    - P: dict, key is tuple (s,a), s,a both int; value is state distribution, Tensor with shape (num_states)
+    - r: dict, key is tuple (s,a), s,a both int; value is reward r(s,a), scalar
+    '''
+    with open(env_path, "r") as f:
+        all_lines = f.readlines()
+        
+        # Remove comments and empty lines
+        lines = []
+        for line in all_lines:
+            if line[0] != "\n" and line[0] != "#":
+                lines.append(line)
+
+    # Num actions
+    num_actions = int(lines[0])
+    action_space = [torch.tensor(a) for a in range(num_actions)]
+
+    # Q-functions, given as a class
+    qf_lines = lines[-num_actions:]
+    q_functions = [] # list of Q-functions, index by a
+    s_intercepts = [] # s_intercepts
+
+    class LinearQ:
+        def __init__(self, point_s, point_q, slope):
+            self.point_s = point_s
+            self.point_q = point_q
+            self.slope = slope
+        def __call__(self, s):
+            return max(0, self.slope * (s - self.point_s) + self.point_q)
+
+    for qf_line in qf_lines: # one action
+        split_line = qf_line.split(',')
+        point_s = float(split_line[0])
+        point_q = float(split_line[1])
+        slope = float(split_line[2])
+        assert slope < 0, f"Slope should be negative, get {slope}"
+        q_functions.append(LinearQ(point_s, point_q, slope))
+        s_intercepts.append(point_s - point_q / slope)
+
+    # print(q_functions)
+
+    # Deduce state space
+    max_state = math.ceil(max(s_intercepts))
+    state_space = [torch.tensor(s) for s in range(max_state + 1)]
+    num_states = max_state + 1
+
+    # Get horizon
+    horizon = max_state + 1
+
+    # Get init_states, always at 0
+    init_states = torch.zeros(num_states)
+    init_states[0] = 1
+
+    # Get tabular Q-functions, value functions, and optimal actions
+    # Tabular Q: list(list), state, action
+    # value: list, index state
+    # opt_act_table: list, index state
+    q_table = []
+    v_table = []
+    # opt_act_table = []
+    for s in range(num_states):
+        qfs = [(q_functions[a])(s) for a in range(num_actions)]
+        q_table.append(qfs)
+
+        value = max(qfs)
+        # opt_act = qfs.index(value) # optimal action
+
+        v_table.append(value)
+        # opt_act_table.append(opt_act)
+
+    # print(q_table)
+    # print(v_table)
+
+    # Deduce transition
+    P = {}
+    for s in range(num_states):
+        if s == num_states - 1: # The last state, transits to itself
+            probs = torch.zeros(num_states)
+            probs[num_states - 1] = 1
+            for a in range(num_actions):
+                P[(s,a)] = probs
+        else: # not the last state
+            v = v_table[s] # value function
+            for a in range(num_actions):
+                qf = q_table[s][a] # q function of a
+                if qf == v: # optimal action
+                    # transits to the next state
+                    probs = torch.zeros(num_states)
+                    probs[s+1] = 1
+                    P[(s,a)] = probs
+                else: # sub-optimal action
+                    # use an odd state as reference state
+                    ref_s = s if s % 2 == 1 else s + 1 
+                    qf_ref_s = q_table[ref_s][a]
+                    
+                    # If is 0, transits directly to the last state
+                    if qf_ref_s == 0:
+                        next_s = num_states -1
+                    # If still > 0, find the largest value function below qf_ref_s
+                    else:
+                        for next_s in range(ref_s, num_states):
+                            if v_table[next_s] < qf_ref_s:
+                                break
+                
+                    probs = torch.zeros(num_states)
+                    probs[next_s] = 1
+                    P[(s,a)] = probs
+
+    # Deduce reward
+    r = {}
+    for s in range(num_states):
+        for a in range(num_actions):
+            next_s_probs = P[(s,a)]
+            next_s = torch.argmax(next_s_probs, dim=0).item()
+            reward = q_table[s][a] - v_table[next_s]
+            r[(s,a)] = reward
+
+    return state_space, action_space, horizon, init_states, P, r    
+
+        
+        
+
+
 def sample(probs):
     '''
     Sample according to probs given. \n
@@ -202,12 +335,15 @@ class OneHotHash:
             x = x.reshape(-1,x.shape[-1]) #(n,self.num_class), (1,self.num_class)
             return torch.argmax(x, dim=1) 
 
-# state_space, action_space, horizon, init_states, P, r = read_env("env_bandit.txt", time_depend=True)
+# state_space, action_space, horizon, init_states, P, r = read_env_linearq("env_linearq.txt")
 # print(len(state_space), len(action_space))
-# print(P)
-# for key, value in P:
-#     print(f"key:{key}")
-#     print(f"value:{value}")
+# for s in range(20):
+#     for a in range(2):
+#         next_s_probs = P[(s,a)]
+#         next_s = torch.argmax(next_s_probs).item()
+#         print(f"s={s},a={a},s'={next_s}")
+# print('---------------------')
+# print(r)
 
 # dict = {(1,1):2, (2,2):3}
 # for key, value in dict:

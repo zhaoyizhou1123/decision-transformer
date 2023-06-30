@@ -21,6 +21,11 @@ class Policy01(Policy):
         action = random.choice(a=[0,1], size=1, p=[self._prob0, self._prob1]) # an array of size 1
         return action[0]
     
+    def inverse_prob(self):
+        '''
+        Return a policy with inversed probs
+        '''
+        return Policy01(1-self._prob0)
 class DeterministicPolicy(Policy):
     def __init__(self, action):
         self._action = action
@@ -123,6 +128,17 @@ class FullPolicy:
         for t in range(loop):
             full_policy.append(DeterministicPolicy((start_action1 + t) % num_action))
             full_policy.append(DeterministicPolicy((start_action2 + t) % num_action))
+        return full_policy
+    
+    def loop_full_policy(self, start_action, num_action):
+        '''
+        horizon must be even
+        action form a,a+1,...,a+H/2-1 % A
+        '''
+        loop = self.horizon
+        full_policy = []
+        for t in range(loop):
+            full_policy.append(DeterministicPolicy((start_action + t) % num_action))
         return full_policy
     
 

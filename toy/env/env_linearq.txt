@@ -1,0 +1,14 @@
+# Environment with linear Q
+# |A|, Q-functions
+# Q-function format: each line, a point of function and slope, derive a linear function (A lines)
+# Automatically deduce state space, horizon, transition and reward
+# state space = 0,1,2,...,s, where s is the first int such that all Q(s,a)=0
+# horizon is s+1
+# initial state is always 0
+
+# |A|
+2
+
+# Q. point s coordinate, point Q coordinate, slope. Slope should be negative
+9.5, 9.5, -3
+9.5, 9.5, -1

@@ -21,7 +21,7 @@ import os
 from env.utils import sample
 from env.bandit_dataset import BanditReturnDataset, read_data
 from env.bandit_env import BanditEnv
-from env.time_var_env import TimeVarEnv
+from env.time_var_env import TimeVarEnv, TimeVarBanditEnv
 
 parser = argparse.ArgumentParser()
 # parser.add_argument('--seed', type=int, default=123)
@@ -53,7 +53,8 @@ parser.add_argument('--repeat', type=int, default=1, help="Repeat tokens in Q-ne
 parser.add_argument('--sample', action='store_false', help="Sample action by probs, or choose the largest prob")
 parser.add_argument('--time_depend_s',action='store_true')
 parser.add_argument('--time_depend_a',action='store_true')
-parser.add_argument('--time_var',action='store_true')
+parser.add_argument('--env_type', type=str, default='bandit', help='bandit or timevar or timevar_bandit or linearq')
+parser.add_argument('--simple_input',action='store_false', help='Only use history rtg info if true')
 args = parser.parse_args()
 print(args)
 
@@ -165,15 +166,21 @@ print(args)
 # print(f"timesteps:{timesteps_slice}")
 
 # print("Begin generating train_dataset")
-if not args.time_var:
-    env = BanditEnv(args.env_path, sample=sample, state_hash=None, action_hash=None, 
-                    time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
-    horizon = env.get_horizon()
+if args.env_type == 'timevar':
+    env = TimeVarEnv(horizon=args.horizon, num_actions=10)
+elif args.env_type == 'bandit':
+    env = BanditEnv(args.env_path, sample, time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
+elif args.env_type == 'linearq':
+    env = BanditEnv(args.env_path, sample, mode='linearq')
+elif args.env_type == 'timevar_bandit':
+    env = TimeVarBanditEnv(horizon=args.horizon, num_actions=args.horizon)
 else:
-    horizon = args.horizon
-    assert horizon % 2 == 0, f"Horizon {horizon} must be even!"
-    num_actions = horizon // 2
-    env = TimeVarEnv(horizon, num_actions)
+    raise Exception(f"Unimplemented env_type {args.env_type}!")
+
+horizon = env.get_horizon()
+num_actions = env.get_num_action()
+# print(f"Num_actions = {num_actions}")
+
 
 states, actions, rtgs, timesteps = read_data(args.data_file, horizon)
 train_dataset = BanditReturnDataset(states, args.context_length*3, actions, rtgs, timesteps, single_timestep=True)
@@ -198,7 +205,8 @@ elif args.model == 'mlp':
     num_action = env.get_num_action()
     # print(f"num_action={num_action}")
     # model = MlpPolicy(1, num_action, args.context_length, horizon, args.repeat, args.arch, args.n_embd)
-    model = MlpPolicy(1, num_action, args.context_length, horizon, args.repeat, args.arch, args.n_embd)
+    model = MlpPolicy(1, num_action, args.context_length, horizon, args.repeat, args.arch, args.n_embd,
+                      simple_input=args.simple_input)
 else:
     raise(Exception(f"Unimplemented model {args.model}!"))
 
@@ -220,6 +228,8 @@ else: # 'mlp'
     if args.arch == '/':
         args.arch = ''
     tb_dir = f"{args.model}_{data_file}_ctx{args.context_length}_arch{args.arch}_{sample_method}_rep{args.repeat}_embd{args.n_embd}_batch{args.batch_size}_goal{args.goal}_lr{args.rate}"
+    if args.simple_input:
+        tb_dir += "_simpleinput"
 tb_dir_path = os.path.join(args.tb_path,args.tb_suffix,tb_dir)
 os.makedirs(tb_dir_path, exist_ok=False)
 

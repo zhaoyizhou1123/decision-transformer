@@ -5,7 +5,7 @@ from env.bandit_dataset import BanditRewardDataset, read_data_reward
 from cql.model_cql import FullyConnectedQFunction
 # from env.no_best_RTG import BanditEnv as Env
 from env.bandit_env import BanditEnv
-from env.time_var_env import TimeVarEnv
+from env.time_var_env import TimeVarEnv, TimeVarBanditEnv
 import logging
 import os
 from env.utils import OneHotHash, sample
@@ -37,7 +37,7 @@ parser.add_argument('--repeat', type=int, default=1, help="Repeat tokens in Q-ne
 parser.add_argument('--scale', type=float, default=1.0, help="Scale the reward")
 parser.add_argument('--time_depend_s',action='store_true')
 parser.add_argument('--time_depend_a',action='store_true')
-parser.add_argument('--time_var',action='store_true')
+parser.add_argument('--env_type', type=str, default='bandit', help='bandit or timevar or timevar_bandit')
 parser.add_argument('--hash_a',type=str, default=None, help='onehot')
 parser.add_argument('--shuffle',action='store_false')
 parser.add_argument('--tabular',action='store_true')
@@ -64,16 +64,19 @@ logging.basicConfig(
 # env = Env(args.env_path, sample=sample, state_hash=None, action_hash=hash, 
         #   time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
 
-if not args.time_var:
-    env = BanditEnv(args.env_path, sample=sample, state_hash=None, action_hash=None, 
-                    time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
-    horizon = env.get_horizon()
-    num_actions = env.get_num_action()
+if args.env_type == 'timevar':
+    env = TimeVarEnv(horizon=args.horizon, num_actions=10)
+elif args.env_type == 'bandit':
+    env = BanditEnv(args.env_path, sample, time_depend_s=args.time_depend_s, time_depend_a=args.time_depend_a)
+elif args.env_type == 'linearq':
+    env = BanditEnv(args.env_path, sample, mode='linearq')
+elif args.env_type == 'timevar_bandit':
+    env = TimeVarBanditEnv(horizon=args.horizon, num_actions=args.horizon)
 else:
-    horizon = args.horizon
-    assert horizon % 2 == 0, f"Horizon {horizon} must be even!"
-    num_actions = horizon // 2
-    env = TimeVarEnv(horizon, num_actions)
+    raise Exception(f"Unimplemented env_type {args.env_type}!")
+
+horizon = env.get_horizon()
+num_actions = env.get_num_action()
 
 # time_var_env method
 # horizon = args.horizon
@@ -112,7 +115,7 @@ if args.train_mode == 'dqn':
     tb_dir += f"_dqn_period{args.dqn_upd_period}"
 
 tb_dir_path = os.path.join(args.tb_path, args.tb_suffix, tb_dir)
-os.makedirs(tb_dir_path, exist_ok=True)
+os.makedirs(tb_dir_path, exist_ok=False)
 
 # Remember to change the observed action dim according to the hashing method
 # observed_action_dim = env.get_num_action()

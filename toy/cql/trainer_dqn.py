@@ -125,12 +125,18 @@ class Trainer:
     def _max_q(self, states, timesteps):
         '''
         Compute the maximum Q-function under given states using target network, used for bellman operator. \n
+        Special case: when timesteps == horizon, need to manually output 0
         Input: states, (batch,state_dim); timesteps, (batch, )
         Output: (batch,)
         '''
 
         qfs = self.target_model(states, timesteps) # (batch, n_act)
         max_qfs, _ = torch.max(qfs, 1) # return: max value, max idx, both (batch, )
+
+        # Update: modify entries where timesteps == horizon to 0
+        invalid_idxs = (timesteps == self.config.horizon) # (batch, )
+        max_qfs[invalid_idxs] = 0
+        
         return max_qfs
     
     def _get_optimal_action(self, states, timesteps, record_qf = False, epoch=-1):
@@ -140,7 +146,7 @@ class Trainer:
         - states, (batch,state_dim); 
         - timesteps, (batch, )
         - env, the environment to sample action. Should be self.config.env
-        - record_qf: If true, use tensorboard to record the q-functions at timestep 0
+        - record_qf: If true, use tensorboard to record the q-functions, only for eval
         - epoch: Epoch of training. Only used when record_qf is True.
         Output: (batch,action_dim)
         '''
@@ -150,7 +156,25 @@ class Trainer:
         
         # Get action from action space, as there might be action renaming
         action_space = self.action_space # (num_action, action_dim)
+
+        # Record Q-functions
+        if record_qf:
+            # Batch size must be 1
+            assert qfs.shape[0] == 1, "eval record qf: batch size not 1!"
+
+            num_action = action_space.shape[0] # number of possible actions
+            tb_scalars = {} # dict to be added to tb_writer
+            
+            t = int(timesteps.item())
+            horizon = self.config.horizon
+            if t in [0, horizon-1, horizon//2, horizon//2 - 1]: # Only record qf for t = 0, h/2-1, h/2, h-1s
+                for j in [int(0), int(num_action - 1)]:
+                    # assert state.shape[1]==1, f"State dim {state.shape[1]} larger than 1"
+                    key = f"a{j}"
+                    tb_scalars[key] = qfs[0,j] * self.config.r_scale # Store the unscaled qf
+                self.tb_writer.add_scalars(f"Qf-t{t}", tb_scalars, epoch)
         return torch.index_select(action_space, dim = 0, index = max_idxs.to('cpu'))
+    
     
     def _log_sum_exp_q(self, states, timesteps):
         '''
@@ -269,7 +293,10 @@ class Trainer:
             ret = 0 # total return 
             for h in range(self.config.horizon):
                 action = self._get_optimal_action(state,timestep,record_qf=True,epoch=train_epoch)
-                # print(f"Epoch {train_epoch}, timestep {h}, action {action}")
+
+                # print info
+                print(f"Epoch {train_epoch}, timestep {h}, state {state.item()}, action {action.item()}")
+                
                 # action = action.item() # Change to int, only for 1-dim actions!
 
                 # Update state, observe reward
@@ -278,6 +305,10 @@ class Trainer:
 
                 # Calculate return
                 ret += reward
+
+                # print reward, return
+                print(f"reward {reward}, current return {ret}")
+
                 timestep += 1
             # Add the ret to list
             rets.append(ret)

@@ -129,6 +129,7 @@ class Trainer:
     def _max_q(self, states, timesteps):
         '''
         Compute the maximum Q-function under given states, used for bellman operator. \n
+        Special case: when timesteps == horizon, need to manually output 0
         Input: states, (batch,state_dim); timesteps, (batch, )
         Output: (batch,)
         '''
