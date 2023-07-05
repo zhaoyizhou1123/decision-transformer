@@ -335,15 +335,16 @@ class OneHotHash:
             x = x.reshape(-1,x.shape[-1]) #(n,self.num_class), (1,self.num_class)
             return torch.argmax(x, dim=1) 
 
-# state_space, action_space, horizon, init_states, P, r = read_env_linearq("env_linearq.txt")
-# print(len(state_space), len(action_space))
-# for s in range(20):
-#     for a in range(2):
-#         next_s_probs = P[(s,a)]
-#         next_s = torch.argmax(next_s_probs).item()
-#         print(f"s={s},a={a},s'={next_s}")
-# print('---------------------')
-# print(r)
+state_space, action_space, horizon, init_states, P, r = read_env_linearq("env_linearq.txt")
+print(len(state_space), len(action_space))
+for s in range(20):
+    for a in range(2):
+        next_s_probs = P[(s,a)]
+        next_s = torch.argmax(next_s_probs).item()
+        print(f"s={s},a={a},s'={next_s}", end='; ')
+    print()
+print('---------------------')
+print(r)
 
 # dict = {(1,1):2, (2,2):3}
 # for key, value in dict:
