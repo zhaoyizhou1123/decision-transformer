@@ -1,4 +1,4 @@
-from env.utils import read_env, sample as default_sample
+from env.utils import read_env, read_env_linearq, sample as default_sample
 import torch
  
 
@@ -9,7 +9,7 @@ class BanditEnv:
     '''
     # metadata = {'render.modes': ['human']}
     def __init__(self, env_path, sample=None, state_hash=None, action_hash=None, 
-                 time_depend_s=False, time_depend_a=False):
+                 time_depend_s=False, time_depend_a=False, mode='bandit'):
         '''
         - env_path: str, path to environment description file
         - sample: function. A way to sample int from given probs. Should be utils.sample
@@ -18,6 +18,7 @@ class BanditEnv:
             `action_hash(action, inv=False)`. 
         - time_depend_s: bool. If true, state becomes s+t*S 
         - time_depend_a: bool. If true, action becomes a+t*A
+        - mode: str, 'bandit' or 'linearq'. If linearq, use the read_env_linearq method
 
         Note: the class stores true states, specified by env description file. It outputs obs, which 
         is hashed from state by state_hash. 
@@ -27,7 +28,12 @@ class BanditEnv:
         # self.df = df
         # self.reward_range = (0, MAX_ACCOUNT_BALANCE)
         # print(time_depend)
-        state_space, action_space, horizon, init_states, P, r = read_env(env_path, time_depend_s, time_depend_a)
+        if mode == 'bandit':
+            state_space, action_space, horizon, init_states, P, r = read_env(env_path, time_depend_s, time_depend_a)
+        elif mode == 'linearq':
+            state_space, action_space, horizon, init_states, P, r = read_env_linearq(env_path)
+        else:
+            raise Exception(f"BanditEnv: Unimplemented mode {mode}")
         # print(state_space, action_space, horizon, init_states, P, r)
 
         self.state_space = state_space # list of states, each state Tensor with shape (1)
@@ -65,6 +71,7 @@ class BanditEnv:
         current_state = self._current_state.item() # int
 
         next_state_probs = self.transition_table[(current_state, action)]
+        # print(next_state_probs)
         next_state = self._basic_sample(next_state_probs)
         # next_state= self._hash_state(next_state) # hash the state if needed
         self._current_state = next_state # update state

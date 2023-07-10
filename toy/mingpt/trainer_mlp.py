@@ -164,6 +164,8 @@ class Trainer:
 
                 # loss = loss.mean() # scalar tensor. Collapse all losses if they are scattered on multiple gpus
                 # print("Finish loss computation.")      
+                if self.config.tb_log is not None:
+                    self.tb_writer.add_scalar('training_loss', loss.item(), epoch_num)
             
             self.model.zero_grad()
             loss.backward()
@@ -195,11 +197,16 @@ class Trainer:
                 # pred_action_logits = pred_action_logits[:, -1, :] # keep the last step hidden_state
                 # print(f"Eval logits {pred_action_logits[0,:]}")
                 probs = F.softmax(pred_action_logits[0,:], dim=0) #(num_action)
-                # print(f"Step {h+1}, eval policy {probs}")
+
                 if self.config.sample:
                     sample_action = torch.multinomial(probs, num_samples=1) # Tensor (1,), between [0,num_action-1]
                 else:
-                    _, sample_action = torch.topk(probs, k=1, dim=-1) # Tensor(1,)                 
+                    _, sample_action = torch.topk(probs, k=1, dim=-1) # Tensor(1,)   
+
+                # Print output policy only for the first epoch
+                if epoch == 0:
+                    print(f"Step {h+1}, eval policy {list(probs.detach().cpu().numpy())}, action is {sample_action.detach().cpu().item()}") 
+                    print(f"logit is {list(pred_action_logits[0,:].detach().cpu().numpy())}")             
                 # sample_action = torch.zeros(action_dim)
                 # sample_action[sample] = 1 # one-hot representation, (action_dim)
 

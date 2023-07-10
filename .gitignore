@@ -8,7 +8,7 @@ toy/model
 toy/logs
 *.sh
 *.sbatch
+!run.sh
 *.json
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt
-debug/

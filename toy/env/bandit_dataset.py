@@ -32,13 +32,14 @@ class BanditReturnDataset(Dataset):
         assert self._trajectory_num == timesteps.shape[0] 
     
     def __len__(self):
-        return self._trajectory_num*(self._horizon - self.block_size // 3 + 1)
+        return self._trajectory_num * self._horizon
     
     def len(self):
         return self.__len__()
 
     def __getitem__(self, idx):
         '''
+        Update: Also train incomplete contexts. Incomplete contexts pad 0.
         Input: idx, int, index to get an RTG trajectory slice from dataset \n
         Return: An RTG trajectory slice with length ctx_length \n
         - states: Tensor of size [ctx_length, state_space_size]
@@ -57,20 +58,38 @@ class BanditReturnDataset(Dataset):
         # states = states / 255.
 
         ctx = self.block_size // 3 # context length
-        data_num_per_trajectory = self._horizon - self.block_size // 3 + 1  # number of data one trajectory provides
+        data_num_per_trajectory = self._horizon # number of data one trajectory provides
         trajectory_idx = idx // data_num_per_trajectory # which trajectory to read, row
         res_idx = idx - trajectory_idx * data_num_per_trajectory # column index to read
         
-        assert res_idx + ctx <= self._horizon, idx
+        assert res_idx < self._horizon, idx
         assert trajectory_idx < self._trajectory_num, idx
-        states_slice = self.data[trajectory_idx, res_idx : res_idx + ctx, :]
-        actions_slice = self.actions[trajectory_idx, res_idx : res_idx + ctx, :]
-        rtgs_slice = self.rtgs[trajectory_idx, res_idx : res_idx + ctx, :]
 
-        if self.single_timestep: 
-            timesteps_slice = self.timesteps[trajectory_idx, res_idx : res_idx + 1] # (1,)
+        # Test whether it is full context length
+        if res_idx - ctx + 1 < 0:
+            start_idx = 0
+            pad_len = ctx - res_idx - 1 # number of zeros to pad
         else:
-            timesteps_slice = self.timesteps[trajectory_idx, res_idx : res_idx + ctx] #(ctx, )
+            start_idx = res_idx - ctx + 1
+            pad_len = 0
+
+
+        states_slice = self.data[trajectory_idx, start_idx : res_idx + 1, :]
+        actions_slice = self.actions[trajectory_idx, start_idx : res_idx + 1, :]
+        rtgs_slice = self.rtgs[trajectory_idx, start_idx : res_idx + 1, :]
+
+        # pad 0
+        states_slice = torch.cat([torch.zeros(pad_len, states_slice.shape[-1]), states_slice], dim = 0)
+        actions_slice = torch.cat([torch.zeros(pad_len, actions_slice.shape[-1]), actions_slice], dim = 0)
+        rtgs_slice = torch.cat([torch.zeros(pad_len, rtgs_slice.shape[-1]), rtgs_slice], dim = 0)
+
+        if self.single_timestep: # take the last step
+            timesteps_slice = self.timesteps[trajectory_idx, res_idx : res_idx + 1] # (1,)
+        else: 
+            timesteps_slice = self.timesteps[trajectory_idx, start_idx : res_idx + 1] #(real_ctx_len, )
+            timesteps_slice = torch.cat([torch.zeros(pad_len, timesteps_slice.shape[-1]), timesteps_slice], dim = 0)
+
+        
         
         # print(f"Size of output: {states_slice.shape}, {actions_slice.shape}, {rtgs_slice.shape}, {timesteps_slice.shape}")
         # print(f"Dataset actions_slice: {actions_slice.shape}")
@@ -86,9 +105,10 @@ class BanditRewardDataset(Dataset):
     Return (s,a,r,s',t)
     '''
 
-    def __init__(self, states, actions, rewards, timesteps, state_hash=None, action_hash=None):       
+    def __init__(self, states, actions, rewards, timesteps, state_hash=None, action_hash=None, time_order = False):       
         '''
-        state_hash: function | None. If not None, specifies a way to hash states
+        state_hash: function | None. If not None, specifies a way to hash states \n
+        time_order: If true, get data in the order of t= H-1,H-2,...,0, used for ordered training. Should be true when shuffle=False
         ''' 
         # self.block_size = block_size # args.context_length*3
         self.vocab_size = 2 # Specifies number of actions. The actions are represented s {0,1,2,...}
@@ -104,6 +124,8 @@ class BanditRewardDataset(Dataset):
 
         self._trajectory_num = states.shape[0] # number of trajectories in dataset
         self._horizon = actions.shape[1]
+
+        self._time_order = time_order
 
         # number of trajectories should match
         assert self._trajectory_num == actions.shape[0] 
@@ -138,13 +160,17 @@ class BanditRewardDataset(Dataset):
         # states = states / 255.
 
         # ctx = self.block_size // 3 # context length
-        data_num_per_trajectory = self._horizon  # number of data one trajectory provides
-        trajectory_idx = idx // data_num_per_trajectory # which trajectory to read, row
-        res_idx = idx - trajectory_idx * data_num_per_trajectory # column index to read
+        if not self._time_order:
+            data_num_per_trajectory = self._horizon  # number of data one trajectory provides
+            trajectory_idx = idx // data_num_per_trajectory # which trajectory to read, row
+            res_idx = idx - trajectory_idx * data_num_per_trajectory # column index to read
+        else: # (0, H-1), (1,H-1), ..., (num_traj-1,H-1),(0,H-2),...,(num_traj-1, 0), in this order
+            res_idx = self._horizon - 1 - idx // self._trajectory_num
+            trajectory_idx = idx % self._trajectory_num
         
         assert res_idx < self._horizon, idx
         assert trajectory_idx < self._trajectory_num, idx
-
+        
         state = self.states[trajectory_idx, res_idx, :]
         state = self._hash_state(state) # hash the state
 
