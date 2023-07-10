@@ -3,6 +3,9 @@ __pycache__
 slurm-*
 *.sif
 toy/result
+atari/result
+*/result_backup
+*.txt
 toy/model
 # events.*
 toy/logs
@@ -10,5 +13,9 @@ toy/logs
 *.sbatch
 !run.sh
 *.json
+*.yml
+!hyak_env.yml
+*.def
+!hyak.def
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt
