@@ -2,7 +2,7 @@
 Modified from https://github.dev/keirp/stochastic_offline_envs
 '''
 
-from maze.samplers.trajectory_sampler import TrajectorySampler
+from maze.samplers.trajectory_sampler import BaseSampler
 from os import path
 import pickle
 
@@ -11,43 +11,49 @@ class BaseOfflineEnv:
     '''
     Encapsulates env and dataset
     '''
-    def __init__(self, data_path, env_cls, data_policy_fn, horizon, n_interactions):
+    def __init__(self, data_path, env_cls, horizon, sampler=None, sample_args=None):
         '''
         data_path: str, path to dataset file
         env_cls: function, return the environment
         data_policy_fn: A function that returns BasePolicy class, can reset/sample/update, as data sampling policy. 
         horizon: int, horizon of each episode
-        n_interactions: int, max number of interactions with env. episode num = n_interactions / horizon
-        n_interactions
+        sampler: BaseSampler | None. Specifies a dataset sampler
+        sample_args: arguments for sampler data collection. 
         '''
         self.env_cls = env_cls
-        self.data_policy_fn = data_policy_fn
+        # self.data_policy_fn = data_policy_fn
         self.horizon = horizon
-        self.n_interactions = n_interactions
+        # self.n_trajs = n_trajs
         self.data_path = data_path
+        self.sample_args = sample_args
+        if sampler is None:
+            self.sampler = BaseSampler()
+        else:
+            self.sampler = sampler
         if self.data_path is not None and path.exists(self.data_path):
             print('Dataset file found. Loading existing trajectories.')
             with open(self.data_path, 'rb') as file:
-                self.trajs = pickle.load(file)
+                self.dataset = pickle.load(file) # Dataset may not be trajs, might contain other infos
         else:
             print('Dataset file not found. Generating trajectories.')
             self.generate_and_save()
 
     def generate_and_save(self):
-        self.trajs = self.collect_trajectories()
+        self.dataset = self.sampler.collect_trajectories(self.sample_args)
 
         if self.data_path is not None:
             with open(self.data_path, 'wb') as file:
-                pickle.dump(self.trajs, file)
+                pickle.dump(self.dataset, file)
                 print('Saved trajectories to dataset file.')
 
-    def collect_trajectories(self):
-        data_policy = self.data_policy_fn()
-        sampler = TrajectorySampler(env_cls=self.env_cls,
-                                    policy=data_policy,
-                                    horizon=self.horizon)
-        trajs = sampler.collect_trajectories(self.n_interactions)
-        return trajs
+    # def collect_trajectories(self, sampler):
+
+    #     # data_policy = self.data_policy_fn()
+    #     # sampler = TrajectorySampler(env_cls=self.env_cls,
+    #     #                             policy=data_policy,
+    #     #                             horizon=self.horizon)
+    #     trajs = sampler.collect_trajectories(self.n_trajs)
+    #     return trajs
 
 
 def default_path(name):

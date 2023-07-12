@@ -6,8 +6,16 @@ toy/result
 toy/model
 # events.*
 toy/logs
-*.sh
+# *.sh
 *.sbatch
 *.json
+maze/result
+maze/logs
+maze/checkpoint
+maze/wandb
+*.out
+atari/result
+debug.py
+test.py
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt

@@ -2,7 +2,7 @@
 Modified from https://github.dev/keirp/stochastic_offline_envs
 '''
 
-from samplers.base import BaseSampler
+from maze.samplers.base import BaseSampler
 from collections import namedtuple
 from random import randint
 from tqdm.autonotebook import tqdm
