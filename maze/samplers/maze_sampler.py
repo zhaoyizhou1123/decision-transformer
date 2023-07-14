@@ -62,7 +62,7 @@ class MazeSampler(BaseSampler):
         - starts: list(n.array (2,))
         - goals: list(np.array (2,))
 
-        Return: (list(Trajectory), map, target_start, target_goal). Elements 2-4 are for env
+        Return: (list(Trajectory), horizon, map, target_start, target_goal). Elements 3-5 are for env
         '''
         assert 'starts' in sample_args and 'goals' in sample_args, f"sample_args is expected to have keys 'starts' and 'goals' "
         starts = sample_args['starts']
@@ -79,7 +79,7 @@ class MazeSampler(BaseSampler):
             trajectory = self._collect_single_traj(start, goal)
             trajs_.append(trajectory)
 
-        return (trajs_, self.MAZE_MAP, self.target_start, self.target_goal)
+        return (trajs_, self.horizon, self.MAZE_MAP, self.target_start, self.target_goal)
 
         
     def _collect_single_traj(self, start, goal):
@@ -159,10 +159,11 @@ class MazeSampler(BaseSampler):
                 
             else: 
                 # controller uses the 'desired_goal' key of obs to know the goal, not the goal mark on the map
-                if behavior_terminated: # sample goal reached, take random action
-                    action = behavior_env.action_space.sample()
-                else: # still head toward the sample goal
-                    action = controller.compute_action(behavior_obs)
+                # if behavior_terminated: # sample goal reached, take no action
+                #     action = np.zeros(2,)
+                # else: # still head toward the sample goal
+                #     action = controller.compute_action(behavior_obs)
+                action = controller.compute_action(behavior_obs)
 
                 behavior_obs, _, behavior_terminated, _, _ = behavior_env.step(action)
                 if self.debug:

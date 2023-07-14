@@ -31,11 +31,13 @@ class PointMaze(BaseOfflineEnv):
         self.MAZE_MAP = maze_map
         target_map = set_map_cell(self.MAZE_MAP, goal, 'g')
         target_map = set_map_cell(target_map, start, 'r')
+
+        render_mode = "human" if debug else "None"
         env_cls = lambda : gym.make('PointMaze_UMazeDense-v3', 
                                     maze_map = target_map, 
                                     continuing_task = False,
                                     max_episode_steps=self.horizon,
-                                    render_mode="human")
+                                    render_mode=render_mode)
         
         sampler = MazeSampler(horizon=horizon,
                               maze_map=self.MAZE_MAP,

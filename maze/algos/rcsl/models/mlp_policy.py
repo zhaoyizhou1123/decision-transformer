@@ -8,7 +8,7 @@ import torch.nn.functional as f
 # from torch.distributions import Normal
 # from torch.distributions.transformed_distribution import TransformedDistribution
 # from torch.distributions.transforms import TanhTransform
-from fc_network import FullyConnectedNetwork
+from maze.algos.rcsl.models.fc_network import FullyConnectedNetwork
     
 class MlpPolicy(nn.Module):
     '''

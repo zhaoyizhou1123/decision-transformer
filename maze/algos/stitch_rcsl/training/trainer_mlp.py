@@ -211,8 +211,8 @@ class Trainer:
                 #     _, sample_action = torch.topk(probs, k=1, dim=-1) # Tensor(1,)   
 
                 # Print output policy only for the first epoch
-                if epoch == 0:
-                    print(f"Step {h+1}, action is {pred_action.detach().cpu()}")      
+                # if epoch == 0:
+                #     print(f"Step {h+1}, action is {pred_action.detach().cpu()}")      
                 # sample_action = torch.zeros(action_dim)
                 # sample_action[sample] = 1 # one-hot representation, (action_dim)
 

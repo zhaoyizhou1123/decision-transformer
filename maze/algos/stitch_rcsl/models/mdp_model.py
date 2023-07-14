@@ -53,6 +53,32 @@ class DynamicsModel(nn.Module):
             pred_next_state = output[:,1:]
 
         return pred_reward, pred_next_state
+    
+class InitStateModel(nn.Module):
+    '''
+    Learn the initial state distribution from dataset
+    '''
+    def __init__(self, state_dim, n_support):
+        super().__init__()
+        self.state_dim = state_dim
+        self.n_support = n_support
+        self.state_network = nn.Embedding(1, self.state_dim * self.n_support)
+        self.prob_network = nn.Embedding(1, self.n_support)
+    def forward(self, dummy=None):
+        '''
+        dummy: any Tensor, used to reveal the tensor device. If None, default to be cpu
+        Return:
+        - support_states: (n_support, state_dim)
+        - support_probs: (n_support)
+        '''
+        dummy_input = torch.tensor(0).long()
+        if dummy is not None:
+            dummy_input = dummy_input.to(dummy.device)
+        support_states = self.state_network(dummy_input).reshape(self.n_support, self.state_dim)
+        support_probs = self.prob_network(dummy_input)
+        support_probs = torch.softmax(support_probs, dim=-1)
+        return support_states, support_probs
+        
 
         
 

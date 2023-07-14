@@ -201,8 +201,11 @@ class StochasticPolicy(nn.Module):
         input_dim = self.observation_dim + 1 # (s,t)
         self.network = FullyConnectedNetwork(
             self.token_repeat * input_dim, 
-            (action_dim +1 ) * self.n_support, arch
+            (action_dim + 1 ) * self.n_support, arch
         )
+
+        # Bound the output logit
+        self.logit_abs_bound = 100
 
     def forward(self, obs, timesteps=None):
         '''
@@ -232,9 +235,13 @@ class StochasticPolicy(nn.Module):
         output_tensor = self.network(input_tensor) #(batch, (action_dim+1)*n_support)
         support_actions = output_tensor[:,0:self.action_dim * self.n_support].reshape(-1, self.n_support, self.action_dim)
         support_probs = output_tensor[:, self.action_dim * self.n_support : ] # (batch, n_support) 
+        clamp_support_probs = torch.clamp(support_probs, min=-self.logit_abs_bound, max=self.logit_abs_bound)
 
-        # Perform softmax for output probs
-        return support_actions, torch.softmax(support_probs, dim=-1)
+        # check if there is nan in output
+        assert np.isnan(torch.softmax(clamp_support_probs, dim=-1).detach().cpu().numpy()).any() == False, f"Nan occurs for logits {support_probs}"
+
+        # Truncate action to [-1,1] for each coordinate by pointmaze. Perform softmax for output probs
+        return torch.clamp(support_actions, min=-1, max=1), torch.softmax(clamp_support_probs, dim=-1)
     
 # model = FullyConnectedQFunction(1,2,4,20,'').network.network
 # print(model)
