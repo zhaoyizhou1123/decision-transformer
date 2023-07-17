@@ -6,8 +6,8 @@ Expert control policy for point maze, used to sample data
 import gymnasium as gym
 import numpy as np
 
-import minari
-from minari import DataCollectorV0, StepDataCallback
+# import minari
+# from minari import DataCollectorV0, StepDataCallback
 
 UP = 0
 DOWN = 1
