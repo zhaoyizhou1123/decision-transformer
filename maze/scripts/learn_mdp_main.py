@@ -20,23 +20,47 @@ def learn_mdp(trajs, horizon, state_dim, action_dim, tb_dir_path, ckpt_path, arg
     # with open(args.data_fle, 'rb') as file:
     #     trajs, _, _, _ = pickle.load(file) # Dataset may not be trajs, might contain other infos
 
-    model_dataset = TrajNextObsDataset(trajs)
+    if args.train_type=='default':
+        model_dataset = TrajNextObsDataset(trajs)
 
-    conf = TrainerConfig(max_epochs=args.mdp_epochs, batch_size=args.mdp_batch, learning_rate=args.rate,
-                        num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
-                        ckpt_path = ckpt_path, tb_log = tb_dir_path, r_loss_weight = args.r_loss_weight,
-                        weight_decay = 0.1, log_to_wandb = args.log_to_wandb)
-    
-    dynamics_model = DynamicsModel(state_dim, action_dim, arch = args.d_arch)
-    # behavior_model = BehaviorPolicy(state_dim, action_dim, arch = args.b_arch)
-    behavior_model = StochasticPolicy(state_dim, action_dim, arch = args.b_arch, n_support = args.n_support)
+        conf = TrainerConfig(max_epochs=args.mdp_epochs, batch_size=args.mdp_batch, learning_rate=args.rate,
+                            num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                            ckpt_path = ckpt_path, tb_log = tb_dir_path, r_loss_weight = args.r_loss_weight,
+                            weight_decay = 0.1, log_to_wandb = args.log_to_wandb)
+        
+        dynamics_model = DynamicsModel(state_dim, action_dim, arch = args.d_arch)
+        # behavior_model = BehaviorPolicy(state_dim, action_dim, arch = args.b_arch)
+        behavior_model = StochasticPolicy(state_dim, action_dim, arch = args.b_arch, n_support = args.n_support)
 
-    init_state_model = InitStateModel(state_dim, n_support=args.n_support_init)
+        init_state_model = InitStateModel(state_dim, n_support=args.n_support_init)
 
-    mdp_trainer = MdpTrainer(dynamics_model, behavior_model, init_state_model, model_dataset, conf)
-    mdp_trainer.train()
+        mdp_trainer = MdpTrainer(dynamics_model, behavior_model, init_state_model, model_dataset, conf)
+        mdp_trainer.train()
 
-    return dynamics_model, behavior_model, init_state_model
+        return dynamics_model, behavior_model, init_state_model
+    elif args.train_type=='inverse':
+        model_dataset = TrajNextObsDataset(trajs)
+
+        conf = TrainerConfig(max_epochs=args.mdp_epochs, batch_size=args.mdp_batch, learning_rate=args.rate,
+                            num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                            ckpt_path = ckpt_path, tb_log = tb_dir_path, r_loss_weight = args.r_loss_weight,
+                            weight_decay = 0.1, log_to_wandb = args.log_to_wandb)
+        from maze.algos.stitch_rcsl.models.mdp_model import InverseDynamics, RewardModel
+        from maze.algos.stitch_rcsl.models.mlp_policy import StochasticState
+        from maze.algos.stitch_rcsl.training.trainer_mdp_inv import MdpInvTrainer
+        inv_dynamics_model = InverseDynamics(state_dim, action_dim, arch = args.d_arch)
+        # behavior_model = BehaviorPolicy(state_dim, action_dim, arch = args.b_arch)
+        reward_model = RewardModel(state_dim, action_dim, arch = args.r_arch)
+        next_state_model = StochasticState(state_dim, action_dim, arch = args.b_arch, n_support = args.n_support)
+
+        init_state_model = InitStateModel(state_dim, n_support=args.n_support_init)
+
+        mdp_trainer = MdpInvTrainer(inv_dynamics_model, reward_model, next_state_model, init_state_model, model_dataset, conf)
+        mdp_trainer.train()
+
+        return inv_dynamics_model, reward_model, next_state_model, init_state_model
+    else:
+        raise Exception(f"Unexpected train type {args.train_type}")
 
 
 if __name__ == '__main__':
@@ -50,7 +74,7 @@ if __name__ == '__main__':
     parser.add_argument('--env_type', type=str, default='pointmaze', help='pointmaze or ?')
     # parser.add_argument('--trajectories_per_buffer', type=int, default=10, help='Number of trajectories to sample from each of the buffers.')
     parser.add_argument('--data_file', type=str, default='./dataset/maze_samplev2.dat')
-    parser.add_argument('--horizon', type=int, default=400, help="Should be consistent with dataset")
+    parser.add_argument('--horizon', type=int, default=250, help="Should be consistent with dataset")
     parser.add_argument('--ckpt_root', type=str, default=None, help="./checkpoint/, path to checkpoint root dir" )
     parser.add_argument('--ckpt_name', type=str, default=None, help="Name of dir, to prompt the data" )
     parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
@@ -61,6 +85,7 @@ if __name__ == '__main__':
     parser.add_argument('--n_support', type=int, default=10, help="Number of supporting action of policy" )
     parser.add_argument('--n_support_init', type=int, default=5, help="Number of supporting initial states" )
     parser.add_argument('--d_arch', type=str, default='128', help="Hidden layer size of dynamics model" )
+    parser.add_argument('--r_arch', type=str, default='128', help="Hidden layer size of reward model" )
     parser.add_argument('--r_loss_weight', type=float, default=0.5, help="[0,1], weight of r_loss" )
     parser.add_argument('--repeat', type=int, default=1, help="Repeat tokens in Q-network")
     parser.add_argument('--sample', action='store_false', help="Sample action by probs, or choose the largest prob")
@@ -70,6 +95,7 @@ if __name__ == '__main__':
     parser.add_argument('--log_to_wandb',action='store_false', help='Set up wandb')
     parser.add_argument('--debug',action='store_true', help='Print debuuging info if true')
     parser.add_argument('--maze_config_file', type=str, default='./config/maze1.json')
+    parser.add_argument('--train_type', type=str, default='default', help="default, inverse")
     args = parser.parse_args()
     print(args)
 

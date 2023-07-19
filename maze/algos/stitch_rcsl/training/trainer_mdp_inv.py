@@ -1,18 +1,7 @@
 '''
-Train the MDP model as well as the behavior policy
+Learn the model by inverse dynamics
 '''
-
-"""
-The MIT License (MIT) Copyright (c) 2020 Andrej Karpathy
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
-
-
+from .trainer_base import BaseTrainer
 import math
 import logging
 
@@ -20,43 +9,15 @@ from tqdm import tqdm
 import numpy as np
 
 import torch
-import torch.optim as optim
 from torch.nn import functional as F
-from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data.dataloader import DataLoader
 import wandb
 import os
 
 from torch.utils.tensorboard import SummaryWriter  
 
-logger = logging.getLogger(__name__)
-
-class TrainerConfig:
-    # optimization parameters
-    # max_epochs = 10
-    # batch_size = 64
-    # learning_rate = 3e-4
-    # betas = (0.9, 0.95)
-    grad_norm_clip = 1.0
-    weight_decay = 0.1 # only applied on matmul weights
-    # # learning rate decay params: linear warmup followed by cosine decay to 10% of original
-    # lr_decay = False
-    # warmup_tokens = 375e6 # these two numbers come from the GPT-3 paper, but may not be good defaults elsewhere
-    # final_tokens = 260e9 # (at what point we reach 10% of original LR)
-    # # checkpoint settings
-    ckpt_path = None
-    num_workers = 1 # for DataLoader
-    r_loss_weight = 0.5 # weight of r_loss w.r.t (r_loss + s_loss)
-    # horizon = 5
-    # desired_rtg = horizon
-    # env = None # gym.Env class, the MDP environment
-
-    def __init__(self, **kwargs):
-        for k,v in kwargs.items():
-            setattr(self, k, v)
-
-class MdpTrainer:
-    def __init__(self, dynamics_model, behavior_policy_model, init_state_model, dataset, config):
+class MdpInvTrainer(BaseTrainer):
+    def __init__(self, inv_dynamics_model, reward_model, next_state_model, init_state_model, dataset, config):
         '''
         Train dynamics model and behavior policy
         - dataset, must use TrajNextObsDataset
@@ -72,32 +33,33 @@ class MdpTrainer:
             - ckpt_prefix = None
             - r_loss_weight = 0.5, the weight of r_loss w.r.t s_loss
         '''
-        self.dynamics_model = dynamics_model
-        self.behavior_policy_model = behavior_policy_model
+        super().__init__(dataset, config)
+        self.inv_dynamics_model = inv_dynamics_model
+        self.reward_model = reward_model
+        self.next_state_model = next_state_model
         self.init_state_model = init_state_model
-        self.dataset = dataset
-        self.config = config
 
         # self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
         
-        self.dynamics_optimizer = torch.optim.AdamW(self.dynamics_model.parameters(), 
+        self.dynamics_optimizer = torch.optim.AdamW(self.inv_dynamics_model.parameters(), 
                                            lr = config.learning_rate, 
                                            weight_decay = config.weight_decay)
         
-        self.policy_optimizer = torch.optim.AdamW(self.behavior_policy_model.parameters(), 
+        self.policy_optimizer = torch.optim.AdamW(self.next_state_model.parameters(), 
                                            lr = config.learning_rate, 
                                            weight_decay = config.weight_decay)
         
         self.init_optimizer = torch.optim.AdamW(self.init_state_model.parameters(), 
                                            lr = config.learning_rate, 
                                            weight_decay = config.weight_decay)
+        self.reward_optimizer = torch.optim.AdamW(self.reward_model.parameters(), 
+                                           lr = config.learning_rate, 
+                                           weight_decay = config.weight_decay)
 
-        self.device = 'cpu'
-        if torch.cuda.is_available():
-            self.device = torch.cuda.current_device()
-            print(f"device={self.device}")
-            self.dynamics_model = torch.nn.DataParallel(self.dynamics_model).to(self.device)
-            self.behavior_policy_model = torch.nn.DataParallel(self.behavior_policy_model).to(self.device)
+        if self.device is not 'cpu':
+            self.inv_dynamics_model = torch.nn.DataParallel(self.inv_dynamics_model).to(self.device)
+            self.reward_model = torch.nn.DataParallel(self.reward_model).to(self.device)
+            self.next_state_model = torch.nn.DataParallel(self.next_state_model).to(self.device)
             self.init_state_model = torch.nn.DataParallel(init_state_model).to(self.device)
 
         if config.tb_log is not None:
@@ -105,26 +67,6 @@ class MdpTrainer:
         
         # model_module = self.model.module if hasattr(self.model, 'module') else self.model
         # self.tb_writer.add_graph(model_module, (torch.tensor([0]),torch.tensor([1,0]),torch.tensor(0)))
-
-    def _loss(self, pred, truth, weight = None):
-        '''
-        Compute weighted 2-norm loss
-        - pred: (batch, dim) / dim
-        - true: (batch, dim) / dm
-        - weight: (batch, ) | None. None means no weight
-        Return: scalar tensor. The mean of each loss
-        '''
-        # print(f"Trainer_mlp 127: true_action {true_action.shape}, pred_action {pred_action.shape}")
-        # return F.mse_loss(pred, truth)
-
-        # mse_loss of each batch element
-        batch_loss = torch.norm(pred-truth, dim = -1) # (batch)
-
-        # weighted average
-        if weight is None:
-            return torch.mean(batch_loss)
-        else:
-            return torch.sum(weight * batch_loss) / torch.sum(weight)
         
     def _init_state_loss(self, pred_init_states, batch_states, batch_timesteps, pred_probs):
         '''
@@ -146,8 +88,6 @@ class MdpTrainer:
 
         return self._loss(expand_pred_init_states, expand_valid_truth_states, expand_pred_probs)
             
-
-
     def _run_epoch(self, epoch_num):
         '''
         Run one epoch in the training process \n
@@ -181,10 +121,12 @@ class MdpTrainer:
             with torch.set_grad_enabled(True):
                 # history_actions = actions[:, :-1, :]
                 # target_action = actions[:,-1,:] # The last action is target
-                pred_rewards, pred_next_states = self.dynamics_model(states, actions, timesteps) # (batch,), (batch, state_dim)
-                support_actions, support_probs = self.behavior_policy_model(states, timesteps=None) # (batch, n_support, action_dim), (batch, n_support)
+                pred_actions = self.inv_dynamics_model(states, next_states, timestep=None) # (batch, action_dim)
+                pred_rewards = self.reward_model(states,actions, timestep=None)
+
+                support_next_states, support_probs = self.next_state_model(states, timesteps=None) # (batch, n_support, state_dim), (batch, n_support)
                 n_support = support_probs.shape[1]
-                support_actions = support_actions.reshape(-1, support_actions.shape[-1]) # (batch * n_spport, action_dim)
+                support_next_states = support_next_states.reshape(-1, support_next_states.shape[-1]) # (batch * n_spport, state_dim)
                 support_probs = support_probs.reshape(-1) # (batch * n_support)
 
                 pred_init_states, pred_init_probs = self.init_state_model(timesteps) # (n_support, state_dim), n_support
@@ -193,11 +135,14 @@ class MdpTrainer:
 
 
                 # print(target_action.min(), target_action.max(), pred_actions.shape[-1])
-                r_loss = self._loss(pred_rewards, rewards.squeeze(-1)) # Tensor(scalar)       
-                s_loss = self._loss(pred_next_states, next_states)
-                a_loss = self._loss(support_actions, actions.repeat_interleave(n_support, dim=0), weight = support_probs) # Repeat actions to (batch * n_support, action_dim)
+                r_loss = self._loss(pred_rewards, rewards.squeeze(-1)) # Tensor(scalar)     
+                # print(next_states.repeat_interleave(n_support, dim=0).shape)
+                # print(n_support)
+                # print(support_probs)
+                s_loss = self._loss(support_next_states, next_states.repeat_interleave(n_support, dim=0), weight = support_probs) # Repeat actions to (batch * n_support, action_dim)
+                a_loss = self._loss(pred_actions, actions)
 
-                dynamics_loss = self.config.r_loss_weight * r_loss + (1-self.config.r_loss_weight) * s_loss # Simply adding the two losses
+                # dynamics_loss = self.config.r_loss_weight * r_loss + (1-self.config.r_loss_weight) * s_loss # Simply adding the two losses
 
                 init_loss = self._init_state_loss(pred_init_states, states, timesteps, pred_init_probs)
 
@@ -207,31 +152,37 @@ class MdpTrainer:
                     self.tb_writer.add_scalar('r_loss', r_loss.item(), epoch_num)
                     self.tb_writer.add_scalar('s_loss', s_loss.item(), epoch_num)
                     self.tb_writer.add_scalar('a_loss', a_loss.item(), epoch_num)
+                    self.tb_writer.add_scalar('init_loss', init_loss.item(), epoch_num)
 
                 if self.config.log_to_wandb:
                     wandb.log({'r_loss': r_loss.item()})
                     wandb.log({'s_loss': s_loss.item()})
                     wandb.log({'a_loss': a_loss.item()})
+                    wandb.log({'init_loss': init_loss.item()})
             
-            self.dynamics_model.zero_grad()
-            self.behavior_policy_model.zero_grad()
+            self.inv_dynamics_model.zero_grad()
+            self.reward_model.zero_grad()
+            self.next_state_model.zero_grad()
             self.init_state_model.zero_grad()
 
-            dynamics_loss.backward()
+            r_loss.backward()
+            s_loss.backward()
             a_loss.backward()
             init_loss.backward()
             # print(f"Gradient of K: {self.model.transformer.key.weight.grad}")
-            torch.nn.utils.clip_grad_norm_(self.dynamics_model.parameters(), self.config.grad_norm_clip)
-            torch.nn.utils.clip_grad_norm_(self.behavior_policy_model.parameters(), self.config.grad_norm_clip)
+            torch.nn.utils.clip_grad_norm_(self.inv_dynamics_model.parameters(), self.config.grad_norm_clip)
+            torch.nn.utils.clip_grad_norm_(self.next_state_model.parameters(), self.config.grad_norm_clip)
             torch.nn.utils.clip_grad_norm_(self.init_state_model.parameters(), self.config.grad_norm_clip)
+            torch.nn.utils.clip_grad_norm_(self.reward_model.parameters(), self.config.grad_norm_clip)
             self.dynamics_optimizer.step()
             self.policy_optimizer.step()
             self.init_optimizer.step()
+            self.reward_optimizer.step()
 
-            pbar.set_description(f"Epoch {epoch_num+1}, iter {it}: Dynamics loss {dynamics_loss.item():.3f}, Policy loss {a_loss.item():.3f}, Init loss{init_loss.item():.3f}.")
+            pbar.set_description(f"Epoch {epoch_num+1}, iter {it}: NextState loss {s_loss.item():.3f}, Reward loss {r_loss.item():.3f}, Action loss {a_loss.item():.3f}, Init loss{init_loss.item():.3f}.")
 
             # don't calculate init_loss, as it contains (nan)
-            losses.append((dynamics_loss + a_loss).item())
+            losses.append((s_loss + r_loss + a_loss).item())
 
         return sum(losses) / len(losses)
     
@@ -240,28 +191,19 @@ class MdpTrainer:
         ckpt_path: str, dir of storing dynamics, behavior policy, and init_state model
         '''
         # DataParallel wrappers keep raw model object in .module attribute
-        raw_dynamics_model = self.dynamics_model.module if hasattr(self.dynamics_model, "module") else self.dynamics_model
-        raw_policy_model = self.behavior_policy_model.module if hasattr(self.behavior_policy_model, "module") else self.behavior_policy_model
+        raw_inv_dynamics_model = self.inv_dynamics_model.module if hasattr(self.inv_dynamics_model, "module") else self.inv_dynamics_model
+        raw_reward_model = self.reward_model.module if hasattr(self.inv_dynamics_model, "module") else self.reward_model
+        raw_next_state_model = self.next_state_model.module if hasattr(self.next_state_model, "module") else self.next_state_model
         raw_init_model = self.init_state_model.module if hasattr(self.init_state_model, "module") else self.init_state_model
 
         # d_path = f"{ckpt_prefix}_dynamics.pth" # dynamics model
         # p_path = f"{ckpt_prefix}_behavior.pth" # behavior model
-        d_path = os.path.join(ckpt_path, "dynamics.pth")
-        p_path = os.path.join(ckpt_path, "behavior.pth")
+        d_path = os.path.join(ckpt_path, "inv_dynamics.pth")
+        p_path = os.path.join(ckpt_path, "next_state.pth")
+        r_path = os.path.join(ckpt_path, "reward.pth")
         i_path = os.path.join(ckpt_path, "init.pth")
         print(f"Saving dynamics model to {d_path}, behavior policy model to {p_path}, init_state model to {i_path}" )
-        torch.save(raw_dynamics_model, d_path)
-        torch.save(raw_policy_model, p_path) 
+        torch.save(raw_inv_dynamics_model, d_path)
+        torch.save(raw_next_state_model, p_path) 
+        torch.save(raw_reward_model, r_path)
         torch.save(raw_init_model, i_path)
-
-    def train(self):
-        min_loss = float('inf')
-        for epoch in range(self.config.max_epochs):
-            loss = self._run_epoch(epoch)
-            # self.eval(self.config.desired_rtg, train_epoch=epoch)
-            if loss < min_loss:
-                min_loss = loss
-                if self.config.ckpt_path is not None:
-                    self._save_checkpoint(self.config.ckpt_path)
-        # if self.config.ckpt_path is not None:
-        #     self._save_checkpoint(self.config.ckpt_path)

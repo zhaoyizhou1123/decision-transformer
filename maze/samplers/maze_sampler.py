@@ -69,8 +69,8 @@ class MazeSampler(BaseSampler):
         goals = sample_args['goals']
         assert len(starts) == len(goals), f"collect_trajectories: starts and goals are expected to have the same length!"
 
-        if self.debug:
-            print(f"Collect trajectory: starts = {starts}, goals = {goals}")
+        # if self.debug:
+        #     print(f"Collect trajectory: starts = {starts}, goals = {goals}")
 
         trajs_ = []
         for idx in range(len(starts)):
@@ -96,10 +96,11 @@ class MazeSampler(BaseSampler):
         behavior_map = set_map_cell(behavior_map, goal, 'g')
 
         # Set up behavior environment
-        if self.debug:
-            render_mode = 'human'
-        else:
-            render_mode = None
+        # if self.debug:
+        #     render_mode = 'human'
+        # else:
+        #     render_mode = None
+        render_mode = None
         behavior_env = gym.make('PointMaze_UMazeDense-v3', 
                               maze_map= behavior_map, 
                               continuing_task = False,

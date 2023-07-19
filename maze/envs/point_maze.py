@@ -32,7 +32,8 @@ class PointMaze(BaseOfflineEnv):
         target_map = set_map_cell(self.MAZE_MAP, goal, 'g')
         target_map = set_map_cell(target_map, start, 'r')
 
-        render_mode = "human" if debug else "None"
+        # render_mode = "human" if debug else "None"
+        render_mode = None
         env_cls = lambda : gym.make('PointMaze_UMazeDense-v3', 
                                     maze_map = target_map, 
                                     continuing_task = False,

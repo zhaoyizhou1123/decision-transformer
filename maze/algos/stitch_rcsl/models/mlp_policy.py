@@ -242,7 +242,73 @@ class StochasticPolicy(nn.Module):
 
         # Truncate action to [-1,1] for each coordinate by pointmaze. Perform softmax for output probs
         return torch.clamp(support_actions, min=-1, max=1), torch.softmax(clamp_support_probs, dim=-1)
-    
+
+class StochasticState(nn.Module):
+    '''
+    Model for dataset behavior policy, directly choose the next state
+    '''
+
+    def __init__(self, observation_dim, token_repeat=1, arch='256-256', n_support = 2):
+        '''
+        - action_dim
+        - ctx: context length
+        - horizon: used for timestep embedding. Timestep starts with 0
+        - token_repeat: int, repeat action multiple times to emphasize it.
+        - n_support: int, number of support action at output
+        '''
+        super().__init__()
+        self.observation_dim = observation_dim
+        # self.action_dim = action_dim
+        self.arch = arch
+        # self.ctx = ctx
+        self.token_repeat = int(token_repeat)
+        self.n_support = n_support
+
+        input_dim = self.observation_dim + 1 # (s,t)
+        self.network = FullyConnectedNetwork(
+            self.token_repeat * input_dim, 
+            (self.observation_dim + 1) * self.n_support, arch
+        )
+
+        # Bound the output logit
+        self.logit_abs_bound = 100
+
+    def forward(self, obs, timesteps=None):
+        '''
+        - obs: (batch, obs_dim). T <= ctx
+        - timesteps: (batch,) or None. If none, no timesteps input
+        Return: support_actions (batch, n_support, action_dim), probs (batch, n_support)
+        '''
+        batch = obs.shape[0]
+
+        # Convert actions to one-hot
+        # assert acts.shape[-1] == 1, f"Invalid action_dim {acts.shape[-1]}"
+
+        # if self.one_hot:
+        #     acts = acts.squeeze(dim=-1) # (batch,T-1)
+        #     acts = f.one_hot(acts.long(),self.action_dim) # (batch, T-1, action_dim)
+
+        obs = obs.type(torch.float32)
+
+        if timesteps is not None:
+            timesteps = timesteps.unsqueeze(-1).type(torch.float32) # (batch, 1)
+        else:
+            timesteps = torch.zeros((batch, 1)).to(obs.device) # Pad with 0 (batch, 1)
+
+        input_tensor = torch.cat([obs, timesteps], dim=-1) # (batch, obs_dim + 1)
+        input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
+
+        output_tensor = self.network(input_tensor) #(batch, (action_dim+1)*n_support)
+        support_states = output_tensor[:,0:self.observation_dim * self.n_support].reshape(-1, self.n_support, self.observation_dim)
+        support_probs = output_tensor[:, self.observation_dim * self.n_support : ] # (batch, n_support) 
+        clamp_support_probs = torch.clamp(support_probs, min=-self.logit_abs_bound, max=self.logit_abs_bound)
+
+        # check if there is nan in output
+        assert np.isnan(torch.softmax(clamp_support_probs, dim=-1).detach().cpu().numpy()).any() == False, f"Nan occurs for logits {support_probs}"
+
+        # Perform softmax for output probs
+        return support_states, torch.softmax(clamp_support_probs, dim=-1)
+
 # model = FullyConnectedQFunction(1,2,4,20,'').network.network
 # print(model)
 # print(model[0].weight.data)

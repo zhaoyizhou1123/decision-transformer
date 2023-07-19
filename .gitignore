@@ -17,5 +17,6 @@ maze/wandb
 atari/result
 debug.py
 test.py
+*.dat
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt

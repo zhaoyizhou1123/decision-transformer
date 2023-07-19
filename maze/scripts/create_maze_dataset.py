@@ -29,7 +29,7 @@ def create_env_dataset(args):
     sample_starts = []
     sample_goals = []
 
-    n_trajs = 300
+    n_trajs = int(1e6) // args.horizon
 
     repeat = n_trajs // 3
 
@@ -46,6 +46,7 @@ def create_env_dataset(args):
     # print(sample_starts)
     # print(sample_goals)
 
+    print(f"Create point maze")
     point_maze = PointMaze(data_path = args.data_file, 
                         horizon = args.horizon,
                         maze_map = map,
@@ -73,12 +74,17 @@ def create_env(args):
     # print(sample_starts)
     # print(sample_goals)
     render_mode = "human" if args.debug else "None"
+    # render_mode = None
 
     env = gym.make('PointMaze_UMazeDense-v3', 
              maze_map = target_map, 
              continuing_task = False,
              max_episode_steps=args.horizon,
              render_mode=render_mode)
+    # env = gym.make('PointMaze_UMazeDense-v3', 
+    #          maze_map = target_map, 
+    #          continuing_task = False,
+    #          max_episode_steps=args.horizon)
     
     return env
 
@@ -102,8 +108,8 @@ def load_dataset(data_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_file', type=str, default=None,help='./dataset/maze_h400.dat')
-    parser.add_argument('--horizon', type=int, default=400)
+    parser.add_argument('--data_file', type=str, default='./dataset/maze_1e6.dat',help='./dataset/maze_1e6.dat')
+    parser.add_argument('--horizon', type=int, default=250)
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--maze_config_file', type=str, default='./config/maze1.json')
 
