@@ -211,97 +211,47 @@ def run(args):
         mdp_trainer = BehaviorPolicyTrainer(behavior_model, model_dataset, conf)
         mdp_trainer.train()
 
-    # Test rollout
-    # test_rollout_combo(args, dynamics_trainer, behavior_model, real_buffer, based_true_state=False, init_true_state=False)
-    rollout_combo(args, dynamics_trainer, behavior_model, real_buffer)
+    if args.test_rollout:
+        # Test rollout
+        test_rollout_combo(args, dynamics_trainer, real_buffer, behavior_model_raw=None, based_true_state=False, init_true_state=False)
+    else:
+        rollout_trajs = rollout_combo(args, dynamics_trainer, behavior_model, real_buffer)
 
-    # # Fit the model
-    # print(f"Fit the MDP model.")
-    # if tb_dir_path is not None:
-    #     learn_mdp_tb_dir_path = os.path.join(tb_dir_path, 'model')
-    # else:
-    #     learn_mdp_tb_dir_path = None
-    # dynamics_model, behavior_model, init_state_model = learn_mdp(trajs, 
-    #                                                             obs_dim, 
-    #                                                             action_dim, 
-    #                                                             learn_mdp_tb_dir_path, 
-    #                                                             args.mdp_ckpt_dir, 
-    #                                                             args)
+        train_dataset = TrajCtxDataset(trajs + rollout_trajs, ctx = args.ctx, single_timestep = False)
 
-    
-    # Rollout the learned behavior policy using the learned dynamics model
-    # print("Rollout")
-    # rollout_trajs = rollout_expand_trajs(dynamics_model, behavior_model, init_state_model,
-    #                                     device,args)
-    
-    # Learn the output policy using expanded dataset
-    # print("Fit output policy")
-    # train_dataset = TrajCtxDataset(trajs + rollout_trajs, ctx = args.ctx, single_timestep = False)
-    # if args.debug:
-    #     print(train_dataset.len())
-    # print("Finish generation")
+        if args.algo == 'rcsl-mlp':
+            # num_action = env.get_num_action()
+            # print(f"num_action={num_action}")
+            # model = MlpPolicy(1, num_action, args.ctx, horizon, args.repeat, args.arch, args.n_embd)
+            from maze.algos.rcsl.models.mlp_policy import MlpPolicy
 
-    # Set models
-    # if args.algo == 'dt':
-    #     # Set GPT parameters
-    #     n_layer = args.n_layer
-    #     n_head = args.n_head
-    #     n_embd = args.n_embd
-    #     print(f"GPTConfig: n_layer={n_layer}, n_head={n_head}, n_embd={n_embd}")
+            model = MlpPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
+                            simple_input=args.simple_input)
+            import maze.algos.rcsl.trainer_mlp as trainer_mlp
+            goal = train_dataset.get_max_return() * args.goal_mul
+            tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
+                        lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                        desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
+                        ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
+            output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+        elif args.algo == 'stitch':
+            from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
+            model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
+                            simple_input=args.simple_input)
+            
+            goal = train_dataset.get_max_return() * args.goal_mul
 
-    #     # print("Begin GPT configuartion.")
-    #     mconf = GPTConfig(train_dataset.vocab_size, train_dataset.block_size,
-    #                     n_layer=n_layer, n_head=n_head, n_embd=n_embd, model_type=args.algo_type, max_timestep=horizon)
-    #     # print("End GPT config, begin model generation")
-    #     model = GPT(mconf)
-    #     # print("End model generation")
-    # if args.algo == 'rcsl-mlp':
-    #     # num_action = env.get_num_action()
-    #     # print(f"num_action={num_action}")
-    #     # model = MlpPolicy(1, num_action, args.ctx, horizon, args.repeat, args.arch, args.n_embd)
-    #     from maze.algos.rcsl.models.mlp_policy import MlpPolicy
+            import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
+            tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
+                        lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                        desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
+                        ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
+            output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+        else:
+            raise(Exception(f"Unimplemented model {args.algo}!"))
 
-    #     model = MlpPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
-    #                     simple_input=args.simple_input)
-    # elif args.algo == 'stitch':
-    #     from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
-    #     model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
-    #                     simple_input=args.simple_input)
-    # else:
-    #     raise(Exception(f"Unimplemented model {args.algo}!"))
-
-    # print("Begin Trainer configuartion")
-    # if args.algo == 'dt':
-    #     tconf = trainer_toy.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
-    #                 lr_decay=True, warmup_tokens=512*20, final_tokens=2*train_dataset.len()*args.ctx*3,
-    #                 num_workers=1, model_type=args.algo_type, max_timestep=horizon, horizon=horizon, 
-    #                 desired_rtg=args.goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
-    #                 ctx = args.ctx)
-    #     print("End trainer configuration, begin trainer generation")
-    #     trainer = trainer_toy.Trainer(model, train_dataset, None, tconf)
-    # if args.algo == 'rcsl-mlp':
-    #     goal = train_dataset.get_max_return() * args.goal_mul
-
-    #     import maze.algos.rcsl.trainer_mlp as trainer_mlp
-    #     tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
-    #                 lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
-    #                 desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
-    #                 ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
-    #     trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
-    # elif args.algo == 'stitch':
-    #     goal = train_dataset.get_max_return() * args.goal_mul
-
-    #     import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
-    #     tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
-    #                 lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
-    #                 desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
-    #                 ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
-    #     trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
-    # else:
-    #     raise Exception(f"Unimplemented model type {args.algo}")
-
-    # # print("End trainer generation. Begin training.")
-    # trainer.train()
+        print("Begin output policy training")
+        output_policy_trainer.train()
 
 
 
@@ -309,7 +259,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # parser.add_argument('--seed', type=int, default=123)
     parser.add_argument('--ctx', type=int, default=1)
-    parser.add_argument('--epochs', type=int, default=10, help='epochs to learn the output policy')
+    parser.add_argument('--epochs', type=int, default=5, help='epochs to learn the output policy')
     parser.add_argument('--mdp_epochs', type=int, default=5, help='epochs to learn the mdp model')
     parser.add_argument('--rollout_epochs', type=int, default=10, help="Number of epochs to rollout the policy")
     parser.add_argument('--model_type', type=str, default='reward_conditioned')
@@ -326,7 +276,7 @@ if __name__ == '__main__':
     parser.add_argument('--log_level', type=str, default='WARNING')
     parser.add_argument('--goal_mul', type=float, default=1, help="goal = max_dataset_return * goal_mul")
     parser.add_argument('--horizon', type=int, default=250, help="Should be consistent with dataset")
-    parser.add_argument('--ckpt_prefix', type=str, default=None, help="Used to store output policy model" )
+    parser.add_argument('--ckpt_prefix', type=none_or_str, default=None, help="Used to store output policy model" )
     parser.add_argument('--mdp_ckpt_dir', type=str, default='./checkpoint/test_dynamics', help="dir path, used to load/store mdp model" )
     parser.add_argument('--rollout_ckpt_path', type=none_or_str, default=None, help="file path, used to load/store rollout trajs" )
     parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
@@ -375,6 +325,8 @@ if __name__ == '__main__':
     parser.add_argument("--eval_episodes", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+
+    parser.add_argument("--test_rollout", action='store_true')
     args = parser.parse_args()
     print(args)
 

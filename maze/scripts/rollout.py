@@ -215,7 +215,7 @@ def test_rollout_inv(args, based_true_state = False, init_true_state = False):
         # Add the ret to list
         # rets.append(ret)
 
-def test_rollout_combo(args, dynamics: BaseDynamics, dynamics_dataset: ReplayBuffer, based_true_state = False, init_true_state = False):
+def test_rollout_combo(args, dynamics: BaseDynamics, dynamics_dataset: ReplayBuffer, behavior_model_raw = None, based_true_state = False, init_true_state = False):
     '''
     Combo style dynamics rollout
     '''
@@ -243,28 +243,35 @@ def test_rollout_combo(args, dynamics: BaseDynamics, dynamics_dataset: ReplayBuf
     else:
         raise Exception(f"Unimplemented env type {args.env_type}")
     
-    # Get expert behavior model
-    init_obs_temp, _ = env.reset() # Get desired_goal
-    desired_goal = init_obs_temp['desired_goal']
-    # desired_goal = np.array([4,-1.3])
-    print(f"Desired goal: {desired_goal}")
-    def expert_policy(state):
-        '''
-        state: np.array (state_dim)
-        Output: support_action Tensor (1,1,action_dim), support probs Tensor([[1]])
-        '''
-        # device = state.device
-        # state = state.squeeze(0).detach().cpu().numpy() # (4,)
-        # create obs for expert_sampler
-        achieved_goal = state[0:2] # pos
-        obs = {'observation': state, 'achieved_goal': achieved_goal, 'desired_goal': desired_goal}
-        # print(f'obs = {obs}')
-        expert_sampler = WaypointController(maze = deepcopy(env.maze))
-        action = expert_sampler.compute_action(obs) # np.array(action_dim)
-        action = torch.from_numpy(action).to(device).unsqueeze(0).unsqueeze(0) # (1,1,action_dim)
+    if behavior_model_raw is None:
+        # Get expert behavior model
+        init_obs_temp, _ = env.reset() # Get desired_goal
+        desired_goal = init_obs_temp['desired_goal']
+        # desired_goal = np.array([4,-1.3])
+        print(f"Desired goal: {desired_goal}")
+        def expert_policy(state):
+            '''
+            state: np.array (state_dim)
+            Output: support_action Tensor (1,1,action_dim), support probs Tensor([[1]])
+            '''
+            # device = state.device
+            # state = state.squeeze(0).detach().cpu().numpy() # (4,)
+            # create obs for expert_sampler
+            achieved_goal = state[0:2] # pos
+            obs = {'observation': state, 'achieved_goal': achieved_goal, 'desired_goal': desired_goal}
+            # print(f'obs = {obs}')
+            expert_sampler = WaypointController(maze = deepcopy(env.maze))
+            action = expert_sampler.compute_action(obs) # np.array(action_dim)
+            action = torch.from_numpy(action).to(device).unsqueeze(0).unsqueeze(0) # (1,1,action_dim)
 
-        return action.type(torch.float32), torch.tensor([[1.]]).to(device)
-    behavior_model = expert_policy
+            return action.type(torch.float32), torch.tensor([[1.]]).to(device)
+        behavior_model = expert_policy
+    else:
+        def model_policy(state):
+            # state: np.array (state_dim)
+            state = torch.from_numpy(state)
+            return behavior_model_raw(state.unsqueeze(0).to(device)) # (1, n_support, action_dim), (1,n_support)
+        behavior_model = model_policy
 
     # Run epochs
     for epoch in range(args.rollout_epochs):
@@ -422,6 +429,7 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
     # behavior_model = expert_policy
 
     # Run epochs
+    trajs = []
     for epoch in range(args.rollout_epochs):
         # true_state, _ = env.reset()
         # if hasattr(env, 'get_true_observation'): # For pointmaze
@@ -432,16 +440,22 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
         # if init_true_state:
         #     pred_state = deepcopy(true_state) # np.array
         # else:
-        pred_state = dynamics_dataset.sample_init_obs() # np.array
+        pred_state = dynamics_dataset.sample_init_obs() # tensor
             # print(pred_state)
 
         # print(f"Eval forward: states {states.shape}, actions {actions.shape}")
         print(f"-----------\nEpoch {epoch}")
 
-        ret = 0 # total return 
         pred_ret = 0
+
+        observations_ = []
+        actions_ = []
+        rewards_ = []
+        achieved_rets_ = [] # The total reward that has achieved, used to compute rtg
         for h in range(args.horizon):
             timestep = torch.tensor(h).to(device) # scalar
+            observations_.append(deepcopy(pred_state.detach().cpu().numpy()))
+            achieved_rets_.append(deepcopy(pred_ret))
             # Get action
             # pred_actions = self.model(states, actions, rtgs, timesteps) #(1, action_dim)
             # if based_true_state:
@@ -461,6 +475,8 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
             # if hasattr(env, 'get_true_observation'): # For pointmaze
             #     next_state = env.get_true_observation(next_state)
             # next_state = torch.from_numpy(next_state) # (state_dim)
+            actions_.append(deepcopy(action))
+            rewards_.append(deepcopy(pred_reward))
             print(f"Step {h}, action {action}")
             print(f"Predicted reward {pred_reward}")
             print(f"Predicted state {pred_next_state}\n")
@@ -478,7 +494,20 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
             #     ret += args.horizon - 1 - h
             #     pred_ret += args.horizon - 1 -h
             #     break
-        print(f"Total return: {ret}, predicted total return {pred_ret}")
+        returns_ = [pred_ret - achieved for achieved in achieved_rets_]
+        print(f"Predicted total return {pred_ret}")
+
+        # Add new traj
+        trajs.append(Trajectory(observations = observations_, 
+                                actions = actions_, 
+                                rewards = rewards_, 
+                                returns = returns_, 
+                                timesteps = list(range(args.horizon)), 
+                                terminated = None, 
+                                truncated = None, 
+                                infos = ['rollout' for _ in range(args.horizon)]))
+        
+    return trajs
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

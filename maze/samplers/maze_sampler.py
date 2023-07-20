@@ -218,6 +218,88 @@ class MazeSampler(BaseSampler):
 
 
         return trajs
+    
+    def get_expert_return(self, repeat=10):
+        '''
+        Collect one trajectory.
+        start: np.array (2,), type=int. Initial (row,col)
+        goal: np.array (2,), type=int. Goal (row,col)
+        repeat: int. times to repeat
+        random_end: If True, do random walk when goal reached
+        Return: Trajectory
+        '''
+
+        # Configure behavior maze map, the map for controller to take action
+        behavior_map = set_map_cell(self.MAZE_MAP, self.target_start, 'r')
+        behavior_map = set_map_cell(behavior_map, self.target_goal, 'g')
+
+        # Set up behavior environment
+        if self.render:
+            render_mode = 'human'
+        else:
+            render_mode = None
+        # render_mode = None
+
+        # print(f"Behavior_env render mode {render_mode}")
+        behavior_env = gym.make('PointMaze_UMazeDense-v3', 
+                              maze_map= behavior_map, 
+                              continuing_task = False,
+                              max_episode_steps=self.horizon,
+                              render_mode = render_mode)
+
+        # Set up controller
+        controller = WaypointController(maze = deepcopy(behavior_env.maze))
+        
+        # if self.debug:
+        #     print(f"behavior_env==data_env: {behavior_env==data_env}")
+        
+        # Initialize data to record
+        rets = []
+        for epoch in range(repeat):
+
+            # reset, data_env, behavior_env only differ in reward
+            seed = np.random.randint(0, 1000)
+            behavior_obs, _ = behavior_env.reset(seed=seed)
+            if self.debug:
+                print(f"Goal: {behavior_obs['desired_goal']}")
+
+            # Initialize return accumulator, terminated, truncated, info
+            achieved_ret = 0
+
+            for n_step in range(self.horizon):
+
+                # if data_terminated: # Reached true goal, don't move, dummy action, change reward to 1
+                #     # action = np.zeros(2,)
+                #     # reward = 1
+
+                #     # Continue control
+                #     pass
+                    
+                # else: 
+                    # controller uses the 'desired_goal' key of obs to know the goal, not the goal mark on the map
+                action = controller.compute_action(behavior_obs)
+                # action = controller.compute_action(behavior_obs)
+
+                behavior_obs, reward, behavior_terminated, _, _ = behavior_env.step(action)
+                if self.debug:
+                    print(f"Step {n_step}, behavior maze, current pos {behavior_obs['achieved_goal']}, terminated {behavior_terminated}")
+
+                # Update return
+                achieved_ret += reward
+
+            # Compute returns. Note that achieved_ret is now total return
+            print(f"Epoch {epoch}, total return {achieved_ret}")
+            rets.append(achieved_ret)
+
+        behavior_env.close()
+
+            # if data_terminated:
+            #     print(f"Warning: data_env already reached goal, quit sampling immediately")
+            #     break
+            # if behavior_terminated:
+            #     print(f"Behavior env finished")
+            #     break
+        return sum(rets) / len(rets)
 
 
 
