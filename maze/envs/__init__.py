@@ -1,5 +1,5 @@
 import os
 import sys
 
-print(f"envs: {sys.path}")
+# print(f"envs: {sys.path}")
 	

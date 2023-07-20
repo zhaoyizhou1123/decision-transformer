@@ -18,5 +18,9 @@ atari/result
 debug.py
 test.py
 *.dat
+*.egg-info
+dist/
+build/
+maze/log/
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt

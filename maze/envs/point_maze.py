@@ -9,7 +9,9 @@ import gymnasium as gym
 import pickle
 
 class PointMaze(BaseOfflineEnv):
-    def __init__(self, data_path, horizon, maze_map, start, goal, sample_starts, sample_goals, debug=False):
+    def __init__(self, data_path, horizon, maze_map, start, goal, 
+                 sample_starts, sample_goals, sample_repeats, sample_end_randoms,
+                 debug=False, render=False):
         '''
         data_path: path to dataset
         maze_map: list(list), basic map of the game, only specifies 0, 1. R and G are specified by start and goal.
@@ -32,8 +34,8 @@ class PointMaze(BaseOfflineEnv):
         target_map = set_map_cell(self.MAZE_MAP, goal, 'g')
         target_map = set_map_cell(target_map, start, 'r')
 
-        # render_mode = "human" if debug else "None"
-        render_mode = None
+        render_mode = "human" if render else "None"
+        # render_mode = None
         env_cls = lambda : gym.make('PointMaze_UMazeDense-v3', 
                                     maze_map = target_map, 
                                     continuing_task = False,
@@ -44,9 +46,10 @@ class PointMaze(BaseOfflineEnv):
                               maze_map=self.MAZE_MAP,
                               target_start=start,
                               target_goal=goal,
-                              debug=debug)
+                              debug=debug,
+                              render=render)
         
-        sample_args = {'starts': sample_starts, 'goals': sample_goals}
+        sample_args = {'starts': sample_starts, 'goals': sample_goals, 'repeats': sample_repeats, 'randoms': sample_end_randoms}
         
         super().__init__(data_path, env_cls, horizon,
                          sampler = sampler, sample_args=sample_args)

@@ -15,6 +15,9 @@ def create_env_dataset(args):
     '''
     Create env and dataset (if not created)
     '''
+    # if not hasattr(args, 'maze_config_file'):
+    #     print(f"Current file: {__file__}")
+    #     args.maze_config_file = './dataset/maze.dat'
     maze_config = json.load(open(args.maze_config_file, 'r'))
     map = maze_config['map']  
 
@@ -26,22 +29,25 @@ def create_env_dataset(args):
 
     alt_goal = [1,7]
 
-    sample_starts = []
-    sample_goals = []
-
     n_trajs = int(1e6) // args.horizon
+    # n_trajs = 6
 
-    repeat = n_trajs // 3
+    repeat = n_trajs // 4
 
-    for i in range(repeat): # a suboptimal path
-        sample_starts.append(np.array(start))
-        sample_goals.append(np.array(alt_goal))
-    for i in range(repeat, repeat * 2): # teach path mid->goal
-        sample_starts.append(np.array(alt_start))
-        sample_goals.append(np.array(goal))    
-    for i in range(repeat * 2, n_trajs): # teach path start->mid
-        sample_starts.append(np.array(start))
-        sample_goals.append(np.array(mid_point))    
+    sample_starts = [np.array(start), np.array(alt_start), np.array(start), np.array(alt_start)]
+    sample_goals = [np.array(alt_goal), np.array(goal), np.array(mid_point), np.array(goal)]
+    sample_repeats = [repeat, repeat, repeat, n_trajs - 3 * repeat]
+    sample_end_randoms = [False, False, False, True]
+
+    # for i in range(repeat): # a suboptimal path
+    #     sample_starts.append(np.array(start))
+    #     sample_goals.append(np.array(alt_goal))
+    # for i in range(repeat, repeat * 2): # teach path mid->goal
+    #     sample_starts.append(np.array(alt_start))
+    #     sample_goals.append(np.array(goal))    
+    # for i in range(repeat * 2, n_trajs): # teach path start->mid
+    #     sample_starts.append(np.array(start))
+    #     sample_goals.append(np.array(mid_point))    
 
     # print(sample_starts)
     # print(sample_goals)
@@ -54,7 +60,10 @@ def create_env_dataset(args):
                         goal = np.array(goal),
                         sample_starts=sample_starts,
                         sample_goals=sample_goals,
-                        debug=args.debug)   
+                        sample_repeats = sample_repeats,
+                        sample_end_randoms = sample_end_randoms,
+                        debug=args.debug,
+                        render=args.render)   
     
     return point_maze
 
@@ -73,7 +82,7 @@ def create_env(args):
 
     # print(sample_starts)
     # print(sample_goals)
-    render_mode = "human" if args.debug else "None"
+    render_mode = "human" if args.render else "None"
     # render_mode = None
 
     env = gym.make('PointMaze_UMazeDense-v3', 
@@ -108,9 +117,10 @@ def load_dataset(data_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_file', type=str, default='./dataset/maze_1e6.dat',help='./dataset/maze_1e6.dat')
+    parser.add_argument('--data_file', type=str, default='./dataset/maze_1e6_nonstop.dat',help='./dataset/maze_1e6_nonstop.dat')
     parser.add_argument('--horizon', type=int, default=250)
     parser.add_argument('--debug', action='store_true')
+    parser.add_argument('--render', action='store_true')
     parser.add_argument('--maze_config_file', type=str, default='./config/maze1.json')
 
     args = parser.parse_args()

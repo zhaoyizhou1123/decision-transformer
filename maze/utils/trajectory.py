@@ -1,4 +1,6 @@
 from collections import namedtuple
+from typing import List, Optional, Union, Tuple, Dict
+import numpy as np
 
 Trajectory = namedtuple(
     "Trajectory", ["observations", "actions", "rewards", "returns", "timesteps", "terminated", "truncated", "infos"])
@@ -43,3 +45,47 @@ def show_trajectory(traj: Trajectory, timesteps = None):
             print(f"Terminated")
         if truncated:
             print(f"Truncated")
+
+def Trajs2Dict(trajs: List):
+    '''
+    Convert list(Trajectory) to dict type, to be used as dynamics dataset
+    Concatenate all trajectories.
+    Transition number is (horizon - 1) * num_traj
+    'terminal' will be all false
+    '''
+    obss = [traj.observations[0:-1] for traj in trajs]
+    next_obss = [traj.observations[1:] for traj in trajs]
+    acts = [traj.actions[0:-1] for traj in trajs]
+    rs = [traj.rewards[0:-1] for traj in trajs]
+    init_obss = [traj.observations[0:1] for traj in trajs] # initial observations
+
+    obss = np.concatenate(obss, axis=0)
+    next_obss = np.concatenate(next_obss, axis=0)
+    acts = np.concatenate(acts, axis=0)
+    rs = np.concatenate(rs, axis=0)
+    terminals = np.array([False]).repeat(obss.shape[0])
+    init_obss = np.concatenate(init_obss, axis=0)
+
+    return {"observations": obss,
+            "next_observations": next_obss,
+            "actions": acts,
+            "rewards": rs,
+            "terminals": terminals,
+            "initial_observations": init_obss}
+
+
+if __name__ == '__main__':
+    traj = Trajectory(observations=0,
+                      actions=1,
+                      rewards=2,
+                      returns=3,
+                      timesteps=4,
+                      terminated=5,
+                      truncated=6,
+                      infos=7)
+    traj = traj._asdict()
+
+    from typing import Optional, Union, Tuple, Dict
+    def f(traj: Dict[str, int]):
+        print(traj['observations'])
+    f(traj)
