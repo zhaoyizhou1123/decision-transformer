@@ -10,7 +10,7 @@ import pickle
 
 class PointMaze(BaseOfflineEnv):
     def __init__(self, data_path, horizon, maze_map, start, goal, 
-                 sample_starts, sample_goals, sample_repeats, sample_end_randoms,
+                 sample_args,
                  debug=False, render=False):
         '''
         data_path: path to dataset
@@ -49,7 +49,7 @@ class PointMaze(BaseOfflineEnv):
                               debug=debug,
                               render=render)
         
-        sample_args = {'starts': sample_starts, 'goals': sample_goals, 'repeats': sample_repeats, 'randoms': sample_end_randoms}
+        # sample_args = {'starts': sample_starts, 'goals': sample_goals, 'repeats': sample_repeats, 'randoms': sample_end_randoms}
         
         super().__init__(data_path, env_cls, horizon,
                          sampler = sampler, sample_args=sample_args)

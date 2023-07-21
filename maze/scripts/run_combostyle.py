@@ -213,7 +213,7 @@ def run(args):
 
     if args.test_rollout:
         # Test rollout
-        test_rollout_combo(args, dynamics_trainer, real_buffer, behavior_model_raw=None, based_true_state=False, init_true_state=False)
+        test_rollout_combo(args, dynamics_trainer, real_buffer, behavior_model_raw=behavior_model, based_true_state=False, init_true_state=True)
     else:
         rollout_trajs = rollout_combo(args, dynamics_trainer, behavior_model, real_buffer)
 
@@ -268,10 +268,10 @@ if __name__ == '__main__':
     # parser.add_argument('--game', type=str, default='Breakout')
     parser.add_argument('--batch', type=int, default=128)
     parser.add_argument('--mdp_batch', type=int, default=128)
-    parser.add_argument('--maze_config_file', type=str, default='./config/maze1.json')
+    parser.add_argument('--maze_config_file', type=str, default='./config/maze2.json')
     
     # parser.add_argument('--trajectories_per_buffer', type=int, default=10, help='Number of trajectories to sample from each of the buffers.')
-    parser.add_argument('--data_file', type=str, default='./dataset/maze_1e6_nonstop.dat')
+    parser.add_argument('--data_file', type=str, default='./dataset/maze2.dat')
     parser.add_argument('--rollout_data_file', type=str, default=None, help='./dataset/maze_rollout.dat')
     parser.add_argument('--log_level', type=str, default='WARNING')
     parser.add_argument('--goal_mul', type=float, default=1, help="goal = max_dataset_return * goal_mul")

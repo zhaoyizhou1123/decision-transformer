@@ -2,6 +2,8 @@
 utils for point maze
 '''
 from copy import deepcopy
+from typing import List, Union, Tuple, Dict
+import numpy as np
 
 VALID_VALUE = [0,1,'c','g','r'] # valid value of cell
 
@@ -19,3 +21,30 @@ def set_map_cell(MAP, pos, value):
     new_map[pos[0]][pos[1]] = value
 
     return new_map
+
+def cell2xy(MAP: List[List], pos: Union[Tuple, List, np.ndarray], noise_bound = 0.25) -> np.ndarray:
+    '''
+    Convert cell (row-col) discription to x-y coordinate with noise
+    '''
+    pos_y, pos_x = pos[0], pos[1] # row is y coordinate, col is x x coordinate
+    max_pos_x = len(MAP[0]) - 1 # max x cell position
+    max_pos_y = len(MAP) - 1 # max y cell position
+    center_x = max_pos_x / 2 # center cell position x, int.5 type
+    center_y = max_pos_y / 2 # center cell position y, int.5 type
+    assert 0 <= pos_x and pos_x <= max_pos_x, f"Invalid x position {pos_x}"
+    assert 0 <= pos_y and pos_y <= max_pos_y, f"Invalid y position {pos_y}"
+    coordinate_x = pos_x - center_x + np.random.uniform(low = -noise_bound, high = noise_bound)
+    coordinate_y = -pos_y + center_y + np.random.uniform(low = -noise_bound, high = noise_bound) # Large col index means small y coordinate
+    return np.array([coordinate_x, coordinate_y])
+
+def terminated(obs: Union[Dict, np.ndarray], desired_goal: np.ndarray, threshold = 0.5) -> bool:
+    '''
+    Test whether the goal is reached.
+    obs: Dict (full observation) | np.ndarray (pos+velocity obs)
+    '''
+    if type(obs) == dict:
+        obs = obs['observation']
+    cur_pos = obs[0:2] # np.ndarray
+    dist = np.linalg.norm(cur_pos - desired_goal)
+    # print(f"Distance to current goal: {dist}")
+    return dist <= threshold

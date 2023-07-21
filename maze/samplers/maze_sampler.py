@@ -9,8 +9,9 @@ from random import randint
 from tqdm.autonotebook import tqdm
 from copy import deepcopy
 from maze.policies.maze_expert import WaypointController
-from maze.utils.maze_utils import VALID_VALUE, set_map_cell
+from maze.utils.maze_utils import VALID_VALUE, set_map_cell, cell2xy, terminated
 from maze.utils.trajectory import Trajectory
+from typing import Union, List, Dict
 
 import gymnasium as gym
 import numpy as np
@@ -60,8 +61,8 @@ class MazeSampler(BaseSampler):
         '''
         Sample Multiple trajectories.
         sample_args: dict, contain keys:
-        - starts: list(n.array (2,))
-        - goals: list(np.array (2,))
+        - starts: list(np.array (2,) | List | List(list))
+        - goals: list(np.array (2,) | List)
 
         Return: (list(Trajectory), horizon, map, target_start, target_goal). Elements 3-5 are for env
         '''
@@ -88,19 +89,26 @@ class MazeSampler(BaseSampler):
         return (trajs_, self.horizon, self.MAZE_MAP, self.target_start, self.target_goal)
 
         
-    def _collect_single_traj(self, start, goal, repeat, random_end: bool):
+    def _collect_single_traj(self, start, goals: Union[List[List],List,List[np.ndarray]], repeat, random_end: bool):
         '''
         Collect one trajectory.
         start: np.array (2,), type=int. Initial (row,col)
-        goal: np.array (2,), type=int. Goal (row,col)
+        goal: np.array (2,), type=int. Goal (row,col). If list, then multiple goals, reach them one by one
         repeat: int. times to repeat
         random_end: If True, do random walk when goal reached
         Return: Trajectory
         '''
 
         # Configure behavior maze map, the map for controller to take action
-        behavior_map = set_map_cell(self.MAZE_MAP, start, 'r')
-        behavior_map = set_map_cell(behavior_map, goal, 'g')
+        if type(goals[0]) != np.ndarray and type(goals[0]) != list: # single goal element
+            list_goals = [goals]
+        else:
+            list_goals = deepcopy(goals)
+        if self.debug:
+            print(f"Goals id: {list_goals}")
+
+        # behavior_map = set_map_cell(self.MAZE_MAP, start, 'r')
+        # behavior_map = set_map_cell(behavior_map, goals[-1], 'g')
 
         # Set up behavior environment
         if self.render:
@@ -110,14 +118,11 @@ class MazeSampler(BaseSampler):
         # render_mode = None
 
         # print(f"Behavior_env render mode {render_mode}")
-        behavior_env = gym.make('PointMaze_UMazeDense-v3', 
-                              maze_map= behavior_map, 
-                              continuing_task = False,
-                              max_episode_steps=self.horizon,
-                              render_mode = render_mode)
-
-        # Set up controller
-        controller = WaypointController(maze = deepcopy(behavior_env.maze))
+        # behavior_env = gym.make('PointMaze_UMazeDense-v3', 
+        #                       maze_map= behavior_map, 
+        #                       continuing_task = False,
+        #                       max_episode_steps=self.horizon,
+        #                       render_mode = render_mode)
 
         # Configure data maze and env, the env to record data
         data_map = set_map_cell(self.MAZE_MAP, start, 'r')
@@ -126,7 +131,11 @@ class MazeSampler(BaseSampler):
         data_env = gym.make('PointMaze_UMazeDense-v3', 
                               maze_map= data_map, 
                               continuing_task = False,
-                              max_episode_steps=self.horizon)
+                              max_episode_steps=self.horizon,
+                              render_mode = render_mode)
+        
+        # Set up controller, only the map matters, start and goal is unimportant
+        controller = WaypointController(maze = deepcopy(data_env.maze))
         
         # if self.debug:
         #     print(f"behavior_env==data_env: {behavior_env==data_env}")
@@ -145,17 +154,21 @@ class MazeSampler(BaseSampler):
 
             # reset, data_env, behavior_env only differ in reward
             seed = np.random.randint(0, 1000)
-            behavior_obs, _ = behavior_env.reset(seed=seed)
+            # behavior_obs, _ = behavior_env.reset(seed=seed)
             obs, _ = data_env.reset(seed=seed)
             if self.debug:
-                print(f"True goal: {obs['desired_goal']}, Sample goal: {behavior_obs['desired_goal']}")
-
+                print(f"True goal: {obs['desired_goal']}")
+            cur_goal = list_goals.pop(0) # maintain the current goal of controller
+            cur_goal_xy = cell2xy(self.MAZE_MAP, cur_goal) # Convert to coordinate
+            if self.debug:
+                print(f"Current goal xy: {cur_goal_xy}")
             # Initialize return accumulator, terminated, truncated, info
             achieved_ret = 0
             data_terminated = False
-            behavior_terminated = False
+            # behavior_terminated = False
             truncated = False
             info = None
+            goals_reached = False # maintain whether all goals are reached
 
             for n_step in range(self.horizon):
                 observations_.append(deepcopy(obs['observation']))
@@ -174,15 +187,43 @@ class MazeSampler(BaseSampler):
                     
                 # else: 
                     # controller uses the 'desired_goal' key of obs to know the goal, not the goal mark on the map
-                if behavior_terminated and random_end: # sample goal reached, take no action
-                    action = behavior_env.action_space.sample()
-                else: # still head toward the sample goal
-                    action = controller.compute_action(behavior_obs)
+
+                if goals_reached: # All goals were reached
+                    if random_end:
+                        action = data_env.action_space.sample()
+                    else: # Towards the target goal
+                        controller_obs = deepcopy(obs)
+                        controller_obs['desired_goal'] = cur_goal_xy
+                        action = controller.compute_action(controller_obs)
+                else:
+                    if terminated(obs, cur_goal_xy): # Current goal reached
+                        if len(list_goals) > 0: # Still have other goals, update current goal
+                            cur_goal = list_goals.pop(0)
+                            cur_goal_xy = cell2xy(self.MAZE_MAP, cur_goal)
+                            controller_obs = deepcopy(obs)
+                            if self.debug:
+                                print(f"Changing current goal xy to {cur_goal_xy}")
+                            controller_obs['desired_goal'] = cur_goal_xy
+                            action = controller.compute_action(controller_obs)
+                        else: # All goals are reached, turn to status 'goal_reached'
+                            if self.debug:
+                                print("Goal reached")
+                            goals_reached = True
+                            if random_end:
+                                action = data_env.action_space.sample()
+                            else: # Towards the target goal
+                                controller_obs = deepcopy(obs)
+                                controller_obs['desired_goal'] = cur_goal_xy
+                                action = controller.compute_action(controller_obs)
+                    else: # Current goal not reached, remain chasing current goals
+                        controller_obs = deepcopy(obs)
+                        controller_obs['desired_goal'] = cur_goal_xy
+                        action = controller.compute_action(controller_obs)
                 # action = controller.compute_action(behavior_obs)
 
-                behavior_obs, _, behavior_terminated, _, _ = behavior_env.step(action)
-                if self.debug:
-                    print(f"Step {n_step}, behavior maze, current pos {behavior_obs['achieved_goal']}, terminated {behavior_terminated}")
+                # behavior_obs, _, behavior_terminated, _, _ = behavior_env.step(action)
+                # if self.debug:
+                #     print(f"Step {n_step}, behavior maze, current pos {behavior_obs['achieved_goal']}, terminated {behavior_terminated}")
 
                 obs, reward, data_terminated, truncated, info = data_env.step(action)
                 if self.debug:
@@ -196,6 +237,8 @@ class MazeSampler(BaseSampler):
 
             # Compute returns. Note that achieved_ret is now total return
             total_ret = achieved_ret
+            if self.debug:
+                print(f"Total return: {total_ret}\n -----------------")
             returns_ = [total_ret - achieved for achieved in achieved_rets_]
             trajs.append(Trajectory(observations = observations_, 
                           actions = actions_, 
@@ -205,7 +248,7 @@ class MazeSampler(BaseSampler):
                           terminated = terminateds_, 
                           truncated = truncateds_, 
                           infos = infos_))
-        behavior_env.close()
+        # behavior_env.close()
         data_env.close()
 
             # if data_terminated:
@@ -300,7 +343,6 @@ class MazeSampler(BaseSampler):
             #     print(f"Behavior env finished")
             #     break
         return sum(rets) / len(rets)
-
 
 
 

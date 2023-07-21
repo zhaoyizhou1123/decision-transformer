@@ -477,9 +477,10 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
             # next_state = torch.from_numpy(next_state) # (state_dim)
             actions_.append(deepcopy(action))
             rewards_.append(deepcopy(pred_reward))
-            print(f"Step {h}, action {action}")
-            print(f"Predicted reward {pred_reward}")
-            print(f"Predicted state {pred_next_state}\n")
+            if args.debug:
+                print(f"Step {h}, action {action}")
+                print(f"Predicted reward {pred_reward}")
+                print(f"Predicted state {pred_next_state}\n")
             # Calculate return
             # ret += reward
             pred_ret += pred_reward
@@ -495,7 +496,7 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
             #     pred_ret += args.horizon - 1 -h
             #     break
         returns_ = [pred_ret - achieved for achieved in achieved_rets_]
-        print(f"Predicted total return {pred_ret}")
+        print(f"Epoch {epoch}, predicted total return {pred_ret}")
 
         # Add new traj
         trajs.append(Trajectory(observations = observations_, 
