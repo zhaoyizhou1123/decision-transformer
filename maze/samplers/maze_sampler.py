@@ -100,12 +100,6 @@ class MazeSampler(BaseSampler):
         '''
 
         # Configure behavior maze map, the map for controller to take action
-        if type(goals[0]) != np.ndarray and type(goals[0]) != list: # single goal element
-            list_goals = [goals]
-        else:
-            list_goals = deepcopy(goals)
-        if self.debug:
-            print(f"Goals id: {list_goals}")
 
         # behavior_map = set_map_cell(self.MAZE_MAP, start, 'r')
         # behavior_map = set_map_cell(behavior_map, goals[-1], 'g')
@@ -151,6 +145,14 @@ class MazeSampler(BaseSampler):
             terminateds_ = []
             truncateds_ = []
             infos_ = []
+
+            # Copy goal list
+            if type(goals[0]) != np.ndarray and type(goals[0]) != list: # single goal element
+                list_goals = [goals]
+            else:
+                list_goals = deepcopy(goals)
+            if self.debug:
+                print(f"Goals id: {list_goals}")
 
             # reset, data_env, behavior_env only differ in reward
             seed = np.random.randint(0, 1000)

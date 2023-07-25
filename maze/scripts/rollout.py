@@ -313,9 +313,10 @@ def test_rollout_combo(args, dynamics: BaseDynamics, dynamics_dataset: ReplayBuf
             if hasattr(env, 'get_true_observation'): # For pointmaze
                 next_state = env.get_true_observation(next_state)
             # next_state = torch.from_numpy(next_state) # (state_dim)
-            print(f"Step {h}, action {action}")
-            print(f"True reward: {reward}, predicted {pred_reward}")
-            print(f"True next_state: {next_state}, predicted {pred_next_state}\n")
+            if args.debug:
+                print(f"Step {h}, action {action}")
+                print(f"True reward: {reward}, predicted {pred_reward}")
+                print(f"True next_state: {next_state}, predicted {pred_next_state}\n")
             # Calculate return
             ret += reward
             pred_ret += pred_reward
