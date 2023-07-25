@@ -9,7 +9,7 @@ import wandb
 import time
 
 from torch.utils.tensorboard import SummaryWriter  
-from maze.utils.dataset import TrajCtxDataset, TrajNextObsDataset
+from maze.utils.dataset import TrajCtxDataset, TrajNextObsDataset, ObsActDataset
 from maze.scripts.rollout import rollout_expand_trajs, test_rollout_combo, rollout_combo
 from maze.algos.stitch_rcsl.training.trainer_dynamics import EnsembleDynamics 
 from maze.algos.stitch_rcsl.training.trainer_base import TrainerConfig
@@ -21,6 +21,7 @@ from maze.utils.scalar import StandardScaler
 from maze.algos.stitch_rcsl.models.dynamics_normal import EnsembleDynamicsModel
 from maze.utils.logger import Logger, make_log_dirs
 from maze.utils.none_or_str import none_or_str
+from maze.utils.setup_logger import setup_logger
 import torch
 import numpy as np
 
@@ -177,81 +178,114 @@ def run(args):
         dynamics_trainer.load(args.load_dynamics_path)
     else:
         print(f"Training dynamics model")
-        dynamics_trainer.train(real_buffer.sample_all(), logger, max_epochs_since_update=5)
+        dynamics_trainer.train(real_buffer.sample_all(), logger, max_epochs_since_update=5)   
 
     # Get behavior policy model 
-    if args.mdp_ckpt_dir is not None and os.path.exists(args.mdp_ckpt_dir):
-        print(f"MDP model exists, load existing models from {args.mdp_ckpt_dir}")
-        # d_model_path = os.path.join(args.mdp_ckpt_dir, "dynamics.pth")
-        b_model_path = os.path.join(args.mdp_ckpt_dir, "behavior.pth")
-        # i_model_pth = os.path.join(args.mdp_ckpt_dir, "init.pth")
-        # dynamics_model = torch.load(d_model_path, map_location=device)
-        behavior_model = torch.load(b_model_path, map_location=device)
-        # init_model = torch.load(i_model_pth, map_location=device)
-        # dynamics_model.train(False)
-        behavior_model.train(False)
-        # init_model.train(False)
-    else: # Train behavior policy model
-        if args.mdp_ckpt_dir is None:
-            ckpt_path = os.path.join('./checkpoint',format_time)
-        else:
-            ckpt_path = args.mdp_ckpt_dir
-        os.makedirs(ckpt_path,exist_ok=True)
-        print(f"Train behavior policy model")
-        model_dataset = TrajNextObsDataset(trajs)
+    if args.behavior_type == 'mlp': # mlp model
+        if args.mdp_ckpt_dir is not None and os.path.exists(args.mdp_ckpt_dir):
+            print(f"MDP model exists, load existing models from {args.mdp_ckpt_dir}")
+            # d_model_path = os.path.join(args.mdp_ckpt_dir, "dynamics.pth")
+            b_model_path = os.path.join(args.mdp_ckpt_dir, "behavior.pth")
+            # i_model_pth = os.path.join(args.mdp_ckpt_dir, "init.pth")
+            # dynamics_model = torch.load(d_model_path, map_location=device)
+            behavior_model = torch.load(b_model_path, map_location=device)
+            # init_model = torch.load(i_model_pth, map_location=device)
+            # dynamics_model.train(False)
+            behavior_model.train(False)
+            # init_model.train(False)
+        else: # Train behavior policy model
+            if args.mdp_ckpt_dir is None:
+                ckpt_path = os.path.join('./checkpoint',format_time)
+            else:
+                ckpt_path = args.mdp_ckpt_dir
+            os.makedirs(ckpt_path,exist_ok=True)
 
-        conf = TrainerConfig(max_epochs=args.mdp_epochs, batch_size=args.mdp_batch, learning_rate=args.rate,
-                            num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
-                            ckpt_path = ckpt_path, tb_log = tb_dir_path, r_loss_weight = args.r_loss_weight,
-                            weight_decay = 0.1, log_to_wandb = args.log_to_wandb)
-        
-        behavior_model = StochasticPolicy(obs_dim, action_dim, arch = args.b_arch, n_support = args.n_support)
+            model_dataset = TrajNextObsDataset(trajs)
+            print(f"Train behavior policy model")
 
-
-        mdp_trainer = BehaviorPolicyTrainer(behavior_model, model_dataset, conf)
-        mdp_trainer.train()
-
-    if args.test_rollout:
-        # Test rollout
-        test_rollout_combo(args, dynamics_trainer, real_buffer, behavior_model_raw=behavior_model, based_true_state=False, init_true_state=True)
-    else:
-        rollout_trajs = rollout_combo(args, dynamics_trainer, behavior_model, real_buffer)
-
-        train_dataset = TrajCtxDataset(trajs + rollout_trajs, ctx = args.ctx, single_timestep = False)
-
-        if args.algo == 'rcsl-mlp':
-            # num_action = env.get_num_action()
-            # print(f"num_action={num_action}")
-            # model = MlpPolicy(1, num_action, args.ctx, horizon, args.repeat, args.arch, args.n_embd)
-            from maze.algos.rcsl.models.mlp_policy import MlpPolicy
-
-            model = MlpPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
-                            simple_input=args.simple_input)
-            import maze.algos.rcsl.trainer_mlp as trainer_mlp
-            goal = train_dataset.get_max_return() * args.goal_mul
-            tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
-                        lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
-                        desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
-                        ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
-            output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
-        elif args.algo == 'stitch':
-            from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
-            model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
-                            simple_input=args.simple_input)
+            conf = TrainerConfig(max_epochs=args.mdp_epochs, batch_size=args.behavior_batch, learning_rate=args.rate,
+                                num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                                ckpt_path = ckpt_path, tb_log = tb_dir_path, r_loss_weight = args.r_loss_weight,
+                                weight_decay = 0.1, log_to_wandb = args.log_to_wandb)
             
-            goal = train_dataset.get_max_return() * args.goal_mul
+            behavior_model = StochasticPolicy(obs_dim, action_dim, arch = args.b_arch, n_support = args.n_support)
 
-            import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
-            tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
-                        lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
-                        desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
-                        ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
-            output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+
+            behavior_trainer = BehaviorPolicyTrainer(behavior_model, model_dataset, conf)
+            behavior_trainer.train()
+    elif args.behavior_type == 'diffusion': # diffusion policy
+        # config for both training and logger setup
+        conf = TrainerConfig(obs_dim = obs_dim,
+                             act_dim = action_dim,
+                             spectral_norm = False,
+                             num_epochs = args.behavior_epoch,
+                             num_diffusion_iters = args.num_diffusion_iters,
+                             batch_size = args.behavior_batch,
+                             algo = args.behavior_type,
+                             env_id = args.env_type,
+                             expr_name = 'default',
+                             seed = args.diffusion_seed,
+                             load = args.load_diffusion)
+        
+        state_action_dataset = ObsActDataset(trajs)
+        # Configure logger
+        diffusion_logger = setup_logger(conf)
+
+        from maze.algos.stitch_rcsl.training.trainer_diffusion import DiffusionBC
+        diffusion_policy = DiffusionBC(conf, state_action_dataset, diffusion_logger)
+
+        if not args.load_diffusion:
+            print(f"Train diffusion behavior policy")
+            diffusion_policy.train()
+            diffusion_policy.save_checkpoint()
         else:
-            raise(Exception(f"Unimplemented model {args.algo}!"))
+            print(f"Load diffusion behavior policy")
+            diffusion_policy.load_checkpoint()
 
-        print("Begin output policy training")
-        output_policy_trainer.train()
+    else:
+        raise Exception(f"Unimplemented behavior policy type {args.behavior_type}")
+
+    # if args.test_rollout:
+    #     # Test rollout
+    #     test_rollout_combo(args, dynamics_trainer, real_buffer, behavior_model_raw=behavior_model, based_true_state=False, init_true_state=True)
+    # else:
+    #     rollout_trajs = rollout_combo(args, dynamics_trainer, behavior_model, real_buffer)
+
+    #     train_dataset = TrajCtxDataset(trajs + rollout_trajs, ctx = args.ctx, single_timestep = False)
+
+    #     if args.algo == 'rcsl-mlp':
+    #         # num_action = env.get_num_action()
+    #         # print(f"num_action={num_action}")
+    #         # model = MlpPolicy(1, num_action, args.ctx, horizon, args.repeat, args.arch, args.n_embd)
+    #         from maze.algos.rcsl.models.mlp_policy import MlpPolicy
+
+    #         model = MlpPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
+    #                         simple_input=args.simple_input)
+    #         import maze.algos.rcsl.trainer_mlp as trainer_mlp
+    #         goal = train_dataset.get_max_return() * args.goal_mul
+    #         tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
+    #                     lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+    #                     desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
+    #                     ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
+    #         output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+    #     elif args.algo == 'stitch':
+    #         from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
+    #         model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
+    #                         simple_input=args.simple_input)
+            
+    #         goal = train_dataset.get_max_return() * args.goal_mul
+
+    #         import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
+    #         tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
+    #                     lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+    #                     desired_rtg=goal, ckpt_prefix = args.ckpt_prefix, env = env, tb_log = tb_dir_path, 
+    #                     ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
+    #         output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+    #     else:
+    #         raise(Exception(f"Unimplemented model {args.algo}!"))
+
+    #     print("Begin output policy training")
+    #     output_policy_trainer.train()
 
 
 
@@ -277,7 +311,6 @@ if __name__ == '__main__':
     parser.add_argument('--goal_mul', type=float, default=1, help="goal = max_dataset_return * goal_mul")
     parser.add_argument('--horizon', type=int, default=250, help="Should be consistent with dataset")
     parser.add_argument('--ckpt_prefix', type=none_or_str, default=None, help="Used to store output policy model" )
-    parser.add_argument('--mdp_ckpt_dir', type=str, default='./checkpoint/test_dynamics', help="dir path, used to load/store mdp model" )
     parser.add_argument('--rollout_ckpt_path', type=none_or_str, default=None, help="file path, used to load/store rollout trajs" )
     parser.add_argument('--rate', type=float, default=6e-3, help="learning rate of Trainer" )
     parser.add_argument('--hash', action='store_true', help="Hash states if True")
@@ -308,6 +341,7 @@ if __name__ == '__main__':
     parser.add_argument("--algo-name", type=str, default="combo")
     parser.add_argument("--seed", type=int, default=1)
 
+    # Dynamics model
     parser.add_argument("--dynamics-lr", type=float, default=1e-3)
     parser.add_argument("--dynamics-hidden-dims", type=int, nargs='*', default=[200, 200, 200, 200])
     parser.add_argument("--dynamics-weight-decay", type=float, nargs='*', default=[2.5e-5, 5e-5, 7.5e-5, 7.5e-5, 1e-4])
@@ -320,7 +354,16 @@ if __name__ == '__main__':
     parser.add_argument("--real-ratio", type=float, default=0.5)
     parser.add_argument("--load-dynamics-path", type=none_or_str, default=None)
 
-    parser.add_argument("--epoch", type=int, default=1000)
+    # Behavior policy
+    parser.add_argument('--behavior_type', type=str, default='diffusion', help='mlp or diffusion')
+    parser.add_argument('--mdp_ckpt_dir', type=str, default='./checkpoint/test_dynamics', help="dir path, used to load/store mdp model" )
+    parser.add_argument("--behavior_epoch", type=int, default=5)
+    parser.add_argument("--num_diffusion_iters", type=int, default=100, help="Number of diffusion steps")
+    parser.add_argument('--behavior_batch', type=int, default=256)
+    parser.add_argument('--load_diffusion', action="store_true", help="Load diffusion policy model if true")
+    parser.add_argument('--diffusion_seed', type=int, default=0, help="Distinguish runs for diffusion policy")
+
+    parser.add_argument("--epoch", type=int, default=100)
     parser.add_argument("--step-per-epoch", type=int, default=1000)
     parser.add_argument("--eval_episodes", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=256)

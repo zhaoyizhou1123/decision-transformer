@@ -22,5 +22,6 @@ test.py
 dist/
 build/
 maze/log/
+maze/logdir/
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt

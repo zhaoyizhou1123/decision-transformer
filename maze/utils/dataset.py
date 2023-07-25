@@ -6,6 +6,7 @@ import torch
 from torch.utils.data import Dataset
 # import pandas as pd
 import numpy as np
+from typing import List
 
 class BanditReturnDataset(Dataset):
     '''Son of the pytorch Dataset class'''
@@ -354,8 +355,6 @@ class TrajNextObsDataset(Dataset):
     def __init__(self, trajs):    
         '''
         trajs: list(traj), namedtuple "observations", "actions", "rewards", "returns", "timesteps", "terminated", "truncated", "infos" \n
-        single_timestep: bool. If true, timestep only keep initial step; Else (ctx,) \n
-        keep_ctx: If False, ctx must be set 1, and we will not keep ctx dimension.
         Note: Each traj must have same number of timesteps
         '''    
         # All 2d tensors n*args.horizon (timesteps n*(args.horizon+1))
@@ -447,4 +446,34 @@ class TrajNextObsDataset(Dataset):
     def get_max_return(self):
         traj_rets = [traj.returns[0] for traj in self._trajs]
         return max(traj_rets)
+    
+
+class ObsActDataset(Dataset):
+    '''
+    From Chuning, for diffusion policy training
+    '''
+    def __init__(self, trajs: List):
+        '''
+        trajs: list(traj), namedtuple "observations", "actions", "rewards", "returns", "timesteps", "terminated", "truncated", "infos" \n
+        '''
+        obs_trajs = [np.array(traj.observations) for traj in trajs]
+        obs_trajs = np.array(obs_trajs) # np.array (num_trajs,horizon,obs_dim)
+
+        act_trajs = [traj.actions for traj in trajs]
+        act_trajs = np.array(act_trajs) # np.array (num_trajs,horizon,act_dim)
+        
+        self.observations = obs_trajs.reshape(
+            np.prod(obs_trajs.shape[:2]), obs_trajs.shape[2]
+        )
+        self.actions = act_trajs.reshape(
+            np.prod(act_trajs.shape[:2]), act_trajs.shape[2]
+        )
+
+    def __len__(self):
+        return len(self.observations)
+
+    def __getitem__(self, idx):
+        obs_sample = self.observations[idx]
+        act_sample = self.actions[idx]
+        return dict(obs=obs_sample, action=act_sample)
 
