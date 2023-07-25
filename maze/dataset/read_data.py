@@ -7,7 +7,7 @@ sys.path.append(os.getcwd()+"/../..")
 import pickle
 from maze.utils.trajectory import show_trajectory
 
-data_file = "maze_1e6.dat"
+data_file = "maze2.dat"
 
 with open(data_file, "rb") as f:
     trajs, horizon, map, start, goal = pickle.load(f)
