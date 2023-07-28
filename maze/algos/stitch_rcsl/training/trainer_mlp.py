@@ -25,6 +25,7 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data.dataloader import DataLoader
 import wandb
+import os
 
 from torch.utils.tensorboard import SummaryWriter  
 
@@ -43,7 +44,7 @@ class TrainerConfig:
     # warmup_tokens = 375e6 # these two numbers come from the GPT-3 paper, but may not be good defaults elsewhere
     # final_tokens = 260e9 # (at what point we reach 10% of original LR)
     # # checkpoint settings
-    # ckpt_prefix = None
+    # ckpt_path = None
     # num_workers = 0 # for DataLoader
     # horizon = 5
     # desired_rtg = horizon
@@ -54,7 +55,7 @@ class TrainerConfig:
                  num_workers, 
                  grad_norm_clip, 
                  max_epochs, 
-                 ckpt_prefix, 
+                 ckpt_path, 
                  env, 
                  eval_repeat, 
                  horizon,
@@ -65,7 +66,7 @@ class TrainerConfig:
         self.num_workers = num_workers
         self.grad_norm_clip = grad_norm_clip
         self.max_epochs = max_epochs
-        self.ckpt_prefix = ckpt_prefix
+        self.ckpt_path = ckpt_path
         self.env = env
         self.eval_repeat = eval_repeat
         self.horizon = horizon
@@ -76,16 +77,18 @@ class TrainerConfig:
             setattr(self, k, v)
 
 class Trainer:
-    def __init__(self, model, dataset, config):
+    def __init__(self, model, offline_dataset, rollout_dataset, config):
         '''
         model: nn.Module, should be class SimpleDT \n
-        dataset: torch.utils.data.Dataset, should be training dataset \n
+        offline_dataset: torch.utils.data.Dataset, offline training dataset, for pretraining
+        rollout_dataset: data collected from rollout
         config: TrainerConfig class, contains following elements:
         - batch_size, int
         - num_workers, int, for dataloader
         - grad_norm_clip
-        - max_epochs
-        - ckpt_prefix
+        - max_epochs: total number of epochs
+        - pre_epochs: pretraining epochs
+        - ckpt_path
         - env
         - eval_repeat
         - learning_rate, float, for optimizer
@@ -95,7 +98,8 @@ class Trainer:
         - tb_log, path to tb log directory
         '''
         self.model = model
-        self.dataset = dataset
+        self.offline_dataset = offline_dataset
+        self.rollout_dataset = rollout_dataset
         self.config = config
 
         # self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
@@ -133,8 +137,15 @@ class Trainer:
         Epoch_num: int, epoch number, used to display in progress bar. \n
         During training, we convert action to one_hot_hash
         '''
-
-        loader = DataLoader(self.dataset, shuffle=True, pin_memory=True,
+        if epoch_num < self.config.pre_epochs:
+            dataset = self.offline_dataset
+            if self.config.debug:
+                print(f"Pretraining") 
+        else:
+            dataset = self.rollout_dataset
+            if self.config.debug:
+                print(f"Training on rollout data")
+        loader = DataLoader(dataset, shuffle=True, pin_memory=True,
                             batch_size= self.config.batch_size,
                             num_workers= self.config.num_workers)
         
@@ -210,9 +221,7 @@ class Trainer:
                 # else:
                 #     _, sample_action = torch.topk(probs, k=1, dim=-1) # Tensor(1,)   
 
-                # Print output policy only for the first epoch
-                # if epoch == 0:
-                #     print(f"Step {h+1}, action is {pred_action.detach().cpu()}")      
+                # Print output policy only for the first epoch   
                 # sample_action = torch.zeros(action_dim)
                 # sample_action[sample] = 1 # one-hot representation, (action_dim)
 
@@ -220,6 +229,8 @@ class Trainer:
                 next_state, reward, terminated, _, _ = env.step(pred_action.detach().cpu().numpy()) # (state_dim), scalar
                 if hasattr(env, 'get_true_observation'): # For pointmaze
                     next_state = env.get_true_observation(next_state)
+                if epoch == 0 and self.config.debug:
+                    print(f"Step {h+1}, action is {pred_action.detach().cpu()}, observed next state {next_state}")   
                 next_state = torch.from_numpy(next_state)
                 # Calculate return
                 ret += reward
@@ -282,15 +293,15 @@ class Trainer:
         for epoch in range(self.config.max_epochs):
             print(f"------------\nEpoch {epoch+1}")
             self._run_epoch(epoch)
-            self.eval(self.config.desired_rtg, train_epoch=epoch)
-            # if eval_return-self.desired_rtg) < np.abs(best_return-self.desired_rtg):
-            #     best_return = eval_return
-            #     best_epoch = epoch
-            #     if self.ckpt_prefix is not None:
-            #         epoch_ckpt_path = self.ckpt_prefix + f"_best.pth"
-            #         print(f"Better return {best_return}, better epoch {best_epoch}. Save model to {epoch_ckpt_path}")
-            #         self._save_checkpoint(epoch_ckpt_path)
-        if self.config.ckpt_prefix is not None:
-            epoch_ckpt_path = self.config.ckpt_prefix + f"_final.pth"
-            print(f"Save final model to {epoch_ckpt_path}")
-            self._save_checkpoint(epoch_ckpt_path)
+            eval_return = self.eval(self.config.desired_rtg, train_epoch=epoch)
+            if eval_return > best_return:
+                best_return = eval_return
+                best_epoch = epoch
+                if self.config.ckpt_path is not None:
+                    epoch_ckpt_path = os.path.join(self.config.ckpt_path, "output_policy_best.pth")
+                    print(f"Better return {best_return}, better epoch {best_epoch}. Save model to {epoch_ckpt_path}")
+                    self._save_checkpoint(epoch_ckpt_path)
+        # if self.config.ckpt_path is not None:
+        #     epoch_ckpt_path = self.config.ckpt_path + f"_final.pth"
+        #     print(f"Save final model to {epoch_ckpt_path}")
+        #     self._save_checkpoint(epoch_ckpt_path)

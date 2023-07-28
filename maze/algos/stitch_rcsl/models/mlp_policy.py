@@ -180,6 +180,7 @@ class BehaviorPolicy(nn.Module):
 class StochasticPolicy(nn.Module):
     '''
     Model for dataset behavior policy, simply pi(a|s,t), but can output stochastic policy
+    Update: Remove prob output. Use uniform sample
     '''
 
     def __init__(self, observation_dim, action_dim, token_repeat=1, arch='256-256', n_support = 2):
@@ -201,17 +202,17 @@ class StochasticPolicy(nn.Module):
         input_dim = self.observation_dim + 1 # (s,t)
         self.network = FullyConnectedNetwork(
             self.token_repeat * input_dim, 
-            (action_dim + 1 ) * self.n_support, arch
+            action_dim  * self.n_support, arch
         )
 
         # Bound the output logit
-        self.logit_abs_bound = 100
+        # self.logit_abs_bound = 100
 
     def forward(self, obs, timesteps=None):
         '''
         - obs: (batch, obs_dim). T <= ctx
         - timesteps: (batch,) or None. If none, no timesteps input
-        Return: support_actions (batch, n_support, action_dim), probs (batch, n_support)
+        Return: support_actions (batch, n_support, action_dim)
         '''
         batch = obs.shape[0]
 
@@ -232,16 +233,18 @@ class StochasticPolicy(nn.Module):
         input_tensor = torch.cat([obs, timesteps], dim=-1) # (batch, obs_dim + 1)
         input_tensor = input_tensor.repeat(1,self.token_repeat) # repeat tokens
 
-        output_tensor = self.network(input_tensor) #(batch, (action_dim+1)*n_support)
-        support_actions = output_tensor[:,0:self.action_dim * self.n_support].reshape(-1, self.n_support, self.action_dim)
-        support_probs = output_tensor[:, self.action_dim * self.n_support : ] # (batch, n_support) 
-        clamp_support_probs = torch.clamp(support_probs, min=-self.logit_abs_bound, max=self.logit_abs_bound)
+        output_tensor = self.network(input_tensor) #(batch, action_dim*n_support)
+        # support_actions = output_tensor[:,0:self.action_dim * self.n_support].reshape(-1, self.n_support, self.action_dim)
+        support_actions = output_tensor.reshape(-1, self.n_support, self.action_dim)
+        # support_probs = output_tensor[:, self.action_dim * self.n_support : ] # (batch, n_support) 
+        # clamp_support_probs = torch.clamp(support_probs, min=-self.logit_abs_bound, max=self.logit_abs_bound)
 
         # check if there is nan in output
-        assert np.isnan(torch.softmax(clamp_support_probs, dim=-1).detach().cpu().numpy()).any() == False, f"Nan occurs for logits {support_probs}"
+        # assert np.isnan(torch.softmax(clamp_support_probs, dim=-1).detach().cpu().numpy()).any() == False, f"Nan occurs for logits {support_probs}"
 
         # Truncate action to [-1,1] for each coordinate by pointmaze. Perform softmax for output probs
-        return torch.clamp(support_actions, min=-1, max=1), torch.softmax(clamp_support_probs, dim=-1)
+        # return torch.clamp(support_actions, min=-1, max=1), torch.softmax(clamp_support_probs, dim=-1)
+        return support_actions
 
 class StochasticState(nn.Module):
     '''

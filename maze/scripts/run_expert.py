@@ -26,8 +26,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug',action='store_true', help='Print debuuging info if true')
     parser.add_argument('--render',action='store_true', help='Render env')
-    parser.add_argument('--maze_config_file', type=str, default='./config/maze2.json')
-    parser.add_argument('--horizon', type=int, default=300)
+    parser.add_argument('--maze_config_file', type=str, default='./config/maze2_simple.json')
+    parser.add_argument('--horizon', type=int, default=200)
     args = parser.parse_args()
     print(args)
 

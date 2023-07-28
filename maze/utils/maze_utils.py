@@ -37,14 +37,18 @@ def cell2xy(MAP: List[List], pos: Union[Tuple, List, np.ndarray], noise_bound = 
     coordinate_y = -pos_y + center_y + np.random.uniform(low = -noise_bound, high = noise_bound) # Large col index means small y coordinate
     return np.array([coordinate_x, coordinate_y])
 
-def terminated(obs: Union[Dict, np.ndarray], desired_goal: np.ndarray, threshold = 0.5) -> bool:
+def terminated(obs: Union[Dict, np.ndarray], desired_goal: np.ndarray, pos_threshold = 0.5, vel_threshold = 0.1, omit_vel=False) -> bool:
     '''
     Test whether the goal is reached.
     obs: Dict (full observation) | np.ndarray (pos+velocity obs)
+    omit_vel: If True, omit vel_threshold
     '''
     if type(obs) == dict:
         obs = obs['observation']
     cur_pos = obs[0:2] # np.ndarray
     dist = np.linalg.norm(cur_pos - desired_goal)
     # print(f"Distance to current goal: {dist}")
-    return dist <= threshold
+    if omit_vel:
+        return dist <= pos_threshold
+    else:
+        return dist <= pos_threshold and abs(obs[2]) <= vel_threshold and abs(obs[3]) <= vel_threshold

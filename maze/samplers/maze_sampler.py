@@ -46,6 +46,8 @@ class MazeSampler(BaseSampler):
 
         self.debug = debug
         self.render = render
+        
+        self.VEL_THRESHOLD = 0.5 # velocity threshold for goal reaching
 
         if self.debug:
             print(f"MazeSampler: Target goal {self.target_goal}")
@@ -171,6 +173,7 @@ class MazeSampler(BaseSampler):
             truncated = False
             info = None
             goals_reached = False # maintain whether all goals are reached
+            is_last_goal = (len(list_goals) == 0) # maintain whether this is the last goal
 
             for n_step in range(self.horizon):
                 observations_.append(deepcopy(obs['observation']))
@@ -198,10 +201,12 @@ class MazeSampler(BaseSampler):
                         controller_obs['desired_goal'] = cur_goal_xy
                         action = controller.compute_action(controller_obs)
                 else:
-                    if terminated(obs, cur_goal_xy): # Current goal reached
+                    # Whether current goal reached. Omit vel threshold if it is last goal and random_end=True
+                    if terminated(obs, cur_goal_xy, vel_threshold=self.VEL_THRESHOLD, omit_vel=is_last_goal and random_end): 
                         if len(list_goals) > 0: # Still have other goals, update current goal
                             cur_goal = list_goals.pop(0)
                             cur_goal_xy = cell2xy(self.MAZE_MAP, cur_goal)
+                            is_last_goal = (len(list_goals)==0) # Update whether it is last goal
                             controller_obs = deepcopy(obs)
                             if self.debug:
                                 print(f"Changing current goal xy to {cur_goal_xy}")
@@ -229,7 +234,7 @@ class MazeSampler(BaseSampler):
 
                 obs, reward, data_terminated, truncated, info = data_env.step(action)
                 if self.debug:
-                    print(f"Step {n_step}, data maze, current pos {obs['achieved_goal']}, terminated {data_terminated}, reward {reward}")
+                    print(f"Step {n_step}, data maze, current pos {obs['observation']}, terminated {data_terminated}, reward {reward}")
 
                 actions_.append(deepcopy(action))
                 rewards_.append(deepcopy(reward))

@@ -30,7 +30,7 @@ repeat = n_trajs // 4
 
 sample_args = {
     'starts': [start, start, start, start], 
-    'goals': [mid_point, up_right, [up_left,down_left,goal], [up_left,down_left,goal]], 
+    'goals': [mid_point, mid_point, [up_left,down_left,goal], [up_left,down_left,goal]], 
     'repeats': [repeat, repeat, repeat, repeat], 
     'randoms': [False, False, False, True]}
 

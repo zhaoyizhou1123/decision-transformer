@@ -22,7 +22,7 @@ def setup_logger(config):
         config.algo,
         config.env_id,
         config.expr_name,
-        str(config.seed),
+        config.seed,
     )
-    logger = configure_logger(logdir, ["stdout", "tensorboard", "wandb"])
+    logger = configure_logger(logdir, ["stdout","tensorboard","wandb"])
     return logger

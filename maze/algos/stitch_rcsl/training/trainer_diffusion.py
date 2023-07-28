@@ -7,6 +7,7 @@ from diffusers.optimization import get_scheduler
 from diffusers.schedulers.scheduling_ddpm import DDPMScheduler
 from diffusers.training_utils import EMAModel
 from torch.utils.data.dataloader import DataLoader
+from typing import Optional
 
 from maze.algos.stitch_rcsl.models.unet import ConditionalUnet1D
 
@@ -22,12 +23,14 @@ class DiffusionBC:
         - num_diffusion_iters
         - batch_size
         - num_workers = 1
+        - save_ckpt_freq: Periods to save model checkpoint
 
         '''
         self.c = config
         self.dataset = dataset
         self.logger = logger
-        self.device = torch.device("cuda")
+        # self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
+        self.device = config.device
 
         self.dataloader = DataLoader(self.dataset, shuffle=True, pin_memory=True,
                     batch_size= self.c.batch_size,
@@ -74,8 +77,15 @@ class DiffusionBC:
         # Exponential moving average
         self.ema = EMAModel(model=self.noise_pred_net, power=0.75)
 
+        self.start_epoch = 0 # Starting epoch number, will be modified after loading checkpoint
+
     def train(self):
-        for epoch in range(self.c.num_epochs):
+        loaded = self.load_checkpoint(final=False) # Load checkpoint
+        if loaded:
+            print(f"Loaded checkpoint. Starting from epoch {self.start_epoch}")
+        else:
+            print(f"No checkpoint found, starting from epoch 0")
+        for epoch in range(self.start_epoch, self.c.num_epochs):
             for batch in self.dataloader:
                 # (B, obs_horizon * obs_dim)
                 obs = batch["obs"].to(self.device)
@@ -125,6 +135,10 @@ class DiffusionBC:
             self.logger.record("train/epoch", epoch)
             self.logger.dump()
 
+            if (epoch + 1) % self.c.save_ckpt_freq == 0:
+                print(f"Saving checkpoint of epoch {epoch}")
+                self.save_checkpoint(epoch = epoch)
+
         # Weights of the EMA model is used for inference
         self.ema_noise_pred_net = self.ema.averaged_model
 
@@ -132,6 +146,9 @@ class DiffusionBC:
         return torch.randn((1, 1, self.c.act_dim), device=self.device)
 
     def select_action(self, obs, init_noise=None):
+        '''
+        obs: np.array
+        '''
         # (B, obs_horizon * obs_dim)
         obs_cond = torch.from_numpy(obs).to(self.device, dtype=torch.float32)
         obs_cond = obs_cond.unsqueeze(0)
@@ -158,16 +175,49 @@ class DiffusionBC:
 
         return act_pred.detach().cpu().numpy()[0, 0]
 
-    def save_checkpoint(self):
+    def save_checkpoint(self, epoch: Optional[int]):
+        '''
+        epoch: Current training epoch. If None, save as final model
+        '''
+        if epoch is None: # Default: last epoch
+            epoch = self.c.num_epochs - 1
+            final = True # Indicate whether we are saving final model or checkpoint
+            ckpt_name = "models.pt"
+        else:
+            final = False
+            ckpt_name = "checkpoint.pt"
         # Save checkpoint
+        if final:
+            info_dict = {'epoch': epoch,
+                         'model_state_dict': self.ema_noise_pred_net.state_dict()}
+        else:
+            info_dict = {'epoch': epoch,
+                         'model_state_dict': self.noise_pred_net.state_dict(),
+                        }            
         torch.save(
-            self.ema_noise_pred_net.state_dict(),
-            os.path.join(self.logger.dir, "models.pt"),
+            info_dict,
+            os.path.join(self.logger.dir, ckpt_name),
         )
 
-    def load_checkpoint(self):
+    def load_checkpoint(self, final=False) -> bool:
+        '''
+        final: If True, load final model. Else load checkpoint model
+        Return: If True, load succeed, else load failed
+        '''
         # Load checkpoint
-        ckpt_path = os.path.join(self.logger.dir, "models.pt")
-        state_dict = torch.load(ckpt_path, map_location="cuda")
-        self.ema_noise_pred_net = self.noise_pred_net
-        self.ema_noise_pred_net.load_state_dict(state_dict)
+        if final:
+            ckpt_path = os.path.join(self.logger.dir, "models.pt")
+        else:
+            ckpt_path = os.path.join(self.logger.dir, "checkpoint.pt")
+        if os.path.exists(ckpt_path):
+            checkpoint = torch.load(ckpt_path, map_location=self.device)
+            self.start_epoch = checkpoint['epoch'] + 1 # Start from the next epoch
+            state_dict = checkpoint['model_state_dict']
+            if final: # Load ema_noise_pred_net
+                self.ema_noise_pred_net = self.noise_pred_net
+                self.ema_noise_pred_net.load_state_dict(state_dict)
+            else: # Load noise_pred_net
+                self.noise_pred_net.load_state_dict(state_dict)
+            return True
+        else:
+            return False

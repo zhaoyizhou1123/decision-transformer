@@ -120,7 +120,7 @@ class HumanOutputFormat(KVWriter, SeqWriter):
     to write to output (or specify it when calling `__init__`).
     """
 
-    def __init__(self, filename_or_file: Union[str, TextIO], max_length: int = 36):
+    def __init__(self, filename_or_file: Union[str, TextIO], append=False, max_length: int = 36):
         """
         log to a file, in a human readable format
         :param filename_or_file: the file to write the log to
@@ -129,10 +129,12 @@ class HumanOutputFormat(KVWriter, SeqWriter):
             if multiple keys are truncated to the same value. The maximum output
             width will be ``2*max_length + 7``. The default of 36 produces output
             no longer than 79 characters wide.
+        :param append: If True, set file as append mode. Useful for checkpoint reloading
         """
         self.max_length = max_length
         if isinstance(filename_or_file, str):
-            self.file = open(filename_or_file, "wt")
+            mode = "a" if append else "wt"
+            self.file = open(filename_or_file, mode)
             self.own_file = True
         else:
             assert hasattr(
@@ -338,6 +340,8 @@ def make_output_format(_format: str, log_dir: str, log_suffix: str = "") -> KVWr
         return HumanOutputFormat(sys.stdout)
     elif _format == "log":
         return HumanOutputFormat(os.path.join(log_dir, f"log{log_suffix}.txt"))
+    elif _format == "log_append":
+        return HumanOutputFormat(os.path.join(log_dir, f"log{log_suffix}.txt"), append=True)
     elif _format == "tensorboard":
         return TensorBoardOutputFormat(log_dir)
     elif _format == "wandb":

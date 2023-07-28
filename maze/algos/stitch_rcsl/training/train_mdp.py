@@ -327,25 +327,25 @@ class BehaviorPolicyTrainer:
         else:
             return torch.sum(weight * batch_loss) / torch.sum(weight)
         
-    def _init_state_loss(self, pred_init_states, batch_states, batch_timesteps, pred_probs):
-        '''
-        Loss for init_state model
-        pred_init_states: (n_support, state_dim)
-        batch_states: (batch, state_dim)
-        batch_timesteps: (batch, )
-        pred_probs: (n_support)
-        '''
-        # batch = batch_states.shape[0]
-        valid_idxs = (batch_timesteps == 0) # Choose init timesteps
-        valid_truth_states = batch_states[valid_idxs] # (valid_batch, state_dim)
-        valid_batch = valid_truth_states.shape[0]
-        n_support = pred_init_states.shape[0]
+    # def _init_state_loss(self, pred_init_states, batch_states, batch_timesteps, pred_probs):
+    #     '''
+    #     Loss for init_state model
+    #     pred_init_states: (n_support, state_dim)
+    #     batch_states: (batch, state_dim)
+    #     batch_timesteps: (batch, )
+    #     pred_probs: (n_support)
+    #     '''
+    #     # batch = batch_states.shape[0]
+    #     valid_idxs = (batch_timesteps == 0) # Choose init timesteps
+    #     valid_truth_states = batch_states[valid_idxs] # (valid_batch, state_dim)
+    #     valid_batch = valid_truth_states.shape[0]
+    #     n_support = pred_init_states.shape[0]
 
-        expand_pred_init_states = pred_init_states.repeat(valid_batch,1) # (n_support * valid_batch, state_dim)
-        expand_valid_truth_states = valid_truth_states.repeat_interleave(n_support, dim=0) # (n_support * valid_batch, state_dim)
-        expand_pred_probs = pred_probs.repeat(valid_batch) # (n_support * valid_batch)
+    #     expand_pred_init_states = pred_init_states.repeat(valid_batch,1) # (n_support * valid_batch, state_dim)
+    #     expand_valid_truth_states = valid_truth_states.repeat_interleave(n_support, dim=0) # (n_support * valid_batch, state_dim)
+    #     expand_pred_probs = pred_probs.repeat(valid_batch) # (n_support * valid_batch)
 
-        return self._loss(expand_pred_init_states, expand_valid_truth_states, expand_pred_probs)
+    #     return self._loss(expand_pred_init_states, expand_valid_truth_states, expand_pred_probs)
             
 
 
@@ -382,10 +382,12 @@ class BehaviorPolicyTrainer:
             with torch.set_grad_enabled(True):
                 # history_actions = actions[:, :-1, :]
                 # target_action = actions[:,-1,:] # The last action is target
-                support_actions, support_probs = self.behavior_policy_model(states, timesteps=None) # (batch, n_support, action_dim), (batch, n_support)
-                n_support = support_probs.shape[1]
+                support_actions = self.behavior_policy_model(states, timesteps=None) # (batch, n_support, action_dim), (batch, n_support)
+                n_support = support_actions.shape[1]
                 support_actions = support_actions.reshape(-1, support_actions.shape[-1]) # (batch * n_spport, action_dim)
-                support_probs = support_probs.reshape(-1) # (batch * n_support)
+                # support_probs = support_probs.reshape(-1) # (batch * n_support)
+                support_probs = torch.ones((support_actions.shape[0])) / n_support
+                support_probs = support_probs.type(torch.float32).to(self.device)
 
                 # pred_init_states = pred_init_states
                 # pred_init_probs = pred_init_probs
