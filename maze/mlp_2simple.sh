@@ -8,7 +8,7 @@ behavior_type=mlp
 # ckpt_prefix=${mdp_ckpt_dir}/outputpolicy
 rollout_epochs=5000
 # rollout_epochs=20
-num_need_traj=10
+num_need_traj=100
 
 behavior_epoch=50
 goal_mul=1

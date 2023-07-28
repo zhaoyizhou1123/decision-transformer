@@ -544,8 +544,9 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
                 support_actions = behavior_model(pred_state.unsqueeze(0).to(device)) # (1, n_support, action_dim), (1,n_support)
                 # sample_idx = torch.multinomial(support_probs, num_samples=1).squeeze() # scalar
                 # action = support_actions[0,sample_idx,:] # (action_dim)
-                n_support = support_actions[1]
-                support_probs = np.ones((n_support), type=np.float32) / n_support # np.array (n_support) 
+                n_support = support_actions.shape[1]
+                support_probs = torch.ones((n_support), dtype=torch.float32) / n_support # np.array (n_support) 
+                support_probs = support_probs.to(device)
                 action = sample_from_supports(support_actions.squeeze(0), support_probs)
                 # print(action)
                 pred_next_state, pred_reward, _, _ = dynamics.step(pred_state.detach().cpu().numpy(), action) # (1,state_dim), (1,1)
@@ -601,6 +602,7 @@ def rollout_combo(args, dynamics: BaseDynamics, behavior_model, dynamics_dataset
                 pickle.dump({'epoch': epoch, 'trajs': trajs}, open(data_path, "wb"))            
     if args.rollout_ckpt_path is not None:
         pickle.dump({'epoch': epoch, 'trajs': trajs}, open(data_path, "wb"))
+    return trajs
 
 def rollout_diffusion(args, dynamics: BaseDynamics, diffusion_policy: DiffusionBC, dynamics_dataset: ReplayBuffer, threshold, save_ckpt_freq = 10):
     '''
