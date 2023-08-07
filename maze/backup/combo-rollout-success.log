@@ -1,0 +1,864 @@
+Logging to logdir/diffusion/pointmaze/default/maze2_smds_accdyn
+Setup logger
+number of parameters: 1.761895e+07
+Train diffusion behavior policy
+Loaded checkpoint. Starting from epoch 50
+Maximum dataset return is 71.76620982899833
+Loaded checkpoint. Already have 94 valid trajectories, start from epoch 860.
+Checkpoint trajectories are enough. Skip rollout procedure.
+device=0
+Begin output policy training
+------------
+Epoch 0 (Initial model)
+target return: 108.31639493256807, eval return: 21.997300022726865
+------------
+Epoch 1
+Pretraining
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Epoch 1, iter 781: train loss 0.16369.: 100%|██████████| 782/782 [00:50<00:00, 15.53it/s]
+target return: 108.31639493256807, eval return: 69.21609504523272
+Better return 69.21609504523272, better epoch 0. Save model to ./checkpoint/maze2_smds_accdyn/output_policy_best.pth
+------------
+Epoch 2
+Pretraining
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Epoch 2, iter 781: train loss 0.05005.: 100%|██████████| 782/782 [00:50<00:00, 15.63it/s]
+target return: 108.31639493256807, eval return: 42.0015439699596
+------------
+Epoch 3
+Pretraining
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Epoch 3, iter 781: train loss 0.06522.: 100%|██████████| 782/782 [00:50<00:00, 15.59it/s]
+target return: 108.31639493256807, eval return: 49.666204788675415
+------------
+Epoch 4
+Pretraining
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Epoch 4, iter 781: train loss 0.07434.: 100%|██████████| 782/782 [00:49<00:00, 15.68it/s]
+target return: 108.31639493256807, eval return: 47.95938183203063
+------------
+Epoch 5
+Pretraining
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Epoch 5, iter 781: train loss 0.05385.: 100%|██████████| 782/782 [00:49<00:00, 15.64it/s]
+target return: 108.31639493256807, eval return: 41.39631593035697
+------------
+Epoch 6
+Training on rollout data
+
+
+Epoch 6, iter 73: train loss 0.11214.: 100%|██████████| 74/74 [00:05<00:00, 14.29it/s]
+target return: 108.31639493256807, eval return: 36.436010785223
+------------
+Epoch 7
+Training on rollout data
+
+
+Epoch 7, iter 65: train loss 0.14663.:  89%|████████▉ | 66/74 [00:04<00:00, 14.62it/s]
+target return: 108.31639493256807, eval return: 116.06214197888585
+Better return 116.06214197888585, better epoch 6. Save model to ./checkpoint/maze2_smds_accdyn/output_policy_best.pth
+------------
+Epoch 8
+Epoch 7, iter 73: train loss 0.16399.: 100%|██████████| 74/74 [00:05<00:00, 14.27it/s]
+
+
+
+Epoch 8, iter 73: train loss 0.14344.: 100%|██████████| 74/74 [00:05<00:00, 14.21it/s]
+target return: 108.31639493256807, eval return: 59.006489206515326
+------------
+Epoch 9
+Training on rollout data
+
+
+Epoch 9, iter 73: train loss 0.12269.: 100%|██████████| 74/74 [00:05<00:00, 14.16it/s]
+Epoch 10, iter 4: train loss 0.11730.:   4%|▍         | 3/74 [00:00<00:06, 10.61it/s]
+target return: 108.31639493256807, eval return: 92.06780988422976
+------------
+Epoch 10
+
+
+Epoch 10, iter 73: train loss 0.11382.: 100%|██████████| 74/74 [00:05<00:00, 14.65it/s]
+  0%|          | 0/74 [00:00<?, ?it/s]
+target return: 108.31639493256807, eval return: 102.5965033093629
+------------
+Epoch 11
+
+
+
+Epoch 11, iter 73: train loss 0.14308.: 100%|██████████| 74/74 [00:05<00:00, 14.32it/s]
+target return: 108.31639493256807, eval return: 81.01321475048496
+------------
+Epoch 12
+Training on rollout data
+
+
+Epoch 12, iter 73: train loss 0.11670.: 100%|██████████| 74/74 [00:05<00:00, 14.25it/s]
+Epoch 13, iter 5: train loss 0.11767.:   8%|▊         | 6/74 [00:00<00:05, 13.18it/s]
+target return: 108.31639493256807, eval return: 82.5050952210944
+------------
+Epoch 13
+
+
+
+Epoch 13, iter 73: train loss 0.12589.: 100%|██████████| 74/74 [00:05<00:00, 14.47it/s]
+target return: 108.31639493256807, eval return: 108.43564919280819
+------------
+Epoch 14
+Training on rollout data
+
+
+Epoch 14, iter 73: train loss 0.11411.: 100%|██████████| 74/74 [00:05<00:00, 14.30it/s]
+target return: 108.31639493256807, eval return: 44.422144126674375
+------------
+Epoch 15
+Training on rollout data
+
+
+
+Epoch 15, iter 73: train loss 0.14209.: 100%|██████████| 74/74 [00:05<00:00, 14.55it/s]
+target return: 108.31639493256807, eval return: 79.2639597655012
+------------
+Epoch 16
+Training on rollout data
+
+
+Epoch 16, iter 73: train loss 0.09312.: 100%|██████████| 74/74 [00:05<00:00, 14.52it/s]
+target return: 108.31639493256807, eval return: 105.49661939754301
+------------
+Epoch 17
+Training on rollout data
+
+
+Epoch 17, iter 73: train loss 0.10514.: 100%|██████████| 74/74 [00:05<00:00, 14.48it/s]
+target return: 108.31639493256807, eval return: 119.30229939400738
+Better return 119.30229939400738, better epoch 16. Save model to ./checkpoint/maze2_smds_accdyn/output_policy_best.pth
+------------
+Epoch 18
+Training on rollout data
+
+
+Epoch 18, iter 69: train loss 0.11087.:  93%|█████████▎| 69/74 [00:04<00:00, 13.75it/s]
+target return: 108.31639493256807, eval return: 109.07650624942819
+------------
+Epoch 19
+Epoch 18, iter 73: train loss 0.14275.: 100%|██████████| 74/74 [00:05<00:00, 14.20it/s]
+
+
+
+Epoch 19, iter 73: train loss 0.12071.: 100%|██████████| 74/74 [00:05<00:00, 14.52it/s]
+target return: 108.31639493256807, eval return: 101.63951588466333
+------------
+Epoch 20
+Training on rollout data
+
+
+Epoch 20, iter 73: train loss 0.11067.: 100%|██████████| 74/74 [00:05<00:00, 14.26it/s]
+target return: 108.31639493256807, eval return: 105.65582208107199
+------------
+Epoch 21
+Training on rollout data
+
+
+Epoch 21, iter 73: train loss 0.12080.:  97%|█████████▋| 72/74 [00:05<00:00, 13.48it/s]
+target return: 108.31639493256807, eval return: 116.25387946296291
+------------
+Epoch 22
+Epoch 21, iter 73: train loss 0.12080.: 100%|██████████| 74/74 [00:05<00:00, 14.13it/s]
+
+
+
+Epoch 22, iter 73: train loss 0.09470.: 100%|██████████| 74/74 [00:05<00:00, 14.54it/s]
+target return: 108.31639493256807, eval return: 78.43676725686606
+------------
+Epoch 23
+Training on rollout data
+
+
+Epoch 23, iter 73: train loss 0.11055.: 100%|██████████| 74/74 [00:05<00:00, 14.38it/s]
+target return: 108.31639493256807, eval return: 53.305167107825824
+------------
+Epoch 24
+Training on rollout data
+
+
+
+Epoch 24, iter 73: train loss 0.14217.: 100%|██████████| 74/74 [00:05<00:00, 14.18it/s]
+target return: 108.31639493256807, eval return: 78.28545156809938
+------------
+Epoch 25
+Training on rollout data
+
+
+Epoch 25, iter 73: train loss 0.08988.: 100%|██████████| 74/74 [00:05<00:00, 14.62it/s]
+target return: 108.31639493256807, eval return: 33.27939721097472
+------------
+Epoch 26
+Training on rollout data
+
+
+
+Epoch 26, iter 73: train loss 0.08150.: 100%|██████████| 74/74 [00:05<00:00, 14.73it/s]
+target return: 108.31639493256807, eval return: 47.72869216144637
+------------
+Epoch 27
+Training on rollout data
+
+
+Epoch 27, iter 73: train loss 0.09778.: 100%|██████████| 74/74 [00:05<00:00, 14.27it/s]
+target return: 108.31639493256807, eval return: 74.24473436342502
+------------
+Epoch 28
+Training on rollout data
+
+
+
+Epoch 28, iter 73: train loss 0.10224.: 100%|██████████| 74/74 [00:05<00:00, 14.44it/s]
+target return: 108.31639493256807, eval return: 77.30567682031858
+------------
+Epoch 29
+Training on rollout data
+
+
+Epoch 29, iter 73: train loss 0.11649.: 100%|██████████| 74/74 [00:05<00:00, 14.56it/s]
+Epoch 30, iter 4: train loss 0.11820.:   4%|▍         | 3/74 [00:00<00:06, 11.34it/s]
+target return: 108.31639493256807, eval return: 54.247926363606965
+------------
+Epoch 30
+
+
+
+Epoch 30, iter 73: train loss 0.13002.: 100%|██████████| 74/74 [00:05<00:00, 14.48it/s]
+target return: 108.31639493256807, eval return: 109.87517104188223
+------------
+Epoch 31
+Training on rollout data
+
+
+Epoch 31, iter 73: train loss 0.13265.: 100%|██████████| 74/74 [00:05<00:00, 14.56it/s]
+target return: 108.31639493256807, eval return: 104.42593960978934
+------------
+Epoch 32
+Training on rollout data
+
+
+Epoch 32, iter 73: train loss 0.11121.: 100%|██████████| 74/74 [00:05<00:00, 14.33it/s]
+target return: 108.31639493256807, eval return: 118.59437564116904
+------------
+Epoch 33
+Training on rollout data
+
+
+Epoch 33, iter 71: train loss 0.10002.:  97%|█████████▋| 72/74 [00:05<00:00, 15.18it/s]
+target return: 108.31639493256807, eval return: 104.08535290578259
+------------
+Epoch 34
+Epoch 33, iter 73: train loss 0.08698.: 100%|██████████| 74/74 [00:05<00:00, 14.26it/s]
+
+
+
+Epoch 34, iter 73: train loss 0.08769.: 100%|██████████| 74/74 [00:05<00:00, 14.65it/s]
+target return: 108.31639493256807, eval return: 60.22369020186078
+------------
+Epoch 35
+Training on rollout data
+
+
+Epoch 35, iter 73: train loss 0.08989.: 100%|██████████| 74/74 [00:05<00:00, 14.68it/s]
+target return: 108.31639493256807, eval return: 113.18669003346065
+------------
+Epoch 36
+Training on rollout data
+
+
+Epoch 36, iter 73: train loss 0.11767.: 100%|██████████| 74/74 [00:05<00:00, 14.14it/s]
+target return: 108.31639493256807, eval return: 90.57563869751006
+------------
+Epoch 37
+Training on rollout data
+
+
+Epoch 37, iter 73: train loss 0.10054.: 100%|██████████| 74/74 [00:05<00:00, 14.53it/s]
+Epoch 38, iter 3: train loss 0.12618.:   5%|▌         | 4/74 [00:00<00:05, 12.81it/s]
+target return: 108.31639493256807, eval return: 135.96327018089627
+Better return 135.96327018089627, better epoch 36. Save model to ./checkpoint/maze2_smds_accdyn/output_policy_best.pth
+------------
+Epoch 38
+
+
+
+Epoch 38, iter 73: train loss 0.08926.: 100%|██████████| 74/74 [00:05<00:00, 14.20it/s]
+target return: 108.31639493256807, eval return: 80.47311200881731
+------------
+Epoch 39
+Training on rollout data
+
+
+Epoch 39, iter 73: train loss 0.13779.: 100%|██████████| 74/74 [00:05<00:00, 14.43it/s]
+target return: 108.31639493256807, eval return: 135.2536687811201
+------------
+Epoch 40
+Training on rollout data
+
+
+Epoch 40, iter 73: train loss 0.08857.:  97%|█████████▋| 72/74 [00:04<00:00, 14.76it/s]
+target return: 108.31639493256807, eval return: 82.3838700592984
+------------
+Epoch 41
+Epoch 40, iter 73: train loss 0.08857.: 100%|██████████| 74/74 [00:05<00:00, 14.70it/s]
+
+
+
+Epoch 41, iter 73: train loss 0.08913.: 100%|██████████| 74/74 [00:05<00:00, 14.04it/s]
+target return: 108.31639493256807, eval return: 118.56130944359026
+------------
+Epoch 42
+Training on rollout data
+
+
+Epoch 42, iter 73: train loss 0.12711.: 100%|██████████| 74/74 [00:05<00:00, 14.57it/s]
+target return: 108.31639493256807, eval return: 77.6592162892707
+------------
+Epoch 43
+Training on rollout data
+
+
+Epoch 43, iter 73: train loss 0.11335.: 100%|██████████| 74/74 [00:05<00:00, 14.56it/s]
+Epoch 44, iter 3: train loss 0.14329.:   4%|▍         | 3/74 [00:00<00:06, 11.46it/s]
+target return: 108.31639493256807, eval return: 91.19653364935762
+------------
+Epoch 44
+
+
+
+Epoch 44, iter 73: train loss 0.12589.: 100%|██████████| 74/74 [00:05<00:00, 14.32it/s]
+target return: 108.31639493256807, eval return: 100.84189551081472
+------------
+Epoch 45
+Training on rollout data
+
+
+Epoch 45, iter 73: train loss 0.08732.: 100%|██████████| 74/74 [00:05<00:00, 14.18it/s]
+target return: 108.31639493256807, eval return: 106.27920131800738
+------------
+Epoch 46
+Training on rollout data
+
+
+Epoch 46, iter 73: train loss 0.12301.: 100%|██████████| 74/74 [00:05<00:00, 14.36it/s]
+target return: 108.31639493256807, eval return: 120.61519340989071
+------------
+Epoch 47
+Training on rollout data
+
+
+
+Epoch 47, iter 73: train loss 0.10726.: 100%|██████████| 74/74 [00:05<00:00, 14.15it/s]
+target return: 108.31639493256807, eval return: 87.38840343449405
+------------
+Epoch 48
+Training on rollout data
+
+
+Epoch 48, iter 73: train loss 0.09630.: 100%|██████████| 74/74 [00:05<00:00, 14.31it/s]
+target return: 108.31639493256807, eval return: 103.61083671469783
+------------
+Epoch 49
+Training on rollout data
+
+
+Epoch 49, iter 73: train loss 0.10461.: 100%|██████████| 74/74 [00:05<00:00, 14.38it/s]
+target return: 108.31639493256807, eval return: 97.70152889192605
+------------
+Epoch 50
+Training on rollout data
+
+
+Epoch 50, iter 63: train loss 0.11629.:  85%|████████▌ | 63/74 [00:04<00:00, 14.16it/s]
+target return: 108.31639493256807, eval return: 129.4512817879476
+------------
+Epoch 51
+Epoch 50, iter 73: train loss 0.11260.: 100%|██████████| 74/74 [00:05<00:00, 14.22it/s]
+
+
+
+Epoch 51, iter 73: train loss 0.11229.: 100%|██████████| 74/74 [00:05<00:00, 14.75it/s]
+target return: 108.31639493256807, eval return: 88.51844020100316
+------------
+Epoch 52
+Training on rollout data
+
+
+Epoch 52, iter 73: train loss 0.09572.: 100%|██████████| 74/74 [00:05<00:00, 14.46it/s]
+target return: 108.31639493256807, eval return: 98.05932075611867
+------------
+Epoch 53
+Training on rollout data
+
+
+Epoch 53, iter 73: train loss 0.11971.: 100%|██████████| 74/74 [00:05<00:00, 14.65it/s]
+target return: 108.31639493256807, eval return: 79.83046379526122
+------------
+Epoch 54
+Training on rollout data
+
+
+
+Epoch 54, iter 73: train loss 0.10968.: 100%|██████████| 74/74 [00:05<00:00, 14.35it/s]
+target return: 108.31639493256807, eval return: 58.057578261606935
+------------
+Epoch 55
+Training on rollout data
+
+
+Epoch 55, iter 73: train loss 0.12098.: 100%|██████████| 74/74 [00:05<00:00, 14.46it/s]
+Epoch 56, iter 1: train loss 0.12648.:   1%|▏         | 1/74 [00:00<00:10,  7.19it/s]
+target return: 108.31639493256807, eval return: 54.87811491718166
+------------
+Epoch 56
+
+
+
+Epoch 56, iter 73: train loss 0.12852.: 100%|██████████| 74/74 [00:05<00:00, 14.32it/s]
+target return: 108.31639493256807, eval return: 64.81976600893638
+------------
+Epoch 57
+Training on rollout data
+
+
+
+Epoch 57, iter 73: train loss 0.10481.: 100%|██████████| 74/74 [00:05<00:00, 14.38it/s]
+target return: 108.31639493256807, eval return: 95.20598247538177
+------------
+Epoch 58
+Training on rollout data
+
+
+Epoch 58, iter 73: train loss 0.08530.: 100%|██████████| 74/74 [00:05<00:00, 14.32it/s]
+target return: 108.31639493256807, eval return: 109.16733153059116
+------------
+Epoch 59
+Training on rollout data
+
+
+Epoch 59, iter 73: train loss 0.12613.: 100%|██████████| 74/74 [00:05<00:00, 14.53it/s]
+target return: 108.31639493256807, eval return: 129.69899179166987
+------------
+Epoch 60
+Training on rollout data
+
+
+Epoch 60, iter 73: train loss 0.09922.: 100%|██████████| 74/74 [00:05<00:00, 14.27it/s]
+target return: 108.31639493256807, eval return: 107.83696471581894
+------------
+Epoch 61
+Training on rollout data
+
+
+Epoch 61, iter 69: train loss 0.11119.:  93%|█████████▎| 69/74 [00:04<00:00, 13.32it/s]
+target return: 108.31639493256807, eval return: 97.78071067904038
+------------
+Epoch 62
+Epoch 61, iter 73: train loss 0.09264.: 100%|██████████| 74/74 [00:05<00:00, 14.57it/s]
+
+
+
+Epoch 62, iter 73: train loss 0.11787.: 100%|██████████| 74/74 [00:05<00:00, 14.34it/s]
+target return: 108.31639493256807, eval return: 56.71569754877311
+------------
+Epoch 63
+Training on rollout data
+
+
+Epoch 63, iter 73: train loss 0.09345.: 100%|██████████| 74/74 [00:05<00:00, 14.04it/s]
+target return: 108.31639493256807, eval return: 101.30310483479029
+------------
+Epoch 64
+Training on rollout data
+
+
+
+Epoch 64, iter 73: train loss 0.08504.: 100%|██████████| 74/74 [00:05<00:00, 14.47it/s]
+target return: 108.31639493256807, eval return: 90.68052296899302
+------------
+Epoch 65
+Training on rollout data
+
+
+Epoch 65, iter 73: train loss 0.10618.: 100%|██████████| 74/74 [00:05<00:00, 14.26it/s]
+target return: 108.31639493256807, eval return: 77.98317427706816
+------------
+Epoch 66
+Training on rollout data
+
+
+
+Epoch 66, iter 73: train loss 0.14422.: 100%|██████████| 74/74 [00:05<00:00, 14.16it/s]
+target return: 108.31639493256807, eval return: 74.33852021744791
+------------
+Epoch 67
+Training on rollout data
+
+
+Epoch 67, iter 73: train loss 0.09504.: 100%|██████████| 74/74 [00:05<00:00, 14.57it/s]
+target return: 108.31639493256807, eval return: 85.0476320541552
+------------
+Epoch 68
+Training on rollout data
+
+
+
+Epoch 68, iter 73: train loss 0.13741.: 100%|██████████| 74/74 [00:05<00:00, 14.16it/s]
+target return: 108.31639493256807, eval return: 76.53579460786186
+------------
+Epoch 69
+Training on rollout data
+
+
+Epoch 69, iter 73: train loss 0.10033.: 100%|██████████| 74/74 [00:05<00:00, 14.56it/s]
+target return: 108.31639493256807, eval return: 97.76356520688879
+------------
+Epoch 70
+Training on rollout data
+
+
+Epoch 70, iter 73: train loss 0.09595.: 100%|██████████| 74/74 [00:05<00:00, 14.60it/s]
+target return: 108.31639493256807, eval return: 120.44971569814012
+------------
+Epoch 71
+Training on rollout data
+
+
+Epoch 71, iter 73: train loss 0.13076.: 100%|██████████| 74/74 [00:05<00:00, 14.49it/s]
+target return: 108.31639493256807, eval return: 117.1663438267328
+------------
+Epoch 72
+Training on rollout data
+
+
+Epoch 72, iter 73: train loss 0.10857.: 100%|██████████| 74/74 [00:05<00:00, 14.57it/s]
+Epoch 73, iter 3: train loss 0.11627.:   3%|▎         | 2/74 [00:00<00:08,  8.60it/s]
+target return: 108.31639493256807, eval return: 91.84453529057336
+------------
+Epoch 73
+
+
+
+Epoch 73, iter 73: train loss 0.08238.: 100%|██████████| 74/74 [00:05<00:00, 14.78it/s]
+target return: 108.31639493256807, eval return: 102.19214003402695
+------------
+Epoch 74
+Training on rollout data
+
+
+Epoch 74, iter 73: train loss 0.12501.: 100%|██████████| 74/74 [00:05<00:00, 14.50it/s]
+target return: 108.31639493256807, eval return: 77.78114493393832
+------------
+Epoch 75
+Training on rollout data
+
+
+Epoch 75, iter 73: train loss 0.08767.: 100%|██████████| 74/74 [00:05<00:00, 14.54it/s]
+target return: 108.31639493256807, eval return: 120.880731400279
+------------
+Epoch 76
+Training on rollout data
+
+
+
+Epoch 76, iter 73: train loss 0.08418.: 100%|██████████| 74/74 [00:05<00:00, 14.49it/s]
+target return: 108.31639493256807, eval return: 88.13014795940765
+------------
+Epoch 77
+Training on rollout data
+
+
+Epoch 77, iter 73: train loss 0.14696.: 100%|██████████| 74/74 [00:05<00:00, 14.17it/s]
+target return: 108.31639493256807, eval return: 120.35374537622447
+------------
+Epoch 78
+Training on rollout data
+
+
+Epoch 78, iter 73: train loss 0.09387.: 100%|██████████| 74/74 [00:05<00:00, 14.62it/s]
+target return: 108.31639493256807, eval return: 94.90110213830928
+------------
+Epoch 79
+Training on rollout data
+
+
+Epoch 79, iter 73: train loss 0.11770.: 100%|██████████| 74/74 [00:05<00:00, 14.28it/s]
+Epoch 80, iter 1: train loss 0.11610.:   1%|▏         | 1/74 [00:00<00:11,  6.53it/s]
+target return: 108.31639493256807, eval return: 113.78100769236121
+------------
+Epoch 80
+
+
+
+Epoch 80, iter 73: train loss 0.10909.: 100%|██████████| 74/74 [00:04<00:00, 14.81it/s]
+target return: 108.31639493256807, eval return: 113.96296186469506
+------------
+Epoch 81
+Training on rollout data
+
+
+Epoch 81, iter 73: train loss 0.09644.: 100%|██████████| 74/74 [00:05<00:00, 14.41it/s]
+target return: 108.31639493256807, eval return: 123.90936322719972
+------------
+Epoch 82
+Training on rollout data
+
+
+Epoch 82, iter 73: train loss 0.09185.: 100%|██████████| 74/74 [00:05<00:00, 14.41it/s]
+target return: 108.31639493256807, eval return: 119.28547723204717
+------------
+Epoch 83
+Training on rollout data
+
+
+Epoch 83, iter 73: train loss 0.10565.: 100%|██████████| 74/74 [00:05<00:00, 14.37it/s]
+target return: 108.31639493256807, eval return: 114.47328367494465
+------------
+Epoch 84
+Training on rollout data
+
+
+Epoch 84, iter 73: train loss 0.10062.: 100%|██████████| 74/74 [00:05<00:00, 14.40it/s]
+Epoch 85, iter 3: train loss 0.08787.:   4%|▍         | 3/74 [00:00<00:06, 11.04it/s]
+target return: 108.31639493256807, eval return: 89.56812478012299
+------------
+Epoch 85
+
+
+Epoch 85, iter 73: train loss 0.10477.: 100%|██████████| 74/74 [00:05<00:00, 14.40it/s]
+Epoch 86, iter 3: train loss 0.09528.:   5%|▌         | 4/74 [00:00<00:05, 13.59it/s]
+target return: 108.31639493256807, eval return: 132.90049522663782
+------------
+Epoch 86
+
+
+
+Epoch 86, iter 73: train loss 0.12175.: 100%|██████████| 74/74 [00:05<00:00, 14.76it/s]
+target return: 108.31639493256807, eval return: 93.91588874110653
+------------
+Epoch 87
+Training on rollout data
+
+
+
+Epoch 87, iter 73: train loss 0.13331.: 100%|██████████| 74/74 [00:05<00:00, 14.14it/s]
+target return: 108.31639493256807, eval return: 52.75861828157855
+------------
+Epoch 88
+Training on rollout data
+
+
+Epoch 88, iter 73: train loss 0.11264.: 100%|██████████| 74/74 [00:04<00:00, 14.88it/s]
+target return: 108.31639493256807, eval return: 113.2279436166405
+------------
+Epoch 89
+Training on rollout data
+
+
+Epoch 89, iter 73: train loss 0.09395.: 100%|██████████| 74/74 [00:05<00:00, 14.66it/s]
+target return: 108.31639493256807, eval return: 67.05336979884007
+------------
+Epoch 90
+Training on rollout data
+
+
+
+Epoch 90, iter 73: train loss 0.10465.: 100%|██████████| 74/74 [00:05<00:00, 14.36it/s]
+target return: 108.31639493256807, eval return: 57.24232157041475
+------------
+Epoch 91
+Training on rollout data
+
+
+Epoch 91, iter 73: train loss 0.10934.: 100%|██████████| 74/74 [00:05<00:00, 14.44it/s]
+target return: 108.31639493256807, eval return: 117.75584364175295
+------------
+Epoch 92
+Training on rollout data
+
+
+Epoch 92, iter 73: train loss 0.09611.: 100%|██████████| 74/74 [00:05<00:00, 14.37it/s]
+target return: 108.31639493256807, eval return: 115.86757999569186
+------------
+Epoch 93
+Training on rollout data
+
+
+Epoch 93, iter 70: train loss 0.11855.:  96%|█████████▌| 71/74 [00:04<00:00, 14.57it/s]
+target return: 108.31639493256807, eval return: 104.04221119853062
+------------
+Epoch 94
+Epoch 93, iter 73: train loss 0.11886.: 100%|██████████| 74/74 [00:05<00:00, 14.32it/s]
+
+
+
+Epoch 94, iter 73: train loss 0.12899.: 100%|██████████| 74/74 [00:04<00:00, 14.80it/s]
+target return: 108.31639493256807, eval return: 58.094980674969634
+------------
+Epoch 95
+Training on rollout data
+
+
+Epoch 95, iter 73: train loss 0.10642.: 100%|██████████| 74/74 [00:05<00:00, 14.28it/s]
+target return: 108.31639493256807, eval return: 123.44524457076766
+------------
+Epoch 96
+Training on rollout data
+
+
+Epoch 96, iter 73: train loss 0.12250.: 100%|██████████| 74/74 [00:05<00:00, 14.38it/s]
+Epoch 97, iter 1: train loss 0.10408.:   1%|▏         | 1/74 [00:00<00:11,  6.40it/s]
+target return: 108.31639493256807, eval return: 64.17822031540737
+------------
+Epoch 97
+
+
+
+Epoch 97, iter 73: train loss 0.10807.: 100%|██████████| 74/74 [00:04<00:00, 14.84it/s]
+target return: 108.31639493256807, eval return: 104.95033200642906
+------------
+Epoch 98
+Training on rollout data
+
+
+Epoch 98, iter 73: train loss 0.14316.: 100%|██████████| 74/74 [00:05<00:00, 14.21it/s]
+target return: 108.31639493256807, eval return: 71.40405195472904
+------------
+Epoch 99
+Training on rollout data
+
+
+Epoch 99, iter 63: train loss 0.11159.:  84%|████████▍ | 62/74 [00:04<00:00, 13.69it/s]
+target return: 108.31639493256807, eval return: 101.62110972683452
+------------
+Epoch 100
+
+Epoch 99, iter 73: train loss 0.08755.: 100%|██████████| 74/74 [00:05<00:00, 14.36it/s]
+
+
+Epoch 100, iter 73: train loss 0.11154.: 100%|██████████| 74/74 [00:05<00:00, 14.36it/s]
+target return: 108.31639493256807, eval return: 117.64559473285551
