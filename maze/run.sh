@@ -3,6 +3,8 @@ horizon=200
 data_file=./dataset/maze2_smds_acc.dat
 goal_mul=1.35
 
+# algo=rcsl-dt
+
 # behavior_type=mlp
 mdp_ckpt_dir=./checkpoint/maze2smds_mlp_b_policy
 

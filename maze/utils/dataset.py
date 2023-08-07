@@ -223,11 +223,13 @@ class TrajCtxDataset(Dataset):
     Provides context length, no next state.
     '''
 
-    def __init__(self, trajs, ctx = 1, single_timestep = False, keep_ctx = True):    
+    def __init__(self, trajs, ctx = 1, single_timestep = False, keep_ctx = True, with_mask=False, state_normalize=False):    
         '''
         trajs: list(traj), namedtuple "observations", "actions", "rewards", "returns", "timesteps", "terminated", "truncated", "infos" \n
         single_timestep: bool. If true, timestep only keep initial step; Else (ctx,) \n
         keep_ctx: If False, ctx must be set 1, and we will not keep ctx dimension.
+        with_mask: If true, also return attention mask. For DT
+        state_normalize: If true, normalize states
         Note: Each traj must have same number of timesteps
         '''    
         # All 2d tensors n*args.horizon (timesteps n*(args.horizon+1))
@@ -249,12 +251,25 @@ class TrajCtxDataset(Dataset):
         self._trajectory_num = len(self._trajs)
         self._horizon = len(self._trajs[0].observations)
         self.keep_ctx = keep_ctx
+        self.with_mask = with_mask
 
         if not keep_ctx:
             assert ctx == 1, f"When keep_ctx = False, ctx must be 1"
 
         self.ctx = ctx
         self.single_timestep = single_timestep
+
+        self.state_normalize = state_normalize
+
+        if state_normalize:
+            states_list = []
+            for traj in trajs:
+                states_list += traj.observations
+            states = np.concatenate(states_list, axis = 0)
+            self.state_mean, self.state_std = np.mean(states, axis=0), np.std(states, axis=0) + 1e-6
+        else:
+            self.state_mean = 0
+            self.state_std = 1
 
         # number of trajectories should match
         # assert self._trajectory_num == actions.shape[0] 
@@ -310,6 +325,8 @@ class TrajCtxDataset(Dataset):
         # actions_slice = self.actions[trajectory_idx, start_idx : res_idx + 1, :]
         # rtgs_slice = self.rtgs[trajectory_idx, start_idx : res_idx + 1, :]
         states_slice = torch.from_numpy(np.array(traj.observations)[start_idx : res_idx + 1, :])
+        states_slice = (states_slice - self.state_mean) / self.state_std
+
         actions_slice = torch.from_numpy(np.array(traj.actions)[start_idx : res_idx + 1, :])
         rewards_slice = torch.from_numpy(np.array(traj.rewards)[start_idx : res_idx + 1]).unsqueeze(-1) # (T,1)
         rtgs_slice = torch.from_numpy(np.array(traj.returns)[start_idx : res_idx + 1]).unsqueeze(-1) # (T,1)
@@ -326,8 +343,6 @@ class TrajCtxDataset(Dataset):
             timesteps_slice = torch.from_numpy(np.array(traj.timesteps)[start_idx : res_idx + 1]) #(real_ctx_len, )
             timesteps_slice = torch.cat([torch.zeros(pad_len), timesteps_slice], dim = 0)
 
-        
-        
         # print(f"Size of output: {states_slice.shape}, {actions_slice.shape}, {rtgs_slice.shape}, {timesteps_slice.shape}")
         # print(f"Dataset actions_slice: {actions_slice.shape}")
         if not self.keep_ctx:
@@ -336,15 +351,32 @@ class TrajCtxDataset(Dataset):
             rewards_slice = rewards_slice[0,:]
             rtgs_slice = rtgs_slice[0,:]
             timesteps_slice = timesteps_slice[0]
-        return states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice
+
+        if self.with_mask:
+            attn_mask = torch.cat([torch.zeros((pad_len)), torch.ones((ctx-pad_len))], dim=-1)
+            return states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice, attn_mask
+        else:
+            return states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice
     
     def getitem(self, idx):
-        states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice = self.__getitem__(idx)
-        return states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice
+        if self.with_mask:
+            states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice, attn_mask = self.__getitem__(idx)
+            return states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice, attn_mask
+        else:
+            states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice = self.__getitem__(idx)
+            return states_slice, actions_slice, rewards_slice, rtgs_slice, timesteps_slice           
+
     
     def get_max_return(self):
         traj_rets = [traj.returns[0] for traj in self._trajs]
         return max(traj_rets)
+    
+    def get_normalize_coef(self):
+        '''
+        Get state normalization mean and std
+        '''
+        return self.state_mean, self.state_std
+
     
 class TrajNextObsDataset(Dataset):
     '''

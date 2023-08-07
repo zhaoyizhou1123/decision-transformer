@@ -191,8 +191,9 @@ class Trainer:
     def eval(self, desired_rtg, train_epoch):
         self.model.train(False)
         rets = [] # list of returns achieved in each epoch
-        action_dim = 1 # Assume no hashing. One-hot is converted in model
+        # action_dim = 1 # Assume no hashing. One-hot is converted in model
         env = self.config.env
+        action_dim = env.action_space.shape[0]
         for epoch in range(self.config.eval_repeat):
             states, _ = env.reset()
             if hasattr(env, 'get_true_observation'): # For pointmaze

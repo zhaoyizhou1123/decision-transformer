@@ -15,6 +15,8 @@ from maze.algos.stitch_rcsl.training.trainer_dynamics import EnsembleDynamics
 from maze.algos.stitch_rcsl.training.trainer_base import TrainerConfig
 from maze.algos.stitch_rcsl.training.train_mdp import BehaviorPolicyTrainer
 from maze.algos.stitch_rcsl.models.mlp_policy import StochasticPolicy
+from maze.algos.decision_transformer.models.decision_transformer import DecisionTransformer
+from maze.algos.decision_transformer.training.seq_trainer import SequenceTrainer
 from maze.utils.buffer import ReplayBuffer
 from maze.utils.trajectory import Trajs2Dict
 from maze.utils.scalar import StandardScaler
@@ -118,19 +120,45 @@ def run(args):
                     desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                     ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, debug=args.debug)
         output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
-    elif args.algo == 'stitch':
-        from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
-        model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
-                        simple_input=args.simple_input)
+    # elif args.algo == 'stitch':
+    #     from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
+    #     model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
+    #                     simple_input=args.simple_input)
         
-        goal = train_dataset.get_max_return() * args.goal_mul
+    #     goal = train_dataset.get_max_return() * args.goal_mul
 
-        import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
-        tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
+    #     import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
+    #     tconf = trainer_mlp.TrainerConfig(max_epochs=epochs, batch_size=args.batch, learning_rate=args.rate,
+    #                 lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+    #                 desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
+    #                 ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
+    #     output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+    elif args.algo == 'rcsl-dt':
+        offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False, with_mask=True, state_normalize=True)
+        goal = offline_train_dataset.get_max_return() * args.goal_mul
+        model = DecisionTransformer(
+            state_dim=obs_dim,
+            act_dim=action_dim,
+            max_length=args.ctx,
+            max_ep_len=args.horizon,
+            action_tanh=False, # no tanh function
+            hidden_size=args.embed_dim,
+            n_layer=args.n_layer,
+            n_head=args.n_head,
+            n_inner=4*args.embed_dim,
+            activation_function='relu',
+            n_positions=1024,
+            resid_pdrop=0.1,
+            attn_pdrop=0.1)
+        tconf = TrainerConfig(max_epochs=args.epochs, batch_size=args.batch, lr=args.rate,
                     lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
-                    desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
-                    ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
-        output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+                    desired_rtg=goal, ckpt_path= args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
+                    ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, device=args.device, 
+                    debug = args.debug)
+        output_policy_trainer = SequenceTrainer(
+            config=tconf,
+            model=model,
+            offline_dataset=offline_train_dataset)
     else:
         raise(Exception(f"Unimplemented model {args.algo}!"))
 
@@ -165,7 +193,11 @@ if __name__ == '__main__':
     parser.add_argument('--final_ckpt_path', type=none_or_str, default=None, help="./checkpoint/maze2_smd_stable. Used to store output policy model" )
     parser.add_argument('--arch', type=str, default='200-200-200-200', help="Hidden layer size of output mlp model" )
     parser.add_argument('--goal_mul', type=float, default=1, help="goal = max_dataset_return * goal_mul")
-    
+
+    # DT output policy
+    parser.add_argument('--embed_dim', type=int, default=128, help="dt token embedding dimension")
+    parser.add_argument('--n_layer', type=int, default=3, help="Transformer layer")
+    parser.add_argument('--n_head', type=int, default=1, help="Transformer head")    
     
     
     # parser.add_argument('--mdp_batch', type=int, default=128)
