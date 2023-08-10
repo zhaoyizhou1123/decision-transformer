@@ -177,7 +177,7 @@ class SequenceTrainer:
                 if hasattr(env, 'get_true_observation'): # For pointmaze
                     next_state = env.get_true_observation(next_state)
                 if epoch == 0 and self.config.debug:
-                    print(f"Step {h+1}, action is {pred_action.detach().cpu()}, observed next state {next_state}")   
+                    print(f"Step {h+1}, action is {pred_action.detach().cpu()}, observed next state {next_state}, reward {reward}")   
                 next_state = torch.from_numpy(next_state)
                 # Calculate return
                 ret += reward
@@ -205,9 +205,9 @@ class SequenceTrainer:
                 # timesteps = torch.cat([timesteps, next_timestep], dim=1)
                 timesteps = timesteps[:, -self.config.ctx: ]
 
-                if terminated: # Already reached goal, the rest steps get reward 1, break
-                    ret += self.config.horizon - 1 - h
-                    break
+                # if terminated: # Already reached goal, the rest steps get reward 1, break
+                #     ret += self.config.horizon - 1 - h
+                #     break
             # Add the ret to list
             rets.append(ret)
         # Compute average ret

@@ -212,9 +212,9 @@ class Trainer:
                 # timesteps = torch.cat([timesteps, next_timestep], dim=1)
                 timesteps = timesteps[:, -self.config.ctx: ]
 
-                if terminated: # Already reached goal, the rest steps get reward 1, break
-                    ret += self.config.horizon - 1 - h
-                    break
+                # if terminated: # Already reached goal, the rest steps get reward 1, break
+                #     ret += self.config.horizon - 1 - h
+                #     break
             # Add the ret to list
             rets.append(ret)
         # Compute average ret

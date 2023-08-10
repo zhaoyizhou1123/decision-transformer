@@ -7,6 +7,7 @@ import os
 import pickle
 import wandb
 import time
+import math
 
 from torch.utils.tensorboard import SummaryWriter  
 from maze.utils.dataset import TrajCtxDataset, TrajNextObsDataset, ObsActDataset
@@ -15,8 +16,6 @@ from maze.algos.stitch_rcsl.training.trainer_dynamics import EnsembleDynamics
 from maze.algos.stitch_rcsl.training.trainer_base import TrainerConfig
 from maze.algos.stitch_rcsl.training.train_mdp import BehaviorPolicyTrainer
 from maze.algos.stitch_rcsl.models.mlp_policy import StochasticPolicy
-from maze.algos.decision_transformer.models.decision_transformer import DecisionTransformer
-from maze.algos.decision_transformer.training.seq_trainer import SequenceTrainer
 from maze.utils.buffer import ReplayBuffer
 from maze.utils.trajectory import Trajs2Dict
 from maze.utils.scalar import StandardScaler
@@ -275,6 +274,7 @@ def run(args):
                                               threshold=max_dataset_return)
         
         # Output policy
+        os.makedirs(args.final_ckpt_path, exist_ok=True)
         if args.algo == 'rcsl-mlp':
             offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False)
             # num_action = env.get_num_action()
@@ -292,6 +292,8 @@ def run(args):
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
             output_policy_trainer = trainer_mlp.Trainer(model, offline_train_dataset, tconf)
         elif args.algo == 'rcsl-dt':
+            from maze.algos.decision_transformer.models.decision_transformer import DecisionTransformer
+            from maze.algos.decision_transformer.training.seq_trainer import SequenceTrainer
             offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False, with_mask=True, state_normalize=True)
             goal = offline_train_dataset.get_max_return() * args.goal_mul
             model = DecisionTransformer(
@@ -317,21 +319,31 @@ def run(args):
                 model=model,
                 offline_dataset=offline_train_dataset)
         elif args.algo == 'stitch-mlp':
-            offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False, with_mask=True)
+            '''
+            Upd: mix offline with rollout according to args.offline_ratio
+            '''
+            num_offline = len(trajs)
+            num_rollout = len(rollout_trajs)
+
+            repeat_rollout = math.ceil(num_offline / args.offline_ratio * (1-args.offline_ratio) / num_rollout)
+
+            train_dataset = TrajCtxDataset(trajs + rollout_trajs * repeat_rollout, 
+                                           ctx = args.ctx, single_timestep = False)
+            # offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False)
             from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
             model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
                             simple_input=args.simple_input)
             
-            rollout_train_dataset = TrajCtxDataset(rollout_trajs, ctx = args.ctx, single_timestep = False)
-            goal = rollout_train_dataset.get_max_return() * args.goal_mul
+            # rollout_train_dataset = TrajCtxDataset(rollout_trajs, ctx = args.ctx, single_timestep = False)
+            goal = train_dataset.get_max_return() * args.goal_mul
 
             import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
             tconf = trainer_mlp.TrainerConfig(max_epochs=args.epochs, batch_size=args.batch, learning_rate=args.rate,
                         lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
                         desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb,
-                        pre_epochs = args.pre_epochs, debug=args.debug)
-            output_policy_trainer = trainer_mlp.Trainer(model, offline_train_dataset, rollout_train_dataset, tconf)
+                        debug=args.debug)
+            output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
         elif args.algo == 'stitch-dt':
             pass
         else:
@@ -359,7 +371,8 @@ if __name__ == '__main__':
 
     # Output policy
     parser.add_argument('--ctx', type=int, default=1)
-    parser.add_argument('--pre_epochs', type=int, default=5, help='epochs to learn the output policy using offline data')
+    # parser.add_argument('--pre_epochs', type=int, default=5, help='epochs to learn the output policy using offline data')
+    parser.add_argument('--offline_ratio', type=int, default=0.5, help='ratio of offline data in whole dataset, only useful in stitch')
     parser.add_argument('--epochs', type=int, default=100, help='total epochs to learn the output policy')
     parser.add_argument('--model_type', type=str, default='reward_conditioned')
     # parser.add_argument('--num_steps', type=int, default=500000)

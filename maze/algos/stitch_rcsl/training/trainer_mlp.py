@@ -77,7 +77,7 @@ class TrainerConfig:
             setattr(self, k, v)
 
 class Trainer:
-    def __init__(self, model, offline_dataset, rollout_dataset, config):
+    def __init__(self, model, offline_dataset, config):
         '''
         model: nn.Module, should be class SimpleDT \n
         offline_dataset: torch.utils.data.Dataset, offline training dataset, for pretraining
@@ -99,7 +99,7 @@ class Trainer:
         '''
         self.model = model
         self.offline_dataset = offline_dataset
-        self.rollout_dataset = rollout_dataset
+        # self.rollout_dataset = rollout_dataset
         self.config = config
 
         # self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
@@ -137,14 +137,15 @@ class Trainer:
         Epoch_num: int, epoch number, used to display in progress bar. \n
         During training, we convert action to one_hot_hash
         '''
-        if epoch_num < self.config.pre_epochs:
-            dataset = self.offline_dataset
-            if self.config.debug:
-                print(f"Pretraining") 
-        else:
-            dataset = self.rollout_dataset
-            if self.config.debug:
-                print(f"Training on rollout data")
+        # if epoch_num < self.config.pre_epochs:
+        #     dataset = self.offline_dataset
+        #     if self.config.debug:
+        #         print(f"Pretraining") 
+        # else:
+        #     dataset = self.rollout_dataset
+        #     if self.config.debug:
+        #         print(f"Training on rollout data")
+        dataset = self.offline_dataset
         loader = DataLoader(dataset, shuffle=True, pin_memory=True,
                             batch_size= self.config.batch_size,
                             num_workers= self.config.num_workers)
@@ -231,7 +232,7 @@ class Trainer:
                 if hasattr(env, 'get_true_observation'): # For pointmaze
                     next_state = env.get_true_observation(next_state)
                 if epoch == 0 and self.config.debug:
-                    print(f"Step {h+1}, action is {pred_action.detach().cpu()}, observed next state {next_state}")   
+                    print(f"Step {h+1}, action is {pred_action.detach().cpu()}, observed next state {next_state}, reward {reward}")   
                 next_state = torch.from_numpy(next_state)
                 # Calculate return
                 ret += reward
@@ -258,9 +259,9 @@ class Trainer:
                 # timesteps = torch.cat([timesteps, next_timestep], dim=1)
                 timesteps = timesteps[:, -self.config.ctx: ]
 
-                if terminated: # Already reached goal, the rest steps get reward 1, break
-                    ret += self.config.horizon - 1 - h
-                    break
+                # if terminated: # Already reached goal, the rest steps get reward 1, break
+                #     ret += self.config.horizon - 1 - h
+                #     break
             # Add the ret to list
             rets.append(ret)
         # Compute average ret

@@ -13,19 +13,19 @@ rollout_epochs=5000
 num_need_traj=100
 
 behavior_epoch=10
-goal_mul=1.3
+# goal_mul=1
 d_seed=maze2_smds_accdyn
 num_diffusion_iters=10
 
-epochs=10
-# ctx=5
+epochs=50
+ctx=10
 lr=1e-3
 
 
 final_ckpt_path=${mdp_ckpt_dir}
 rollout_ckpt_path=${mdp_ckpt_dir}
 
-for ctx in 20
+for goal_mul in 1
 do
     python scripts/run_rcsl.py --algo ${algo} \
                             --ctx ${ctx} \

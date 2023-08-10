@@ -14,8 +14,10 @@ goal_mul=1
 d_seed=maze2_smds_accdyn
 num_diffusion_iters=10
 
+epochs=50
 
-final_ckpt_path=${mdp_ckpt_dir}
+
+final_ckpt_path=${mdp_ckpt_dir}2
 rollout_ckpt_path=${mdp_ckpt_dir}
 
 python scripts/run_combostyle.py --maze_config_file ${maze} \
@@ -31,4 +33,5 @@ python scripts/run_combostyle.py --maze_config_file ${maze} \
                                  --behavior_epoch ${behavior_epoch} \
                                  --rollout_ckpt_path ${rollout_ckpt_path} \
                                  --num_need_traj ${num_need_traj} \
+                                 --epochs ${epochs} \
                                  --debug
