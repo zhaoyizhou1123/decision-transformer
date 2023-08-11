@@ -409,7 +409,6 @@ if __name__ == '__main__':
     parser.add_argument('--time_depend_a',action='store_true')
     parser.add_argument('--simple_input',action='store_false', help='Only use history rtg info if true')
 
-    parser.add_argument("--seed", type=int, default=1)
 
     # Dynamics model
     parser.add_argument("--algo-name", type=str, default="combo")
@@ -425,6 +424,7 @@ if __name__ == '__main__':
     parser.add_argument("--real-ratio", type=float, default=0.5)
     parser.add_argument("--load-dynamics-path", type=none_or_str, default=None)
     parser.add_argument("--dynamics-batch-size", type=int, default=256, help="batch size for dynamics training")
+    parser.add_argument("--seed", type=int, default=1, help="dynamics seed")
 
     # Behavior policy (diffusion)
     parser.add_argument('--behavior_type', type=str, default='diffusion', help='mlp or diffusion')
