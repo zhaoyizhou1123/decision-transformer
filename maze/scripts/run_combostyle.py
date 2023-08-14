@@ -8,6 +8,10 @@ import pickle
 import wandb
 import time
 import math
+import torch
+import numpy as np
+from copy import deepcopy
+
 
 from torch.utils.tensorboard import SummaryWriter  
 from maze.utils.dataset import TrajCtxDataset, TrajNextObsDataset, ObsActDataset
@@ -23,8 +27,6 @@ from maze.algos.stitch_rcsl.models.dynamics_normal import EnsembleDynamicsModel
 from maze.utils.logger import Logger, make_log_dirs
 from maze.utils.none_or_str import none_or_str
 from maze.utils.setup_logger import setup_logger
-import torch
-import numpy as np
 
 def run(args):
     if args.env_type == 'pointmaze':
@@ -291,6 +293,8 @@ def run(args):
                         desired_rtg=goal, ckpt_path= args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
             output_policy_trainer = trainer_mlp.Trainer(model, offline_train_dataset, tconf)
+            print("Begin output policy training")
+            output_policy_trainer.train()
         elif args.algo == 'rcsl-dt':
             from maze.algos.decision_transformer.models.decision_transformer import DecisionTransformer
             from maze.algos.decision_transformer.training.seq_trainer import SequenceTrainer
@@ -318,6 +322,8 @@ def run(args):
                 config=tconf,
                 model=model,
                 offline_dataset=offline_train_dataset)
+            print("Begin output policy training")
+            output_policy_trainer.train()
         elif args.algo == 'stitch-mlp':
             '''
             Upd: mix offline with rollout according to args.offline_ratio
@@ -348,13 +354,106 @@ def run(args):
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb,
                         debug=args.debug)
             output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+            print("Begin output policy training")
+            output_policy_trainer.train()
         elif args.algo == 'stitch-dt':
             pass
+        elif args.algo == 'stitch-cql':
+            from SimpleSAC.model import TanhGaussianPolicy, FullyConnectedQFunction, SamplerPolicy
+            from SimpleSAC.conservative_sac import ConservativeSAC
+            from SimpleSAC.utils import Timer, set_random_seed, prefix_metrics, WandBLogger
+            from SimpleSAC.replay_buffer import batch_to_torch, get_d4rl_dataset, subsample_batch
+            from SimpleSAC.sampler import TrajSampler
+
+            set_random_seed(args.seed)
+            policy = TanhGaussianPolicy(
+                obs_dim,
+                action_dim,
+                args.arch
+            )
+
+            qf1 = FullyConnectedQFunction(
+                obs_dim,
+                action_dim,
+                args.arch
+            )
+            target_qf1 = deepcopy(qf1)
+
+            qf2 = FullyConnectedQFunction(
+                obs_dim,
+                action_dim,
+                args.arch
+            )
+            target_qf2 = deepcopy(qf2)
+
+            conf = ConservativeSAC.get_default_config()
+            sac = ConservativeSAC(conf, policy, qf1, qf2, target_qf1, target_qf2)
+            sac.torch_to_device(args.device)
+
+            # Eval module
+            sampler_policy = SamplerPolicy(policy, args.device)
+            eval_sampler = TrajSampler(env, horizon)
+
+            # dataset
+            num_offline = len(trajs)
+            num_rollout = len(rollout_trajs)
+
+            repeat_rollout = math.ceil(num_offline / args.offline_ratio * (1-args.offline_ratio) / num_rollout)
+
+            train_dataset = Trajs2Dict(trajs + rollout_trajs * repeat_rollout)
+
+            # logger
+            logging_conf = WandBLogger.get_default_config()
+            wandb_logger = WandBLogger(config=logging_conf, variant={})
+            setup_logger(
+                variant={},
+                exp_id=wandb_logger.experiment_id,
+                seed=args.seed,
+                base_log_dir=logging_conf.output_dir,
+                include_exp_prefix_sub_dir=False
+            )
+            viskit_metrics = {}
+
+            # Training
+            for epoch in range(args.epochs):
+                metrics = {'epoch': epoch}
+
+                with Timer() as train_timer:
+                    for batch_idx in range(args.cql_n_train_step_per_epoch):
+                        batch = subsample_batch(train_dataset, args.batch_size)
+                        batch = batch_to_torch(batch, args.device)
+                        metrics.update(prefix_metrics(sac.train(batch, bc=epoch < args.bc_epochs), 'sac'))
+
+                with Timer() as eval_timer:
+                    if epoch == 0 or (epoch + 1) % args.cql_eval_period == 0:
+                        trajs = eval_sampler.sample(
+                            sampler_policy, args.eval_n_trajs, deterministic=True
+                        )
+
+                        metrics['average_return'] = np.mean([np.sum(t['rewards']) for t in trajs])
+                        metrics['average_traj_length'] = np.mean([len(t['rewards']) for t in trajs])
+                        metrics['average_normalizd_return'] = np.mean(
+                            [eval_sampler.env.get_normalized_score(np.sum(t['rewards'])) for t in trajs]
+                        )
+                        if args.save_model:
+                            save_data = {'sac': sac, 'variant': {}, 'epoch': epoch}
+                            wandb_logger.save_pickle(save_data, 'model.pkl')
+
+                metrics['train_time'] = train_timer()
+                metrics['eval_time'] = eval_timer()
+                metrics['epoch_time'] = train_timer() + eval_timer()
+                wandb_logger.log(metrics)
+                viskit_metrics.update(metrics)
+                logger.record_dict(viskit_metrics)
+                logger.dump_tabular(with_prefix=False, with_timestamp=False)
+
+            if args.save_model:
+                save_data = {'sac': sac, 'variant': {}, 'epoch': epoch}
+                wandb_logger.save_pickle(save_data, 'model.pkl')
         else:
             raise(Exception(f"Unimplemented model {args.algo}!"))
 
-        print("Begin output policy training")
-        output_policy_trainer.train()
+
 
 
 
@@ -386,6 +485,12 @@ if __name__ == '__main__':
     parser.add_argument('--final_ckpt_path', type=none_or_str, default=None, help="./checkpoint/maze2_smd_stable. Used to store output policy model" )
     parser.add_argument('--arch', type=str, default='200-200-200-200', help="Hidden layer size of output mlp model" )
     parser.add_argument('--goal_mul', type=float, default=1, help="goal = max_dataset_return * goal_mul")
+
+    # Ouput policy (cql)
+    parser.add_argument('--cql_seed', type=int, default=1, help="cql policy seed")
+    parser.add_argument('--cql_n_train_step_per_epoch', type=int, default=1000, help="cql policy seed")
+    parser.add_argument('--cql_eval_period', type=int, default=1, help="cql eval frequency")
+    
     
     
     
@@ -450,7 +555,7 @@ if __name__ == '__main__':
     parser.add_argument('--rollout_epochs', type=int, default=1000, help="Max number of epochs to rollout the policy")
     parser.add_argument('--num_need_traj', type=int, default=100, help="Needed valid trajs in rollout")
 
-    parser.add_argument("--epoch", type=int, default=100)
+    # parser.add_argument("--epoch", type=int, default=100)
     parser.add_argument("--step-per-epoch", type=int, default=1000)
     parser.add_argument("--eval_episodes", type=int, default=10)
     parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
