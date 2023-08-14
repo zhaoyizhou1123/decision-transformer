@@ -14,7 +14,7 @@ goal_mul=1
 num_diffusion_iters=10
 epochs=50
 
-for dyn_seed in 0
+for dyn_seed in 3
 do
     mdp_ckpt_dir=./checkpoint/maze2-stitch-mlp_${dyn_seed} # No use for diffusion
     d_seed=maze2-stitch-mlp_${dyn_seed}

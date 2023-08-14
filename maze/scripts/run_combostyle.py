@@ -325,10 +325,14 @@ def run(args):
             num_offline = len(trajs)
             num_rollout = len(rollout_trajs)
 
-            repeat_rollout = math.ceil(num_offline / args.offline_ratio * (1-args.offline_ratio) / num_rollout)
+            if (args.offline_ratio == 0): # rollout only
+                train_dataset = TrajCtxDataset(rollout_trajs, 
+                                            ctx = args.ctx, single_timestep = False)
+            else:
+                repeat_rollout = math.ceil(num_offline / args.offline_ratio * (1-args.offline_ratio) / num_rollout)
 
-            train_dataset = TrajCtxDataset(trajs + rollout_trajs * repeat_rollout, 
-                                           ctx = args.ctx, single_timestep = False)
+                train_dataset = TrajCtxDataset(trajs + rollout_trajs * repeat_rollout, 
+                                            ctx = args.ctx, single_timestep = False)
             # offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False)
             from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
             model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
