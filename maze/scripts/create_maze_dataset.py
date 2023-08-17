@@ -82,7 +82,7 @@ def create_env(args):
 
     # print(sample_starts)
     # print(sample_goals)
-    render_mode = "human" if args.render else "None"
+    render_mode = "human" if args.render else None
     # render_mode = None
 
     env = gym.make('PointMaze_UMazeDense-v3', 

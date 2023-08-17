@@ -23,6 +23,8 @@ dist/
 build/
 maze/log/
 maze/logdir/
-!**/backup/*
+maze/cql_log
+maze/mlp_log
+!**/backup/**
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt

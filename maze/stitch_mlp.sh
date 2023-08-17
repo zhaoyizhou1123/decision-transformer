@@ -14,29 +14,36 @@ goal_mul=1
 num_diffusion_iters=10
 epochs=50
 
-for dyn_seed in 0
-do
-    mdp_ckpt_dir=./checkpoint/maze2-stitch-mlp_${dyn_seed} # No use for diffusion
-    d_seed=maze2-stitch-mlp_${dyn_seed}
-    dynamics_path="./log/pointmaze/combo/seed_${dyn_seed}&timestamp_23-0810_keep/model"
 
-    final_ckpt_path=${mdp_ckpt_dir}rolloutonly
-    rollout_ckpt_path=${mdp_ckpt_dir}
+for offline_ratio in 0 0.25 0.5 0.75 1
+do 
+    for dyn_seed in 0 1 2 3
+    do
+        mdp_ckpt_dir=./checkpoint/maze2-stitch-mlp/ratio${offline_ratio}/seed${dyn_seed} # No use for diffusion
+        d_seed=maze2-stitch-mlp_${dyn_seed}
+        dynamics_path="./log/pointmaze/combo/seed_${dyn_seed}&timestamp_23-0810_keep/model"
 
-    python scripts/run_combostyle.py --maze_config_file ${maze} \
-                                    --seed ${dyn_seed} \
-                                    --horizon ${horizon} \
-                                    --final_ckpt_path ${final_ckpt_path} \
-                                    --load-dynamics-path ${dynamics_path} \
-                                    --data_file ${data_file} \
-                                    --mdp_ckpt_dir ${mdp_ckpt_dir} \
-                                    --rollout_epochs ${rollout_epochs} \
-                                    --goal_mul ${goal_mul} \
-                                    --diffusion_seed ${d_seed} \
-                                    --num_diffusion_iters ${num_diffusion_iters} \
-                                    --behavior_epoch ${behavior_epoch} \
-                                    --rollout_ckpt_path ${rollout_ckpt_path} \
-                                    --num_need_traj ${num_need_traj} \
-                                    --epochs ${epochs} \
-                                    --log_to_wandb
-done
+        final_ckpt_path=${mdp_ckpt_dir}
+        rollout_ckpt_path=./checkpoint/maze2-stitch-mlp_${dyn_seed}
+
+        # srun --overlap -N 1 -n 1 
+        python scripts/run_combostyle.py --maze_config_file ${maze} \
+                                        --cql_seed ${dyn_seed} --seed ${dyn_seed} \
+                                        --horizon ${horizon} \
+                                        --final_ckpt_path ${final_ckpt_path} \
+                                        --load-dynamics-path ${dynamics_path} \
+                                        --data_file ${data_file} \
+                                        --mdp_ckpt_dir ${mdp_ckpt_dir} \
+                                        --rollout_epochs ${rollout_epochs} \
+                                        --goal_mul ${goal_mul} \
+                                        --offline_ratio ${offline_ratio} \
+                                        --diffusion_seed ${d_seed} \
+                                        --num_diffusion_iters ${num_diffusion_iters} \
+                                        --behavior_epoch ${behavior_epoch} \
+                                        --rollout_ckpt_path ${rollout_ckpt_path} \
+                                        --num_need_traj ${num_need_traj} \
+                                        --epochs ${epochs} \
+                                        --log_to_wandb & 
+    done
+    wait
+done 

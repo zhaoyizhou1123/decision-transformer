@@ -1,6 +1,7 @@
 from collections import namedtuple
 from typing import List, Optional, Union, Tuple, Dict
 import numpy as np
+import torch
 
 Trajectory = namedtuple(
     "Trajectory", ["observations", "actions", "rewards", "returns", "timesteps", "terminated", "truncated", "infos"])
@@ -52,6 +53,8 @@ def Trajs2Dict(trajs: List):
     Concatenate all trajectories.
     Transition number is (horizon - 1) * num_traj
     'terminal' will be all false
+
+    Upd: convert data to type float32
     '''
     obss = [traj.observations[0:-1] for traj in trajs]
     next_obss = [traj.observations[1:] for traj in trajs]
@@ -66,12 +69,13 @@ def Trajs2Dict(trajs: List):
     terminals = np.array([False]).repeat(obss.shape[0])
     init_obss = np.concatenate(init_obss, axis=0)
 
-    return {"observations": obss,
-            "next_observations": next_obss,
-            "actions": acts,
-            "rewards": rs,
+    return {"observations": obss.astype(np.float32),
+            "next_observations": next_obss.astype(np.float32),
+            "actions": acts.astype(np.float32),
+            "rewards": rs.astype(np.float32),
             "terminals": terminals,
-            "initial_observations": init_obss}
+            "initial_observations": init_obss.astype(np.float32)}
+
 
 
 if __name__ == '__main__':

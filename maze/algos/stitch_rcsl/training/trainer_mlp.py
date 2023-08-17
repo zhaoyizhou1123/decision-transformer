@@ -26,8 +26,11 @@ from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data.dataloader import DataLoader
 import wandb
 import os
+from typing import List, Optional
 
 from torch.utils.tensorboard import SummaryWriter  
+from maze.utils.dataset import TrajCtxMixSampler
+from maze.utils.trajectory import Trajectory
 
 logger = logging.getLogger(__name__)
 
@@ -77,11 +80,14 @@ class TrainerConfig:
             setattr(self, k, v)
 
 class Trainer:
-    def __init__(self, model, offline_dataset, config):
+    def __init__(self, model, 
+                 offline_dataset: List[List[Trajectory]], 
+                 rollout_dataset: Optional[List[List[Trajectory]]], 
+                 config):
         '''
         model: nn.Module, should be class SimpleDT \n
-        offline_dataset: torch.utils.data.Dataset, offline training dataset, for pretraining
-        rollout_dataset: data collected from rollout
+        offline_dataset: offline trajs
+        rollout_dataset: rollout trajs
         config: TrainerConfig class, contains following elements:
         - batch_size, int
         - num_workers, int, for dataloader
@@ -99,7 +105,7 @@ class Trainer:
         '''
         self.model = model
         self.offline_dataset = offline_dataset
-        # self.rollout_dataset = rollout_dataset
+        self.rollout_dataset = rollout_dataset
         self.config = config
 
         # self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
@@ -116,6 +122,12 @@ class Trainer:
 
         if config.tb_log is not None:
             self.tb_writer = SummaryWriter(config.tb_log)
+
+        if hasattr(config, "logger"):
+            self.logger = config.logger
+        else:
+            self.logger = None
+
         
         # model_module = self.model.module if hasattr(self.model, 'module') else self.model
         # self.tb_writer.add_graph(model_module, (torch.tensor([0]),torch.tensor([1,0]),torch.tensor(0)))
@@ -188,6 +200,74 @@ class Trainer:
             self.optimizer.step()
 
             pbar.set_description(f"Epoch {epoch_num+1}, iter {it}: train loss {loss.item():.5f}.")
+
+    def _run_epoch_fix_steps(self, epoch_num):
+        '''
+        Run one epoch in the training process \n
+        Upd: use get_batch method in config. Fix steps in epoch
+        '''
+        # if epoch_num _< self.config.pre_epochs:
+        #     dataset = self.offline_dataset
+        #     if self.config.debug:
+        #         print(f"Pretraining") 
+        # else:
+        #     dataset = self.rollout_dataset
+        #     if self.config.debug:
+        #         print(f"Training on rollout data")
+        
+        # losses = []
+        if self.rollout_dataset is None:
+            datasets = [self.offline_dataset]
+            weights = [1.]
+        else:
+            datasets = [self.offline_dataset, self.rollout_dataset]
+            weights = [self.config.offline_ratio, 1-self.config.offline_ratio]
+        batch_sampler = TrajCtxMixSampler(datasets, weights, self.config.ctx)
+        pbar = tqdm(range(self.config.step_per_epoch))
+
+        avg_loss = 0. # Compute average loss
+        for it in pbar:
+            '''
+            states, (batch, ctx, state_dim)
+            actions, (batch, ctx, action_dim)
+            rtgs, (batch, ctx, 1)
+            timesteps, (batch, ctx)
+            ''' 
+            states, actions, _, rtgs, timesteps = batch_sampler.get_batch_traj(self.config.batch_size)
+
+            states = states.type(torch.float32).to(self.device)
+            actions = actions.type(torch.float32).to(self.device)
+            rtgs = rtgs.type(torch.float32).to(self.device)
+            timesteps = timesteps.type(torch.float32).to(self.device)
+
+            # forward the model
+            with torch.set_grad_enabled(True):
+                history_actions = actions[:, :-1, :]
+                target_action = actions[:,-1,:] # The last action is target
+                pred_actions = self.model(states, history_actions, rtgs, timesteps) # (batch,num_action)
+                # print(target_action.min(), target_action.max(), pred_actions.shape[-1])
+                loss = self._loss(pred_actions, target_action) # Tensor(scalar)    
+
+                avg_loss += loss / self.config.step_per_epoch           
+
+                # loss = loss.mean() # scalar tensor. Collapse all losses if they are scattered on multiple gpus
+                # print("Finish loss computation.")      
+                if self.config.tb_log is not None:
+                    self.tb_writer.add_scalar('training_loss', loss.item(), epoch_num)
+
+                if self.config.log_to_wandb:
+                    wandb.log({'loss': loss.item()})
+            
+            self.model.zero_grad()
+            loss.backward()
+            # print(f"Gradient of K: {self.model.transformer.key.weight.grad}")
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.config.grad_norm_clip)
+            self.optimizer.step()
+
+            pbar.set_description(f"Epoch {epoch_num+1}, iter {it}: train loss {loss.item():.5f}.")
+
+        if self.logger is not None:
+            self.logger.record_dict({'average_loss': loss.item()})
 
     def eval(self, desired_rtg, train_epoch):
         self.model.train(False)
@@ -271,6 +351,12 @@ class Trainer:
             self.tb_writer.add_scalar("avg_ret", avg_ret, train_epoch)
         if self.config.log_to_wandb:
             wandb.log({"avg_ret": avg_ret})
+        if self.logger is not None:
+            eval_result = {}
+            eval_result['epoch'] = train_epoch + 1
+            eval_result['average_return'] = avg_ret
+            self.logger.record_dict(eval_result)
+            self.logger.dump_tabular(with_prefix=False, with_timestamp=False)
         # Set the model back to training mode
         self.model.train(True)
         return avg_ret
@@ -294,7 +380,8 @@ class Trainer:
         self.eval(self.config.desired_rtg, train_epoch=-1)
         for epoch in range(self.config.max_epochs):
             print(f"------------\nEpoch {epoch+1}")
-            self._run_epoch(epoch)
+            # self._run_epoch(epoch)
+            self._run_epoch_fix_steps(epoch)
             eval_return = self.eval(self.config.desired_rtg, train_epoch=epoch)
             if eval_return > best_return:
                 best_return = eval_return

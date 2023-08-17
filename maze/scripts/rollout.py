@@ -618,6 +618,7 @@ def rollout_diffusion(args, dynamics: BaseDynamics, diffusion_policy: DiffusionB
     trajs = [] # Initialize valid rollout trajs. If there is checkpoint, first load checkpoint
     start_epoch = 0 # Default starting epoch
     if args.rollout_ckpt_path is not None:
+        print(f"Will save rollout trajectories to dir {args.rollout_ckpt_path}")
         os.makedirs(args.rollout_ckpt_path, exist_ok=True)
         data_path = os.path.join(args.rollout_ckpt_path, "rollout.dat")
         if os.path.exists(data_path): # Load ckpt_data

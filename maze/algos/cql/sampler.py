@@ -122,8 +122,8 @@ class TrajSampler(object):
 
                 observation = next_observation
 
-                if done:
-                    break
+                # if done:
+                #     break
 
             trajs.append(dict(
                 observations=np.array(observations, dtype=np.float32),
