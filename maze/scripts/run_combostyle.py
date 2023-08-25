@@ -14,7 +14,7 @@ from copy import deepcopy
 
 
 from torch.utils.tensorboard import SummaryWriter  
-from maze.utils.dataset import TrajCtxDataset, TrajNextObsDataset, ObsActDataset
+from maze.utils.dataset import TrajCtxDataset, TrajNextObsDataset, ObsActDataset, TrajCtxWeightedDataset
 from maze.scripts.rollout import rollout_expand_trajs, test_rollout_combo, rollout_combo, test_rollout_diffusion, rollout_diffusion
 from maze.algos.stitch_rcsl.training.trainer_dynamics import EnsembleDynamics 
 from maze.algos.stitch_rcsl.training.trainer_base import TrainerConfig
@@ -143,17 +143,18 @@ def run(args):
     )
     real_buffer.load_dataset(dynamics_dataset)
 
-    # log
-    log_dirs = make_log_dirs(args.env_type, args.algo_name, args.seed, vars(args))
-    # key: output file name, value: output handler type
-    output_config = {
-        "consoleout_backup": "stdout",
-        "policy_training_progress": "csv",
-        "dynamics_training_progress": "csv",
-        "tb": "tensorboard"
-    }
-    logger = Logger(log_dirs, output_config)
-    logger.log_hyperparameters(vars(args))
+    # log for dynamics (only if we train dynamics)
+    if not args.load_dynamics_path:
+        log_dirs = make_log_dirs(args.env_type, args.algo_name, args.seed, vars(args))
+        # key: output file name, value: output handler type
+        output_config = {
+            "consoleout_backup": "stdout",
+            "policy_training_progress": "csv",
+            "dynamics_training_progress": "csv",
+            "tb": "tensorboard"
+        }
+        logger = Logger(log_dirs, output_config)
+        logger.log_hyperparameters(vars(args))
 
     # Create dynamics model
     dynamics_model = EnsembleDynamicsModel(
@@ -211,7 +212,7 @@ def run(args):
             print(f"Train behavior policy model")
 
             conf = TrainerConfig(max_epochs=args.behavior_epoch, batch_size=args.behavior_batch, learning_rate=args.rate,
-                                num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                                num_workers=args.num_workers, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
                                 ckpt_path = b_ckpt_path, tb_log = tb_dir_path, r_loss_weight = args.r_loss_weight,
                                 weight_decay = 0.1, log_to_wandb = args.log_to_wandb)
             
@@ -272,9 +273,13 @@ def run(args):
         if args.behavior_type == 'mlp':
             rollout_trajs = rollout_combo(args, dynamics_trainer, behavior_model, real_buffer,
                                           threshold=max_dataset_return)
+            traj_rets = [traj.returns[0] for traj in (trajs + rollout_trajs)]
+            goal = max(traj_rets) * args.goal_mul
         elif args.behavior_type == 'diffusion':
             rollout_trajs = rollout_diffusion(args, dynamics_trainer, diffusion_policy, real_buffer, 
                                               threshold=max_dataset_return)
+            traj_rets = [traj.returns[0] for traj in (trajs + rollout_trajs)]
+            goal = max(traj_rets) * args.goal_mul
         
         # Output policy
         if args.final_ckpt_path is not None:
@@ -291,7 +296,7 @@ def run(args):
             import maze.algos.rcsl.trainer_mlp as trainer_mlp
             goal = offline_train_dataset.get_max_return() * args.goal_mul
             tconf = trainer_mlp.TrainerConfig(max_epochs=args.epochs, batch_size=args.batch, learning_rate=args.rate,
-                        lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                        lr_decay=True, num_workers=args.num_workers, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
                         desired_rtg=goal, ckpt_path= args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb)
             output_policy_trainer = trainer_mlp.Trainer(model, offline_train_dataset, tconf)
@@ -316,7 +321,7 @@ def run(args):
                 resid_pdrop=0.1,
                 attn_pdrop=0.1)
             tconf = TrainerConfig(max_epochs=args.epochs, batch_size=args.batch, lr=args.rate,
-                        lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                        lr_decay=True, num_workers=args.num_workers, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
                         desired_rtg=goal, ckpt_path= args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, device=args.device, 
                         debug = args.debug)
@@ -326,7 +331,7 @@ def run(args):
                 offline_dataset=offline_train_dataset)
             print("Begin output policy training")
             output_policy_trainer.train()
-        elif args.algo == 'stitch-mlp':
+        elif args.algo == 'stitch-mlp-mix':
             '''
             Upd: mix offline with rollout according to args.offline_ratio
             '''
@@ -339,7 +344,7 @@ def run(args):
             # wandb_logger = WandBLogger(config=logging_conf, variant=vars(args))
             setup_logger_cql(
                 variant=vars(args),
-                exp_id="stitch-mlp",
+                exp_id=f"arch{args.arch}--mlp",
                 seed=args.seed,
                 base_log_dir="./mlp_log/",
                 include_exp_prefix_sub_dir=False
@@ -360,12 +365,27 @@ def run(args):
             # Update: use weighted sampling, setup in Trainer
                 
             setup_seed(args.seed)
-            # offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False)
+            env.reset(seed=args.seed)
             from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
             model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
                             simple_input=args.simple_input)
             
-            # rollout_train_dataset = TrajCtxDataset(rollout_trajs, ctx = args.ctx, single_timestep = False)
+
+            # Calculate weight
+            num_offline_data = len(trajs)
+            num_rollout_data = len(rollout_trajs)
+            num_total_data = num_offline_data + num_rollout_data
+            offline_weight = num_rollout_data / num_total_data # reciprocal coefficient
+            rollout_weight = num_offline_data / num_total_data
+
+            # weights = [offline_weight] * num_offline_data + [rollout_weight] * num_rollout_data
+
+            offline_dataset = TrajCtxWeightedDataset(trajs, [offline_weight] * num_offline_data, ctx = args.ctx, single_timestep = False)
+            rollout_dataset = TrajCtxWeightedDataset(rollout_trajs, [rollout_weight] * num_rollout_data, ctx = args.ctx, single_timestep = False)
+
+            # train_dataset = TrajCtxWeightedDataset(
+            #     trajs + rollout_trajs,
+            #     weights)
 
             # Get max return
             traj_rets = [traj.returns[0] for traj in (trajs + rollout_trajs)]
@@ -374,13 +394,151 @@ def run(args):
 
             import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
             tconf = trainer_mlp.TrainerConfig(max_epochs=args.epochs, batch_size=args.batch, learning_rate=args.rate,
-                        lr_decay=True, num_workers=1, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                        lr_decay=True, num_workers=args.num_workers, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
                         desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, logger = logger_cql,
-                        debug=args.debug, offline_ratio = args.offline_ratio, step_per_epoch = args.step_per_epoch)
-            output_policy_trainer = trainer_mlp.Trainer(model, trajs, rollout_trajs, tconf)
+                        debug=args.debug)
+            output_policy_trainer = trainer_mlp.DoubleDataTrainer(model, offline_dataset, rollout_dataset, tconf)
             print("Begin output policy training")
             output_policy_trainer.train()
+        elif args.algo == 'stitch-mlp-rolloutonly':
+            '''
+            Upd: mix offline with rollout according to args.offline_ratio
+            '''
+            # Use CQL logger
+            from SimpleSAC.utils import WandBLogger
+            from viskit.logging import logger as logger_cql, setup_logger as setup_logger_cql
+            # logging_conf = WandBLogger.get_default_config(updates={"prefix":'stitch-mlp',
+            #                                                        "project": 'stitch-rcsl',
+            #                                                        "output_dir": './mlp_log'})
+            # wandb_logger = WandBLogger(config=logging_conf, variant=vars(args))
+            setup_logger_cql(
+                variant=vars(args),
+                exp_id=f"arch{args.arch}--mlp",
+                seed=args.seed,
+                base_log_dir="./mlp_log/",
+                include_exp_prefix_sub_dir=False
+            )
+
+            # num_offline = len(trajs)
+            # num_rollout = len(rollout_trajs)
+
+            # if (args.offline_ratio == 0): # rollout only
+            #     train_dataset = TrajCtxDataset(rollout_trajs, 
+            #                                 ctx = args.ctx, single_timestep = False)
+            # else:
+            #     repeat_rollout = math.ceil(num_offline / args.offline_ratio * (1-args.offline_ratio) / num_rollout)
+
+            #     train_dataset = TrajCtxDataset(trajs + rollout_trajs * repeat_rollout, 
+            #                                 ctx = args.ctx, single_timestep = False)
+
+            # Update: use weighted sampling, setup in Trainer
+                
+            setup_seed(args.seed)
+            env.reset(seed=args.seed)
+            from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
+            model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
+                            simple_input=args.simple_input)
+            
+
+            # Calculate weight
+            num_offline_data = len(trajs)
+            num_rollout_data = len(rollout_trajs)
+            num_total_data = num_offline_data + num_rollout_data
+            offline_weight = num_rollout_data / num_total_data # reciprocal coefficient
+            rollout_weight = num_offline_data / num_total_data
+
+            # weights = [offline_weight] * num_offline_data + [rollout_weight] * num_rollout_data
+
+            # offline_dataset = TrajCtxWeightedDataset(trajs, [offline_weight] * num_offline_data, ctx = args.ctx, single_timestep = False)
+            rollout_dataset = TrajCtxDataset(rollout_trajs, ctx = args.ctx, single_timestep = False)
+
+            # train_dataset = TrajCtxWeightedDataset(
+            #     trajs + rollout_trajs,
+            #     weights)
+
+            # Get max return
+            traj_rets = [traj.returns[0] for traj in (trajs + rollout_trajs)]
+            goal = max(traj_rets) * args.goal_mul
+            # goal = train_dataset.get_max_return() * args.goal_mul
+
+            import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
+            tconf = trainer_mlp.TrainerConfig(max_epochs=args.epochs, batch_size=args.batch, learning_rate=args.rate,
+                        lr_decay=True, num_workers=args.num_workers, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                        desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
+                        ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, logger = logger_cql,
+                        debug=args.debug)
+            output_policy_trainer = trainer_mlp.Trainer(model, rollout_dataset, tconf)
+            print("Begin output policy training")
+            output_policy_trainer.train()
+        elif args.algo == 'stitch-mlp-gaussian':
+            '''
+            Rollout only, Gaussian policy
+            '''
+            # Use CQL logger
+            from offlinerlkit.policy_trainer import RcslPolicyTrainer
+            from offlinerlkit.policy import RcslPolicy
+            from offlinerlkit.modules import RcslModule, DiagGaussian, TanhDiagGaussian
+            from offlinerlkit.nets import MLP
+            from offlinerlkit.utils.logger import make_log_dirs, Logger
+            from maze.utils.trajectory import Trajs2RtgDict
+            
+            setup_seed(args.seed)
+            env.reset(seed=args.seed)
+
+            hidden_dims = args.arch.split("-")
+            hidden_dims = [int(hidden_dim) for hidden_dim in hidden_dims]
+            rcsl_backbone = MLP(input_dim=obs_dim+1, hidden_dims=hidden_dims)
+            dist = DiagGaussian(
+                latent_dim=getattr(rcsl_backbone, "output_dim"),
+                output_dim=action_dim,
+                unbounded=True,
+                conditioned_sigma=True
+            )
+
+            rcsl_module = RcslModule(rcsl_backbone, dist, args.device)
+            rcsl_optim = torch.optim.Adam(rcsl_module.parameters(), lr=args.rate)
+
+            lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(rcsl_optim, args.epochs)
+
+            rcsl_policy = RcslPolicy(
+                dynamics_trainer,
+                diffusion_policy,
+                rcsl_module,
+                rcsl_optim,
+                device = args.device
+            )
+
+            # Creat policy trainer
+            rcsl_log_dirs = make_log_dirs(args.env_type, args.algo, f"{args.arch}-s{args.seed}", vars(args), part='rcsl')
+            # key: output file name, value: output handler type
+            rcsl_output_config = {
+                "consoleout_backup": "stdout",
+                "policy_training_progress": "csv",
+                "dynamics_training_progress": "csv",
+                "tb": "tensorboard"
+            }
+            rcsl_logger = Logger(rcsl_log_dirs, rcsl_output_config)
+            rcsl_logger.log_hyperparameters(vars(args))
+
+            output_policy_trainer = RcslPolicyTrainer(
+                policy = rcsl_policy,
+                eval_env = env,
+                offline_dataset = Trajs2RtgDict(trajs),
+                rollout_dataset = Trajs2RtgDict(rollout_trajs),
+                goal = goal,
+                logger = rcsl_logger,
+                epoch = args.epochs,
+                step_per_epoch = args.step_per_epoch,
+                batch_size = args.batch,
+                lr_scheduler = lr_scheduler,
+                horizon = horizon,
+                num_workers = args.num_workers,
+                # device = args.device
+            )
+        
+            output_policy_trainer.train()
+
         elif args.algo == 'stitch-dt':
             pass
         elif args.algo == 'stitch-cql':
@@ -392,6 +550,7 @@ def run(args):
             from viskit.logging import logger as logger_cql, setup_logger as setup_logger_cql
 
             set_random_seed(args.seed)
+            env.reset(seed=args.seed)
             policy = TanhGaussianPolicy(
                 obs_dim,
                 action_dim,
@@ -439,7 +598,7 @@ def run(args):
                 wandb_logger = WandBLogger(config=logging_conf, variant=vars(args))
             setup_logger_cql(
                 variant=vars(args),
-                exp_id='stitch-cql',
+                exp_id=f'arch{args.arch}--cql',
                 seed=args.seed,
                 base_log_dir=f"./cql_log/",
                 include_exp_prefix_sub_dir=False
@@ -519,8 +678,9 @@ if __name__ == '__main__':
     parser.add_argument('--log_to_wandb',action='store_true', help='Set up wandb')
     parser.add_argument('--tb_path', type=str, default=None, help="./logs/stitch/, Folder to tensorboard logs" )
     parser.add_argument('--env_type', type=str, default='pointmaze', help='pointmaze or ?')
-    parser.add_argument('--algo', type=str, default='stitch-mlp', help="rcsl-mlp, rcsl-dt or stitch-mlp, stitch-cql")
+    parser.add_argument('--algo', type=str, default='stitch-mlp-rolloutonly', help="rcsl-mlp, rcsl-dt or stitch-mlp, stitch-cql")
     parser.add_argument('--horizon', type=int, default=200, help="Should be consistent with dataset")
+    parser.add_argument('--num_workers', type=int, default=1, help="Dataloader workers")
 
     # Output policy
     parser.add_argument('--ctx', type=int, default=1)

@@ -66,28 +66,15 @@
 #     done
 # done
 
-base_dir=./backup/stitch-mlp-gaussian-20230825-rolloutonly
+base_dir=./backup/stitch-mlp-gaussian-20230824-rolloutonly
 mkdir ${base_dir}
 algo=mlp
-for width in 4096 2048 1024 512 256 128
+target_file="maze/backup/stitch-mlp-gaussian-20230824-rolloutonly/all.out"
+for w in 128 256 512 1024 2048 4096
 do
-    arch="${width}-${width}"
-    target_dirs="logs/pointmaze/stitch-mlp-gaussian/rcsl/timestamp_23-082*&${arch}-s*/record"
-    output_file=${base_dir}/${arch}.out
-    echo -n > ${output_file}
-    for dir in ${target_dirs}
-    do
-        echo $dir
-        grep -Po '"seed": [0-9]|"arch": "[0-9 -]*"' $dir/hyper_param.json >> ${output_file}
-        grep -P episode_reward $dir/consoleout_backup.txt >> ${output_file}
-    done
-done
-for width in 4096 2048 1024 512 256 128
-do
-    arch="${width}-${width}-${width}-${width}"
-    target_dirs="logs/pointmaze/stitch-mlp-gaussian/rcsl/timestamp_23-082*&${arch}-s*/record"
-    output_file=${base_dir}/${arch}.out
-    echo -n > ${output_file}
+    arch="${w}-${w}"
+    output_file=${base_dir}/arch${arch}.out
+    # echo -n > ${output_file}
     for dir in ${target_dirs}
     do
         echo $dir

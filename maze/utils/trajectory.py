@@ -3,6 +3,8 @@ from typing import List, Optional, Union, Tuple, Dict
 import numpy as np
 import torch
 
+from maze.utils.cumsum import discount_cumsum
+
 Trajectory = namedtuple(
     "Trajectory", ["observations", "actions", "rewards", "returns", "timesteps", "terminated", "truncated", "infos"])
 '''
@@ -75,6 +77,37 @@ def Trajs2Dict(trajs: List):
             "rewards": rs.astype(np.float32),
             "terminals": terminals,
             "initial_observations": init_obss.astype(np.float32)}
+
+def Trajs2RtgDict(trajs: List[Trajectory]):
+    '''
+    Convert list(Trajectory) to dict type, to be used as dynamics dataset
+    Concatenate all trajectories.
+    Transition number is (horizon - 1) * num_traj
+    'terminal' will be all false
+
+    Upd: convert data to type float32
+    '''
+    obss = [traj.observations[0:-1] for traj in trajs]
+    next_obss = [traj.observations[1:] for traj in trajs]
+    acts = [traj.actions[0:-1] for traj in trajs]
+    rs = [traj.rewards[0:-1] for traj in trajs]
+    rtgs = [discount_cumsum(np.array(traj.rewards[0:-1])) for traj in trajs]
+    init_obss = [traj.observations[0:1] for traj in trajs] # initial observations
+
+    obss = np.concatenate(obss, axis=0)
+    next_obss = np.concatenate(next_obss, axis=0)
+    acts = np.concatenate(acts, axis=0)
+    rs = np.concatenate(rs, axis=0)
+    rtgs = np.concatenate(rtgs, axis=0)
+    terminals = np.array([False]).repeat(obss.shape[0])
+    init_obss = np.concatenate(init_obss, axis=0)
+
+    return {"obss": obss.astype(np.float32),
+            "next_obss": next_obss.astype(np.float32),
+            "actions": acts.astype(np.float32),
+            "rewards": rs.astype(np.float32),
+            "terminals": terminals,
+            "rtgs": rtgs}
 
 
 

@@ -15,7 +15,7 @@ for env_name in ['halfcheetah', 'hopper', 'walker2d']:
 		env = gym.make(name)
 		dataset = env.get_dataset()
 
-		N = dataset['rewards'].shape[0]
+		N = dataset['rewards'].shape[0] # number of data (s,a,r)
 		data_ = collections.defaultdict(list)
 
 		use_timeouts = False
@@ -24,7 +24,7 @@ for env_name in ['halfcheetah', 'hopper', 'walker2d']:
 
 		episode_step = 0
 		paths = []
-		for i in range(N):
+		for i in range(N): # Loop through data points
 			done_bool = bool(dataset['terminals'][i])
 			if use_timeouts:
 				final_timestep = dataset['timeouts'][i]
@@ -38,7 +38,7 @@ for env_name in ['halfcheetah', 'hopper', 'walker2d']:
 				for k in data_:
 					episode_data[k] = np.array(data_[k])
 				paths.append(episode_data)
-				data_ = collections.defaultdict(list)
+				data_ = collections.defaultdict(list) # Clear data
 			episode_step += 1
 
 		returns = np.array([np.sum(p['rewards']) for p in paths])

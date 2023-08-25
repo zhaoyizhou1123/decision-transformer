@@ -15,8 +15,10 @@ goal_mul=1
 num_diffusion_iters=10
 epochs=50
 
+offline_ratio=0
 
-for offline_ratio in 1
+
+for arch in '256-256'
     do
     for dyn_seed in 3
     do
@@ -36,12 +38,15 @@ for offline_ratio in 1
                                         --rollout_epochs ${rollout_epochs} \
                                         --goal_mul ${goal_mul} \
                                         --algo ${algo} \
+                                        --arch ${arch} \
                                         --offline_ratio ${offline_ratio} \
                                         --diffusion_seed ${d_seed} \
                                         --num_diffusion_iters ${num_diffusion_iters} \
                                         --behavior_epoch ${behavior_epoch} \
                                         --rollout_ckpt_path ${rollout_ckpt_path} \
                                         --num_need_traj ${num_need_traj} \
-                                        --epochs ${epochs}
+                                        --num_workers 2 \
+                                        --epochs ${epochs} &
     done
+    wait
 done
