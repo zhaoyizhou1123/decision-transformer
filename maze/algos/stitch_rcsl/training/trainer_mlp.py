@@ -221,6 +221,7 @@ class Trainer:
         # action_dim = 1 # Assume no hashing. One-hot is converted in model
         env = self.config.env
         action_dim = env.action_space.shape[0]
+        env.reset(seed = self.config.seed) # Fix seed
         for epoch in range(self.config.eval_repeat):
             states, _ = env.reset()
             if hasattr(env, 'get_true_observation'): # For pointmaze

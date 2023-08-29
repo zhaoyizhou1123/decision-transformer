@@ -467,7 +467,7 @@ def run(args):
                         lr_decay=True, num_workers=args.num_workers, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
                         desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                         ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, logger = logger_cql,
-                        debug=args.debug)
+                        debug=args.debug, seed = args.seed)
             output_policy_trainer = trainer_mlp.Trainer(model, rollout_dataset, tconf)
             print("Begin output policy training")
             output_policy_trainer.train()
@@ -534,6 +534,7 @@ def run(args):
                 lr_scheduler = lr_scheduler,
                 horizon = horizon,
                 num_workers = args.num_workers,
+                seed = args.seed
                 # device = args.device
             )
         
@@ -633,6 +634,7 @@ def run(args):
 
                 with Timer() as eval_timer:
                     if epoch == 0 or (epoch + 1) % args.cql_eval_period == 0:
+                        env.reset(seed=args.seed) # Fix eval seed
                         trajs = eval_sampler.sample(
                             sampler_policy, n_trajs=10, deterministic=True
                         )
