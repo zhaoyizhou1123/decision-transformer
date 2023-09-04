@@ -24,6 +24,7 @@ from maze.algos.stitch_rcsl.models.dynamics_normal import EnsembleDynamicsModel
 from maze.utils.logger import Logger, make_log_dirs
 from maze.utils.none_or_str import none_or_str
 from maze.utils.setup_logger import setup_logger
+from maze.utils.setup_seed import setup_seed
 import torch
 import numpy as np
 
@@ -103,7 +104,7 @@ def run(args):
         
     train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False)
 
-    if args.algo == 'rcsl-mlp':
+    if args.algo == 'rcsl-mlp-old':
         # num_action = env.get_num_action()
         # print(f"num_action={num_action}")
         # model = MlpPolicy(1, num_action, args.ctx, horizon, args.repeat, args.arch, args.n_embd)
@@ -120,6 +121,76 @@ def run(args):
                     desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
                     ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, debug=args.debug)
         output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+    elif args.algo == 'rcsl-mlp':
+        '''
+        Upd: mix offline with rollout according to args.offline_ratio
+        '''
+        # Use CQL logger
+        from SimpleSAC.utils import WandBLogger
+        from viskit.logging import logger as logger_cql, setup_logger as setup_logger_cql
+        # logging_conf = WandBLogger.get_default_config(updates={"prefix":'stitch-mlp',
+        #                                                        "project": 'stitch-rcsl',
+        #                                                        "output_dir": './mlp_log'})
+        # wandb_logger = WandBLogger(config=logging_conf, variant=vars(args))
+        setup_logger_cql(
+            variant=vars(args),
+            exp_id=f"arch{args.arch}--mlp",
+            seed=args.seed,
+            base_log_dir="./rcsl-mlp_log/",
+            include_exp_prefix_sub_dir=False
+        )
+
+        # num_offline = len(trajs)
+        # num_rollout = len(rollout_trajs)
+
+        # if (args.offline_ratio == 0): # rollout only
+        #     train_dataset = TrajCtxDataset(rollout_trajs, 
+        #                                 ctx = args.ctx, single_timestep = False)
+        # else:
+        #     repeat_rollout = math.ceil(num_offline / args.offline_ratio * (1-args.offline_ratio) / num_rollout)
+
+        #     train_dataset = TrajCtxDataset(trajs + rollout_trajs * repeat_rollout, 
+        #                                 ctx = args.ctx, single_timestep = False)
+
+        # Update: use weighted sampling, setup in Trainer
+            
+        setup_seed(args.seed)
+        env.reset(seed=args.seed)
+        from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
+        model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
+                        simple_input=args.simple_input)
+        
+
+        # Calculate weight
+        num_offline_data = len(trajs)
+        # num_rollout_data = len(rollout_trajs)
+        # num_total_data = num_offline_data + num_rollout_data
+        # offline_weight = num_rollout_data / num_total_data # reciprocal coefficient
+        # rollout_weight = num_offline_data / num_total_data
+
+        # weights = [offline_weight] * num_offline_data + [rollout_weight] * num_rollout_data
+
+        # offline_dataset = TrajCtxWeightedDataset(trajs, [offline_weight] * num_offline_data, ctx = args.ctx, single_timestep = False)
+        train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False)
+
+        # train_dataset = TrajCtxWeightedDataset(
+        #     trajs + rollout_trajs,
+        #     weights)
+
+        # Get max return
+        traj_rets = [traj.returns[0] for traj in trajs]
+        goal = max(traj_rets) * args.goal_mul
+        # goal = train_dataset.get_max_return() * args.goal_mul
+
+        import maze.algos.stitch_rcsl.training.trainer_mlp as trainer_mlp
+        tconf = trainer_mlp.TrainerConfig(max_epochs=args.epochs, batch_size=args.batch, learning_rate=args.rate,
+                    lr_decay=True, num_workers=args.num_workers, horizon=horizon, grad_norm_clip = 1.0, eval_repeat = 10,
+                    desired_rtg=goal, ckpt_path = args.final_ckpt_path, env = env, tb_log = tb_dir_path, 
+                    ctx = args.ctx, sample = args.sample, log_to_wandb = args.log_to_wandb, logger = logger_cql,
+                    debug=args.debug, seed = args.seed)
+        output_policy_trainer = trainer_mlp.Trainer(model, train_dataset, tconf)
+        print("Begin output policy training")
+        output_policy_trainer.train()
     # elif args.algo == 'stitch':
     #     from maze.algos.stitch_rcsl.models.mlp_policy import RcslPolicy
     #     model = RcslPolicy(obs_dim, action_dim, args.ctx, horizon, args.repeat, args.arch, args.n_embd,
@@ -179,12 +250,16 @@ if __name__ == '__main__':
     parser.add_argument('--log_to_wandb',action='store_true', help='Set up wandb')
     parser.add_argument('--tb_path', type=str, default=None, help="./logs/stitch/, Folder to tensorboard logs" )
     parser.add_argument('--env_type', type=str, default='pointmaze', help='pointmaze or ?')
-    parser.add_argument('--algo', type=str, default='rcsl-mlp', help="rcsl-mlp or stitch")
+    parser.add_argument('--algo', type=str, default='stitch-mlp-rolloutonly', help="rcsl-mlp, rcsl-dt or stitch-mlp, stitch-cql")
     parser.add_argument('--horizon', type=int, default=200, help="Should be consistent with dataset")
+    parser.add_argument('--num_workers', type=int, default=1, help="Dataloader workers")
 
     # Output policy
     parser.add_argument('--ctx', type=int, default=1)
-    parser.add_argument('--epochs', type=int, default=100, help='epochs to learn the output policy')
+    # parser.add_argument('--pre_epochs', type=int, default=5, help='epochs to learn the output policy using offline data')
+    parser.add_argument('--offline_ratio', type=float, default=0.5, help='ratio of offline data in whole dataset, only useful in stitch')
+    parser.add_argument('--epochs', type=int, default=100, help='total epochs to learn the output policy')
+    parser.add_argument('--step_per_epoch', type=int, default=1000, help='number of training steps per epoch')
     parser.add_argument('--model_type', type=str, default='reward_conditioned')
     # parser.add_argument('--num_steps', type=int, default=500000)
     # parser.add_argument('--num_buffers', type=int, default=50)

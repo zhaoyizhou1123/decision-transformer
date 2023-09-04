@@ -10,11 +10,13 @@ from collections import defaultdict
 # args = parser.parse_args()
 # stats =args.data
 
-def stats_cql():
+def stats_cql(debug=False):
     data_per_exp = int(50)
-    for width in ['4096']:
-        for arch in [f"{width}-{width}-{width}-{width}", f"{width}-{width}"]:
-            file = f"./backup/stitch-cql-20230823-ratio0/arch{arch}.out"
+    for depth in [2,4]:
+        for width in ['128','256','512','1024','2048']:
+            arch = (width+'-') * depth
+            arch = arch[:-1]
+            file = f"./backup/cql-expert-20230829-ratio1/arch{arch}.out"
             with open(file,"r") as f:
                 lines = f.readlines()
             data_lines = []
@@ -25,18 +27,20 @@ def stats_cql():
                     data_lines.append(data)
 
             stats = [data_lines[data_per_exp-1], data_lines[2*data_per_exp-1], data_lines[3*data_per_exp-1], data_lines[4*data_per_exp-1]]
-            print(f"Stats: {stats}")
+
+            if debug:
+                print(f"Stats: {stats}")
 
 
-            print(f"CQL. Arch {arch}. Mean: {np.mean(stats):.4f}, std: {np.std(stats): .4f}")
+            print(f"{'CQL':<18}{arch:<20}{np.mean(stats):10.4f}{np.std(stats):19.4f}")
 
-def stats_mlp():
+def stats_mlp(debug=False):
     data_per_exp = int(51)
     for depth in [2,4]:
         for width in ['128','256','512','1024','2048','4096']:
             arch = (width+'-') * depth
             arch = arch[:-1]
-            file = f"./backup/stitch-mlp-20230823-rolloutonly/arch{arch}.out"
+            file = f"./backup/stitch-mlp-20230828-rolloutonly/arch{arch}.out"
             with open(file,"r") as f:
                 lines = f.readlines()
             data_lines = []
@@ -47,19 +51,43 @@ def stats_mlp():
                     data_lines.append(data)
 
             stats = [data_lines[data_per_exp-1], data_lines[2*data_per_exp-1], data_lines[3*data_per_exp-1], data_lines[4*data_per_exp-1]]
-            print(f"Stats: {stats}")
+            if debug:
+                print(f"Stats: {stats}")
 
 
-            print(f"MLP. Arch {arch}. Mean: {np.mean(stats):.4f}, std: {np.std(stats):.4f}")
+            print(f"MLP{'':>15}{arch:<20}{np.mean(stats):10.4f}{np.std(stats):19.4f}")
 
-def stats_mlp_gaussian2():
+def stats_rcsl_mlp(debug=False):
+    data_per_exp = int(102)
+    for depth in [2,4]:
+        for width in ['128','256','512','1024','2048','4096']:
+            arch = (width+'-') * depth
+            arch = arch[:-1]
+            file = f"./backup/rcsl-mlp-20230828/arch{arch}.out"
+            with open(file,"r") as f:
+                lines = f.readlines()
+            data_lines = []
+            for line in lines:
+                if line[0] == 'a': # average return
+                    line = line.split()
+                    data = float(line[-1])
+                    data_lines.append(data)
+
+            stats = [data_lines[data_per_exp-1], data_lines[2*data_per_exp-1], data_lines[3*data_per_exp-1], data_lines[4*data_per_exp-1]]
+            if debug:
+                print(f"Stats: {stats}")
+
+
+            print(f"MLP{'':>15}{arch:<20}{np.mean(stats):10.4f}{np.std(stats):19.4f}")
+
+def stats_mlp_gaussian2(debug=False):
     line_per_exp = int(202)
     num_exp = int(4)
     for depth in [2,4]:
         for width in ['128','256','512','1024','2048','4096']:
             arch = (width+'-') * depth
             arch = arch[:-1]
-            file = f"./backup/stitch-mlp-gaussian-20230825-rolloutonly/{arch}.out"
+            file = f"./backup/stitch-mlp-gaussian-20230828-rolloutonly/{arch}.out"
             with open(file,"r") as f:
                 lines = f.readlines()
             arch_lines = [lines[line_per_exp*i] for i in range(num_exp)]
@@ -68,10 +96,11 @@ def stats_mlp_gaussian2():
             ret_lines = [float(line.split("|")[2]) for line in ret_lines] # ele: avg_ret
 
             stats = ret_lines
-            print(f"Stats: {stats}")
+            if debug:
+                print(f"Stats: {stats}")
 
 
-            print(f"MLP. Arch {arch}. Mean: {np.mean(stats):.4f}, std: {np.std(stats):.4f}")
+            print(f"{'MLP-Gauss':<18}{arch:<20}{np.mean(stats):10.4f}{np.std(stats):19.4f}")
 
 def stats_mlp_gaussian():
     line_per_exp = int(102)
@@ -93,10 +122,13 @@ def stats_mlp_gaussian():
             arch = (width+'-') * depth
             arch = arch[:-1]
             stats = arch_data_dict[arch]
-            print(f"Stats: {stats}")
+            # print(f"Stats: {stats}")
 
             print(f"MLP. Arch {arch}. Mean: {np.mean(stats):.4f}, std: {np.std(stats):.4f}")
 
-# stats_mlp()
-# stats_cql()
-stats_mlp_gaussian2()
+debug=True
+print(f"Algo{'':>14}Arch{'':>19}Mean{'':>15}Std{'':>15}")
+# stats_mlp(True)
+# stats_rcsl_mlp()
+stats_cql(debug)
+# stats_mlp_gaussian2()

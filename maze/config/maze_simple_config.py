@@ -29,8 +29,8 @@ repeat = n_trajs // 4
 
 sample_args = {
     'starts': [start, start, start, start], 
-    'goals': [mid_point, mid_point, [up_left,down_left,goal], [up_left,down_left,goal]], 
+    'goals': [[mid_point,goal], [mid_point,goal], [up_left,down_left,goal], [up_left,down_left,goal]], 
     'repeats': [repeat, repeat, repeat, repeat], 
     'randoms': [False, True, False, True]}
 
-json.dump({"maze":maze, "sample_args": sample_args}, open("maze2_simple.json", "w"), indent=4)
+json.dump({"maze":maze, "sample_args": sample_args}, open("maze2_simple_expert_slow.json", "w"), indent=4)
