@@ -12,40 +12,40 @@
 #     grep average_return $dir/debug.log >> ${output_file}
 # done
 
-# base_dir=./backup/stitch-cql-20230823-ratio0
-# mkdir ${base_dir}
-# algo=cql
-# for width in 4096
-# do
-#     arch="${width}-${width}"
-#     target_dirs="./${algo}_log/default_2023_08_23_*--arch${arch}--${algo}"
-#     output_file=${base_dir}/arch${arch}.out
-#     echo -n > ${output_file}
-#     for dir in ${target_dirs}
-#     do
-#         echo $dir
-#         grep -P 'offline_ratio|"seed"|"arch"' $dir/variant.json >> ${output_file}
-#         grep average_return $dir/debug.log >> ${output_file}
-#     done
-#     arch="${width}-${width}-${width}-${width}"
-#     target_dirs="./${algo}_log/default_2023_08_24_*--arch${arch}--${algo}"
-#     output_file=${base_dir}/arch${arch}.out
-#     echo -n > ${output_file}
-#     for dir in ${target_dirs}
-#     do
-#         echo $dir
-#         grep -P 'offline_ratio|"seed"|"arch"' $dir/variant.json >> ${output_file}
-#         grep average_return $dir/debug.log >> ${output_file}
-#     done
-# done
+base_dir=./backup/stitch-cql-20230901-ratio1-long
+mkdir ${base_dir}
+algo=cql
+for width in 1024
+do
+    arch="${width}-${width}"
+    target_dirs="./${algo}_log/default_2023_08_30_*--arch${arch}--${algo}"
+    output_file=${base_dir}/arch${arch}.out
+    echo -n > ${output_file}
+    for dir in ${target_dirs}
+    do
+        echo $dir
+        grep -P 'offline_ratio|"seed"|"arch"' $dir/variant.json >> ${output_file}
+        grep average_return $dir/debug.log >> ${output_file}
+    done
+    # arch="${width}-${width}-${width}-${width}"
+    # target_dirs="./${algo}_log/default_2023_08_29_*--arch${arch}--${algo}"
+    # output_file=${base_dir}/arch${arch}.out
+    # echo -n > ${output_file}
+    # for dir in ${target_dirs}
+    # do
+    #     echo $dir
+    #     grep -P 'offline_ratio|"seed"|"arch"' $dir/variant.json >> ${output_file}
+    #     grep average_return $dir/debug.log >> ${output_file}
+    # done
+done
 
-# base_dir=./backup/stitch-mlp-20230824-rolloutonly
+# base_dir=./backup/stitch-mlp-20230828-rolloutonly
 # mkdir ${base_dir}
 # algo=mlp
 # for width in 4096 2048 1024 512 256 128
 # do
 #     arch="${width}-${width}"
-#     target_dirs="./${algo}_log/default_2023_08_24_*--arch${arch}--${algo}"
+#     target_dirs="./${algo}_log/default_2023_08_25_*--arch${arch}--${algo}"
 #     output_file=${base_dir}/arch${arch}.out
 #     echo -n > ${output_file}
 #     for dir in ${target_dirs}
@@ -55,7 +55,7 @@
 #         grep average_return $dir/debug.log >> ${output_file}
 #     done
 #     arch="${width}-${width}-${width}-${width}"
-#     target_dirs="./${algo}_log/default_2023_08_24_*--arch${arch}--${algo}"
+#     target_dirs="./${algo}_log/default_2023_08_25_*--arch${arch}--${algo}"
 #     output_file=${base_dir}/arch${arch}.out
 #     echo -n > ${output_file}
 #     for dir in ${target_dirs}
@@ -66,34 +66,62 @@
 #     done
 # done
 
-base_dir=./backup/stitch-mlp-gaussian-20230825-rolloutonly
+# base_dir=./backup/stitch-mlp-gaussian-20230828-rolloutonly
+# mkdir ${base_dir}
+# algo=mlp
+# for width in 4096 2048 1024 512 256 128
+# do
+#     arch="${width}-${width}"
+#     target_dirs="logs/pointmaze/stitch-mlp-gaussian/rcsl/timestamp_23-0825-1*&${arch}-s*/record"
+#     output_file=${base_dir}/${arch}.out
+#     echo -n > ${output_file}
+#     for dir in ${target_dirs}
+#     do
+#         echo $dir
+#         grep -Po '"seed": [0-9]|"arch": "[0-9 -]*"' $dir/hyper_param.json >> ${output_file}
+#         grep -P episode_reward $dir/consoleout_backup.txt >> ${output_file}
+#     done
+# done
+# for width in 4096 2048 1024 512 256 128
+# do
+#     arch="${width}-${width}-${width}-${width}"
+#     target_dirs="logs/pointmaze/stitch-mlp-gaussian/rcsl/timestamp_23-0825-1*&${arch}-s*/record"
+#     output_file=${base_dir}/${arch}.out
+#     echo -n > ${output_file}
+#     for dir in ${target_dirs}
+#     do
+#         echo $dir
+#         grep -Po '"seed": [0-9]|"arch": "[0-9 -]*"' $dir/hyper_param.json >> ${output_file}
+#         grep -P episode_reward $dir/consoleout_backup.txt >> ${output_file}
+#     done
+# done
+
+base_dir=./backup/rcsl-mlp-expert-20230901-long
 mkdir ${base_dir}
-algo=mlp
-for width in 4096 2048 1024 512 256 128
+algo=rcsl-mlp
+net=mlp
+for width in 1024
 do
     arch="${width}-${width}"
-    target_dirs="logs/pointmaze/stitch-mlp-gaussian/rcsl/timestamp_23-082*&${arch}-s*/record"
-    output_file=${base_dir}/${arch}.out
+    target_dirs="./${algo}_log/default_2023_08_31_*--arch${arch}--${net}"
+    output_file=${base_dir}/arch${arch}.out
     echo -n > ${output_file}
     for dir in ${target_dirs}
     do
         echo $dir
-        grep -Po '"seed": [0-9]|"arch": "[0-9 -]*"' $dir/hyper_param.json >> ${output_file}
-        grep -P episode_reward $dir/consoleout_backup.txt >> ${output_file}
+        grep -P 'offline_ratio|"seed"|"arch"' $dir/variant.json >> ${output_file}
+        grep average_return $dir/debug.log >> ${output_file}
     done
-done
-for width in 4096 2048 1024 512 256 128
-do
-    arch="${width}-${width}-${width}-${width}"
-    target_dirs="logs/pointmaze/stitch-mlp-gaussian/rcsl/timestamp_23-082*&${arch}-s*/record"
-    output_file=${base_dir}/${arch}.out
-    echo -n > ${output_file}
-    for dir in ${target_dirs}
-    do
-        echo $dir
-        grep -Po '"seed": [0-9]|"arch": "[0-9 -]*"' $dir/hyper_param.json >> ${output_file}
-        grep -P episode_reward $dir/consoleout_backup.txt >> ${output_file}
-    done
+    # arch="${width}-${width}-${width}-${width}"
+    # target_dirs="./${algo}_log/default_2023_08_28_*--arch${arch}--${net}"
+    # output_file=${base_dir}/arch${arch}.out
+    # echo -n > ${output_file}
+    # for dir in ${target_dirs}
+    # do
+    #     echo $dir
+    #     grep -P '"algo"|"seed"|"arch"' $dir/variant.json >> ${output_file}
+    #     grep average_return $dir/debug.log >> ${output_file}
+    # done
 done
 
 # ratio=0.25

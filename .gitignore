@@ -25,6 +25,7 @@ maze/log/
 maze/logdir/
 maze/cql_log
 maze/mlp_log
+maze/rcsl-mlp_log
 !**/backup/**
 # !toy/backup/model/*.pth
 # !toy/backup/result/*.txt
