@@ -92,7 +92,10 @@ class Trainer:
         self.dataset = dataset
         self.config = config
 
-        self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
+        if hasattr(config.env, 'get_action_space'):
+            self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
+        else: # linearq env
+            self.action_space = torch.tensor([[0], [1]])
         assert self.action_space.shape[1] == 1, "DQN training is only implemented for action_dim = 1 !"
         
         self.optimizer = torch.optim.AdamW(self.policy_model.parameters(), 
@@ -108,6 +111,12 @@ class Trainer:
 
         if config.tb_log is not None:
             self.tb_writer = SummaryWriter(config.tb_log)
+
+        # if hasattr(config, "logger_path"):
+        #     logging.basicConfig(filename=config.logger_path, level=logging.INFO)
+        #     print(f"Logging to {config.logger_path}")
+        if hasattr(config, "logger"):
+            self.logger = config.logger
         
         # model_module = self.model.module if hasattr(self.model, 'module') else self.model
         # self.tb_writer.add_graph(model_module, (torch.tensor([0]),torch.tensor([1,0]),torch.tensor(0)))
@@ -167,12 +176,13 @@ class Trainer:
             
             t = int(timesteps.item())
             horizon = self.config.horizon
-            if t in [0, horizon-1, horizon//2, horizon//2 - 1]: # Only record qf for t = 0, h/2-1, h/2, h-1s
-                for j in [int(0), int(num_action - 1)]:
-                    # assert state.shape[1]==1, f"State dim {state.shape[1]} larger than 1"
-                    key = f"a{j}"
-                    tb_scalars[key] = qfs[0,j] * self.config.r_scale # Store the unscaled qf
-                self.tb_writer.add_scalars(f"Qf-t{t}", tb_scalars, epoch)
+            if self.config.tb_log is not None:
+                if t in [0, horizon-1, horizon//2, horizon//2 - 1]: # Only record qf for t = 0, h/2-1, h/2, h-1s
+                    for j in [int(0), int(num_action - 1)]:
+                        # assert state.shape[1]==1, f"State dim {state.shape[1]} larger than 1"
+                        key = f"a{j}"
+                        tb_scalars[key] = qfs[0,j] * self.config.r_scale # Store the unscaled qf
+                    self.tb_writer.add_scalars(f"Qf-t{t}", tb_scalars, epoch)
         return torch.index_select(action_space, dim = 0, index = max_idxs.to('cpu'))
     
     
@@ -197,9 +207,9 @@ class Trainer:
 
         loader = DataLoader(self.dataset, shuffle=self.config.shuffle, pin_memory=True,
                             batch_size= self.config.batch_size,
-                            num_workers= self.config.num_workers,)
+                            num_workers= self.config.num_workers)
         
-        # losses = []
+        losses = []
         pbar = tqdm(enumerate(loader), total=len(loader))
         for it, (states, actions, rewards, next_states, timesteps) in pbar:
             '''
@@ -209,13 +219,13 @@ class Trainer:
             timesteps, (batch)
             next_states, (batch, state_dim)
             '''                
-            states = states.to(self.device)
+            states = states.type(torch.float32).to(self.device)
             rewards = rewards.reshape(-1) / self.config.r_scale # guarantee shape (batch), scale the reward
-            rewards = rewards.to(self.device)
+            rewards = rewards.type(torch.float32).to(self.device)
             timesteps = timesteps.type(torch.int).to(self.device)
 
             assert actions.shape[1] == 1, f"DQN: action dim ({actions.shape[1]}) is not 1!"
-            actions = actions.to(self.device)
+            actions = actions.type(torch.float32).to(self.device)
 
             # print(f"run_epoch: batch = {states.shape[0]}")
 
@@ -245,8 +255,8 @@ class Trainer:
 
                 if self.config.tb_log is not None:
                     self.tb_writer.add_scalar('training_loss', loss.item(), epoch_num)
-                # losses.append(loss.item())
-                # print("Finish loss computation.")      
+                losses.append(loss.item())
+                # print("Finish loss computation.")     
             
             self.policy_model.zero_grad()
             loss.backward()
@@ -260,6 +270,8 @@ class Trainer:
 
 
             pbar.set_description(f"Epoch {epoch_num+1}, iter {it}: train loss {loss.item():.5f}.")
+
+            return np.mean(losses)
 
 
     def eval(self, train_epoch=-1):
@@ -283,7 +295,7 @@ class Trainer:
         env = self.config.env
         for epoch in range(self.config.eval_repeat):
             state = env.reset() #(state_dim)
-            state = state.type(torch.float32).to(self.device).unsqueeze(0) # (1,state_dim)
+            state = torch.as_tensor(state).type(torch.float32).to(self.device).unsqueeze(0) # (1,state_dim)
             timestep = torch.Tensor([0]).type(torch.int) #(1,)
             
             # Initialize action
@@ -295,19 +307,19 @@ class Trainer:
                 action = self._get_optimal_action(state,timestep,record_qf=True,epoch=train_epoch)
 
                 # print info
-                print(f"Epoch {train_epoch}, timestep {h}, state {state.item()}, action {action.item()}")
+                # print(f"Epoch {train_epoch}, timestep {h}, state {state.item()}, action {action.item()}")
                 
                 # action = action.item() # Change to int, only for 1-dim actions!
 
                 # Update state, observe reward
                 state, reward, _ = env.step(action) # (state_dim), scalar
-                state = state.unsqueeze(0) # (1, state_dim)
+                state = torch.as_tensor(state).unsqueeze(0) # (1, state_dim)
 
                 # Calculate return
                 ret += reward
 
                 # print reward, return
-                print(f"reward {reward}, current return {ret}")
+                # print(f"reward {reward}, current return {ret}")
 
                 timestep += 1
             # Add the ret to list
@@ -340,8 +352,19 @@ class Trainer:
         self.eval(train_epoch=-1)
         for epoch in range(self.config.max_epochs):
             print(f"------------\nEpoch {epoch+1}")
-            self._run_epoch(epoch)
-            self.eval(train_epoch=epoch)
+            loss = self._run_epoch(epoch)
+            avg_ret = self.eval(train_epoch=epoch)
+
+            # logging.info(f"-------------")
+            # logging.info(f"Epoch {epoch}")
+            # logging.info(f"Traing loss {loss}") 
+            # logging.info(f"Averaged return {avg_ret}")
+            # logging.info(f"-------------")
+            self.logger.logkv("epoch", epoch)
+            self.logger.logkv("loss", loss)
+            self.logger.logkv("eval/episode_reward", avg_ret)
+            self.logger.set_timestep(epoch)
+            self.logger.dumpkvs(exclude=["dynamics_training_progress"])
             # if eval_return-self.desired_rtg) < np.abs(best_return-self.desired_rtg):
             #     best_return = eval_return
             #     best_epoch = epoch

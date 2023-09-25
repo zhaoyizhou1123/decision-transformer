@@ -96,8 +96,10 @@ class Trainer:
         self.model = model
         self.dataset = dataset
         self.config = config
-
-        self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
+        if hasattr(config.env, 'get_action_space'):
+            self.action_space = config.env.get_action_space() # Tensor(num_action, action_dim), all possible actions
+        else: # linearq env
+            self.action_space = torch.tensor([[0],[1]])
         
         self.optimizer = torch.optim.AdamW(self.model.parameters(), 
                                            lr = config.learning_rate, 
@@ -181,9 +183,9 @@ class Trainer:
         action_dim = 1 # Assume no hashing. One-hot is converted in model
         for epoch in range(self.config.eval_repeat):
             states = self.config.env.reset()
-            states = states.type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0) # (1,1,state_dim)
-            rtgs = torch.Tensor([[[desired_rtg]]]).to(self.device) # (1,1,1)
-            timesteps = torch.Tensor([[0]]) # (1,1)
+            states = torch.as_tensor(states).type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0) # (1,1,state_dim)
+            rtgs = torch.tensor([[[desired_rtg]]]).to(self.device) # (1,1,1)
+            timesteps = torch.tensor([[0]]) # (1,1)
             
             # Initialize action
             actions = torch.empty((1,0,action_dim)).to(self.device) # Actions are represented in one-hot
@@ -217,7 +219,7 @@ class Trainer:
                 ret += reward
                 
                 # Update states, actions, rtgs, timesteps
-                next_state = next_state.unsqueeze(0).unsqueeze(0).to(self.device) # (1,1,state_dim)
+                next_state = torch.as_tensor(next_state).type(torch.float32).to(self.device).unsqueeze(0).unsqueeze(0).to(self.device) # (1,1,state_dim)
                 states = torch.cat([states, next_state], dim=1)
                 states = states[:, -self.config.ctx: , :] # truncate to ctx_length
 

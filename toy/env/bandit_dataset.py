@@ -6,6 +6,9 @@ import torch
 from torch.utils.data import Dataset
 import pandas as pd
 import numpy as np
+from typing import Dict, Optional
+import pickle
+import collections
 
 class BanditReturnDataset(Dataset):
     '''Son of the pytorch Dataset class'''
@@ -98,7 +101,7 @@ class BanditReturnDataset(Dataset):
     def getitem(self, idx):
         states_slice, actions_slice, rtgs_slice, timesteps_slice = self.__getitem__(idx)
         return states_slice, actions_slice, rtgs_slice, timesteps_slice
-    
+ 
 class BanditRewardDataset(Dataset):
     '''
     Son of the pytorch Dataset class \n
