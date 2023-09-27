@@ -39,11 +39,16 @@
 #     done
 # done
 
-for size in 16 32 48 64 80 96 112 128 144 160
-do 
-    python run_cql_linearq.py --arch $(( $size )) --env_param $size --epochs 400
-    python run_cql_linearq.py --arch $(( $size * 2 )) --env_param $size --epochs 400
-    python run_cql_linearq.py --arch $(( $size * 4 )) --env_param $size --epochs 400
-done
+# for size in 16 32 48 64 80 96 112 128 144 160
+# do 
+#     # python run_cql_linearq.py --arch $(( $size )) --env_param $size --epochs 400
+#     # python run_cql_linearq.py --arch $(( $size * 2 )) --env_param $size --epochs 400
+#     # python run_cql_linearq.py --arch $(( $size * 4 )) --env_param $size --epochs 400
+#     python run_cql_linearq.py --arch 8 --env_param $size --epochs 400
+#     python run_cql_linearq.py --arch 16 --env_param $size --epochs 400
+#     # python run_cql_linearq.py --arch $(( $size * 4 )) --env_param $size --epochs 400
+# done
+
+python run_cql_linearq.py --arch 4 --env_param 16 --epochs 1000 --dqn_upd_period 50 --rate 1e-4
 
 # python run_cql_linearq.py --arch 160 --env_param 160 --epochs 200
