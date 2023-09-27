@@ -1,15 +1,17 @@
 # Combo style dynamics model
-
-import __init__
-
 import argparse
 import os
 import pickle
 import wandb
 import time
+import roboverse
+import torch
+import numpy as np
+import random
+from torch.utils.tensorboard import SummaryWriter
 
-from torch.utils.tensorboard import SummaryWriter  
-from maze.utils.dataset import TrajCtxDataset, TrajNextObsDataset, ObsActDataset
+  
+from maze.utils.dataset import TrajCtxFloatLengthDataset, TrajCtxDataset
 # from maze.scripts.rollout import rollout_expand_trajs, test_rollout_combo, rollout_combo, test_rollout_diffusion, rollout_diffusion
 # from maze.algos.stitch_rcsl.training.trainer_dynamics import EnsembleDynamics 
 from maze.algos.stitch_rcsl.training.trainer_base import TrainerConfig
@@ -26,34 +28,36 @@ from maze.utils.logger import Logger, make_log_dirs
 from maze.utils.none_or_str import none_or_str
 from maze.utils.setup_logger import setup_logger
 from maze.utils.setup_seed import setup_seed
-import torch
-import numpy as np
+from offlinerlkit.utils.pickplace_utils import SimpleObsWrapper, get_pickplace_dataset_dt
+
 
 def run(args):
-    if args.env_type == 'pointmaze':
-        from create_maze_dataset import create_env_dataset
-        point_maze_offline = create_env_dataset(args)
-        env = point_maze_offline.env_cls()
+    # seed
+    # random.seed(args.seed)
+    # np.random.seed(args.seed)
+    # torch.manual_seed(args.seed)
+    # torch.cuda.manual_seed_all(args.seed)
+    # torch.backends.cudnn.deterministic = True
+    # env.reset(seed = args.seed)
 
-        # Add a get_true_observation method for Env
-        def get_true_observation(obs):
-            '''
-            obs, obs received from pointmaze Env
-            '''
-            return obs['observation']
-    
-        setattr(env, 'get_true_observation', get_true_observation)
+    # create env and dataset
+    if args.task == 'pickplace':
+        env = roboverse.make('Widow250PickTray-v0')
+        env = SimpleObsWrapper(env)
+        obs_space = env.observation_space
+        args.obs_shape = obs_space.shape
+        obs_dim = np.prod(args.obs_shape)
+        args.action_shape = env.action_space.shape
+        action_dim = np.prod(args.action_shape)
+
+        # offline_dataset, init_obss_dataset = get_pickplace_dataset(args.data_dir, task_weight=args.task_weight)
+        trajs = get_pickplace_dataset_dt(args.data_dir)
+        # args.max_action = env.action_space.high[0]
+        # print(args.action_dim, type(args.action_dim
 
         horizon = args.horizon
-        obs_shape = env.observation_space['observation'].shape
-        obs_dim = env.observation_space['observation'].shape[0]
-        action_dim = env.action_space.shape[0]
-        trajs = point_maze_offline.dataset[0] # the first element is trajs, the rest are debugging info
 
-        assert len(trajs[0].observations) == horizon, f"Horizon mismatch: {len(trajs[0].observations)} and {horizon}"
-        
-        # Get dict type dataset, for dynamics training
-        dynamics_dataset = Trajs2Dict(trajs)
+        env.reset(seed=args.seed)
     else:
         raise Exception(f"Unimplemented env type {args.env_type}")
 
@@ -103,7 +107,7 @@ def run(args):
             config=args
         )
         
-    train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False)
+    train_dataset = TrajCtxFloatLengthDataset(trajs, ctx = args.ctx, single_timestep = False)
 
     if args.algo == 'rcsl-mlp-old':
         # num_action = env.get_num_action()
@@ -213,7 +217,7 @@ def run(args):
         # wandb_logger = WandBLogger(config=logging_conf, variant=vars(args))
         setup_logger_cql(
             variant=vars(args),
-            exp_id=f"dt_medium_data",
+            exp_id=f"ctx{args.ctx}",
             seed=args.seed,
             base_log_dir="./rcsl-dt_log/",
             include_exp_prefix_sub_dir=False
@@ -221,7 +225,8 @@ def run(args):
         setup_seed(args.seed)
         env.reset(seed=args.seed)
 
-        offline_train_dataset = TrajCtxDataset(trajs, ctx = args.ctx, single_timestep = False, with_mask=True, state_normalize=True)
+        offline_train_dataset = TrajCtxFloatLengthDataset(trajs, ctx = args.ctx, single_timestep = False, with_mask=True)
+        # print(offline_train_dataset[275617])
         goal = offline_train_dataset.get_max_return() * args.goal_mul
         model = DecisionTransformer(
             state_dim=obs_dim,
@@ -245,7 +250,8 @@ def run(args):
         output_policy_trainer = SequenceTrainer(
             config=tconf,
             model=model,
-            offline_dataset=offline_train_dataset)
+            offline_dataset=offline_train_dataset,
+            is_gym = True)
     else:
         raise(Exception(f"Unimplemented model {args.algo}!"))
 
@@ -257,6 +263,8 @@ def run(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # parser.add_argument('--seed', type=int, default=123)
+    parser.add_argument("--algo-name", type=str, default="dt_pickplace")
+    parser.add_argument("--task", type=str, default="pickplace", help="pickplace, pickplace_easy") # Self-constructed environment
 
     # Overall configuration
     parser.add_argument('--maze_config_file', type=str, default='./config/maze2.json')
@@ -265,10 +273,13 @@ if __name__ == '__main__':
     parser.add_argument('--render', action='store_true')
     parser.add_argument('--log_to_wandb',action='store_true', help='Set up wandb')
     parser.add_argument('--tb_path', type=str, default=None, help="./logs/stitch/, Folder to tensorboard logs" )
-    parser.add_argument('--env_type', type=str, default='pointmaze', help='pointmaze or ?')
-    parser.add_argument('--algo', type=str, default='stitch-mlp-rolloutonly', help="rcsl-mlp, rcsl-dt or stitch-mlp, stitch-cql")
-    parser.add_argument('--horizon', type=int, default=200, help="Should be consistent with dataset")
-    parser.add_argument('--num_workers', type=int, default=1, help="Dataloader workers")
+    parser.add_argument('--env_type', type=str, default='pickplace', help='pointmaze or ?')
+    parser.add_argument('--algo', type=str, default='rcsl-dt', help="rcsl-mlp, rcsl-dt or stitch-mlp, stitch-cql")
+    # parser.add_argument('--horizon', type=int, default=200, help="Should be consistent with dataset")
+    parser.add_argument('--num_workers', type=int, default=0, help="Dataloader workers")
+
+    parser.add_argument('--data_dir', type=str, default='../../OfflineRL-Kit/dataset')
+    parser.add_argument('--horizon', type=int, default=40, help="max path length for pickplace")
 
     # Output policy
     parser.add_argument('--ctx', type=int, default=1)
@@ -312,7 +323,7 @@ if __name__ == '__main__':
     parser.add_argument('--time_depend_a',action='store_true')
     parser.add_argument('--simple_input',action='store_false', help='Only use history rtg info if true')
 
-    parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument("--seed", type=int, default=0)
 
     parser.add_argument("--epoch", type=int, default=100)
     parser.add_argument("--step-per-epoch", type=int, default=1000)

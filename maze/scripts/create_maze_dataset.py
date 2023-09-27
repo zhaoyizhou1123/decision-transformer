@@ -11,7 +11,7 @@ import json
 import os
 import pickle
 
-def create_env_dataset(args):
+def create_env_dataset(args, use_wrapper = False):
     '''
     Create env and dataset (if not created)
     '''
@@ -61,8 +61,9 @@ def create_env_dataset(args):
                         start = np.array(start),
                         goal = np.array(goal),
                         sample_args = sample_args,
-                        debug=args.debug,
-                        render=args.render)   
+                        debug=False,
+                        render=False,
+                        use_wrapper=use_wrapper)   
     
     return point_maze
 

@@ -15,7 +15,7 @@ import torch.nn.functional as F
 
 
 class SequenceTrainer:
-    def __init__(self, config, model: DecisionTransformer, offline_dataset: TrajCtxDataset, rollout_dataset: Optional[TrajCtxDataset] = None):
+    def __init__(self, config, model: DecisionTransformer, offline_dataset: TrajCtxDataset, rollout_dataset: Optional[TrajCtxDataset] = None, is_gym = False):
         '''
         offline_trajs / rollout_trajs: List[Trajectory]
         config members:
@@ -46,6 +46,13 @@ class SequenceTrainer:
 
         if self.config.ckpt_path is not None:
             os.makedirs(self.config.ckpt_path, exist_ok=True)
+
+        if hasattr(config, "logger"):
+            self.logger = config.logger
+        else:
+            self.logger = None
+
+        self.is_gym = is_gym
 
     def loss_fn(self, pred_action, true_action):
         '''
@@ -137,7 +144,10 @@ class SequenceTrainer:
         env = self.config.env
         action_dim = env.action_space.shape[0]
         for epoch in range(self.config.eval_repeat):
-            states, _ = env.reset()
+            if self.is_gym:
+                states = env.reset()
+            else:
+                states, _ = env.reset()
             if hasattr(env, 'get_true_observation'): # For pointmaze
                 states = env.get_true_observation(states)
             states = torch.from_numpy(states)
@@ -173,7 +183,10 @@ class SequenceTrainer:
                 # sample_action[sample] = 1 # one-hot representation, (action_dim)
 
                 # Observe next states, rewards,
-                next_state, reward, terminated, _, _ = env.step(pred_action.detach().cpu().numpy()) # (state_dim), scalar
+                if self.is_gym:
+                    next_state, reward, terminated, _ = env.step(pred_action.detach().cpu().numpy()) # (state_dim), scalar
+                else:
+                    next_state, reward, terminated, _, _ = env.step(pred_action.detach().cpu().numpy()) # (state_dim), scalar
                 if hasattr(env, 'get_true_observation'): # For pointmaze
                     next_state = env.get_true_observation(next_state)
                 if epoch == 0 and self.config.debug:
@@ -217,6 +230,12 @@ class SequenceTrainer:
             self.tb_writer.add_scalar("avg_ret", avg_ret, train_epoch)
         if self.config.log_to_wandb:
             wandb.log({"avg_ret": avg_ret})
+        if self.logger is not None:
+            eval_result = {}
+            eval_result['epoch'] = train_epoch + 1
+            eval_result['average_return'] = avg_ret
+            self.logger.record_dict(eval_result)
+            self.logger.dump_tabular(with_prefix=False, with_timestamp=False)
         # Set the model back to training mode
         self.model.train(True)
         return avg_ret
@@ -245,6 +264,7 @@ class SequenceTrainer:
         
         # losses = []
         pbar = tqdm(enumerate(loader), total=len(loader))
+        losses = []
         for it, (states, actions, _, rtgs, timesteps, attention_mask) in pbar:
             '''
             states, (batch, ctx, state_dim)
@@ -276,6 +296,8 @@ class SequenceTrainer:
                 action_target
             )
 
+            losses.append(loss.item())
+
             # self.optimizer.zero_grad()
             # loss.backward()
             # torch.nn.utils.clip_grad_norm_(self.model.parameters(), .25)
@@ -291,6 +313,9 @@ class SequenceTrainer:
             self.optimizer.step()
 
             pbar.set_description(f"Epoch {epoch_num+1}, iter {it}: train loss {loss.item():.5f}.")
+
+        if self.logger is not None:
+            self.logger.record_dict({'average_loss': np.mean(losses)})
 
     def train(self):
         best_return = -float('inf')

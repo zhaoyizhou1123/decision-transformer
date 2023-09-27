@@ -1,9 +1,9 @@
 algo=rcsl-dt
-maze=./config/maze2_simple_expert.json
+maze=./config/maze2_simple_moredata.json
 horizon=200
 # dynamics_path="./log/pointmaze/combo/seed_1&timestamp_23-0727-123603_smds_acc/model"
 # dynamics_path=None
-data_file=./dataset/maze2_simple_expert.dat
+data_file=./dataset/maze2_smds_acc.dat
 # data_file=./checkpoint/maze2_smds_accdyn/rollout.dat
 mdp_ckpt_dir=./checkpoint/maze2simpleexert_mlp # No use for diffusion
 # behavior_type=mlp
@@ -17,7 +17,7 @@ mdp_ckpt_dir=./checkpoint/maze2simpleexert_mlp # No use for diffusion
 # d_seed=maze2_smds_accdyn
 # num_diffusion_iters=10
 
-epochs=1000
+epochs=100
 ctx=20
 # lr=1e-3
 
