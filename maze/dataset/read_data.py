@@ -23,9 +23,9 @@ def read_offline_data():
     #     show_trajectory(traj, timesteps = [0])
     rets = [traj.returns[0] for traj in trajs]
     rets.sort(reverse=True)
-    top_num=100
+    top_num=2000
     top_rets = rets[0:top_num]
-    print(f"Top {top_num} rets: max {top_rets[0]}, min {top_rets[-1]}, avg {sum(top_rets) / len(top_rets)}")
+    print(f"Top {len(top_rets)} rets: max {top_rets[0]}, min {top_rets[-1]}, avg {sum(top_rets) / len(top_rets)}")
 
     num_show_trajs = 1
     num_total_trajs = len(trajs)
@@ -47,5 +47,5 @@ def read_rollout_data():
     print(f"{trajs[-2].returns[0]}")
     print(f"observation type {trajs[0].observations[0].dtype}")
 
-read_rollout_data()
+# read_rollout_data()
 read_offline_data()
